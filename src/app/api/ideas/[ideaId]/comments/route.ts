@@ -2,7 +2,24 @@ import { NextResponse } from "next/server";
 
 // Mock database for comments
 // In production, you'd use a real database
-const mockComments = {
+const mockComments: Record<string, Array<{
+  id: string;
+  author: string;
+  authorRole: string;
+  content: string;
+  createdAt: string;
+  likes: number;
+  parentId: string | null;
+  replies: Array<{
+    id: string;
+    author: string;
+    authorRole: string;
+    content: string;
+    createdAt: string;
+    likes: number;
+    parentId: string;
+  }>;
+}>> = {
   "idea-001": [
     {
       id: "comment-001",
