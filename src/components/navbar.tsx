@@ -99,8 +99,8 @@ export default function Navbar() {
           <Link href="/" className="flex items-center space-x-2">
             <div className="relative h-10 w-40">
               <Image
-                src="/logo.jpg"
-                alt="ODR India Logo"
+                src="/Logobg.svg"
+                alt="ODR Logo"
                 fill
                 className="object-contain"
                 priority
@@ -223,22 +223,23 @@ export default function Navbar() {
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-              <div className="flex flex-col gap-6 py-4">
+              <div className="flex flex-col gap-6 py-4 ml-2">
                 <div className="flex items-center justify-between">
                   <Link href="/" className="flex items-center space-x-2" onClick={() => setIsOpen(false)}>
                     <div className="relative h-8 w-32">
                       <Image
-                        src="/placeholder.svg?height=32&width=128"
-                        alt="ODR India Logo"
+                        src="/Logobg.svg"
+                        alt="ODR Logo"
                         fill
                         className="object-contain"
                       />
                     </div>
                   </Link>
-                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => setIsOpen(false)}>
+                  {/*  Button to close the menu not required though. */}
+                  {/* <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => setIsOpen(false)}>
                     <X className="h-5 w-5" />
                     <span className="sr-only">Close menu</span>
-                  </Button>
+                  </Button> */}
                 </div>
                 <nav className="flex flex-col gap-4">
                   {navItems.map((item) => (
@@ -268,20 +269,14 @@ export default function Navbar() {
                   ))}
                 </nav>
                 <div className="flex items-center gap-4">
-                  <button className="flex h-8 w-8 items-center justify-center rounded-md border border-input bg-background text-xs font-medium">
-                    EN
-                  </button>
-                  <Link href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
-                    <button className="flex h-8 w-8 items-center justify-center rounded-md text-[#0a1e42] hover:bg-gray-100">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                        className="h-5 w-5"
-                      >
-                        <path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 000 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"></path>
-                      </svg>
-                      <span className="sr-only">LinkedIn</span>
+                  <Link href="/signin" onClick={() => setIsOpen(false)}>
+                    <button className="flex h-8 items-center justify-center rounded-md bg-[#0a1e42] px-4 text-sm font-medium text-white hover:bg-[#29487e]">
+                      Sign In
+                    </button>
+                  </Link>
+                  <Link href="/signin" onClick={() => setIsOpen(false)}>
+                    <button className="flex h-8 items-center justify-center rounded-md bg-[#0a1e42] px-4 text-sm font-medium text-white hover:bg-[#29487e]">
+                      Sign Up
                     </button>
                   </Link>
                 </div>

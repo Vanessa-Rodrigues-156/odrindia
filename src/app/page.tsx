@@ -5,7 +5,6 @@ import { ArrowRight, Award, BarChart, Globe, MessageSquare, Scale } from "lucide
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Footer from "@/components/footer"
 import Navbar from "@/components/navbar"
 import StatsCounter from "@/components/stats-counter"
@@ -28,20 +27,18 @@ export default function Home() {
             <div className="grid gap-8 md:grid-cols-2 md:gap-12">
               <div className="flex flex-col justify-center space-y-6">
             <h1 className="text-4xl font-bold leading-tight tracking-tighter md:text-5xl lg:text-6xl">
-              An <span className="text-sky-400">ALTERNATIVE</span> world of{" "}
-              <span className="text-sky-400">ONLINE</span> dispute resolution
+            <span className="text-sky-400">Connect, Collaborate,</span> and <span className="text-sky-400"> Create </span> Innovative {" "}
+              <span className="text-sky-400">ODR </span>Systems
             </h1>
             <p className="max-w-[600px] text-lg text-gray-200 md:text-xl">
-              Providing innovative online solutions for Alternative Dispute Resolution (ADR) practices and justice.
+             Platform for co-creating online Alternative Dispute Resolution systems. 
             </p>
             <div className="flex flex-col gap-4 sm:flex-row">
-              <Button size="lg" className="bg-sky-500 hover:bg-sky-600" >
-                <a href="/signin">
+              <Button size="lg" className="bg-sky-500 hover:bg-sky-600" onClick={() => window.location.href = '/signup'}>
                 Get Started
-                </a>
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
-              <Button size="lg" variant="outline" className="border-gray-200 bg-[#0a1e42] text-white hover:bg-white/10">
+              <Button size="lg" variant="outline" className="border-gray-200 bg-[#0a1e42] text-white hover:bg-white/10" onClick={() => window.location.href = '/about'}>
                 Learn More
               </Button>
             </div>
@@ -50,7 +47,7 @@ export default function Home() {
             <div className="relative h-[300px] w-full max-w-[500px] overflow-hidden rounded-lg shadow-xl md:h-[400px]">
               <Image
                 src="/hero.jpg"
-                alt="ODR india Platform"
+                alt="ODR Platform"
                 fill
                 className="object-cover"
                 priority
@@ -65,9 +62,9 @@ export default function Home() {
         <section className="py-16">
           <div className="container mx-auto px-4">
             <div className="mb-12 text-center">
-              <h2 className="mb-2 text-3xl font-bold tracking-tight text-[#0a1e42] md:text-4xl">Our ODR Services</h2>
+              <h2 className="mb-2 text-3xl font-bold tracking-tight text-[#0a1e42] md:text-4xl">LET'S COLLABORATE FOR</h2>
               <p className="mx-auto max-w-[700px] text-gray-600">
-                Comprehensive online dispute resolution solutions for various needs
+                Innovative solutions advancing the future of dispute resolution
               </p>
             </div>
 
@@ -77,13 +74,12 @@ export default function Home() {
                   <div className="mb-2 rounded-full bg-[#0a1e42]/10 p-2 w-fit">
                     <MessageSquare className="h-6 w-6 text-[#0a1e42]" />
                   </div>
-                  <CardTitle className="text-[#0a1e42]">Online Negotiations</CardTitle>
-                  <CardDescription>We help deals made & issues settled online</CardDescription>
+                  <CardTitle className="text-[#0a1e42]">Designing Dispute Resolution Systems</CardTitle>
+                  <CardDescription>Custom solutions for complex dispute scenarios</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-600">
-                    Our platform provides a secure environment for parties to negotiate and reach agreements efficiently
-                    without the need for physical meetings.
+                    We create comprehensive dispute resolution systems tailored to specific industries, combining technology and human expertise.
                   </p>
                 </CardContent>
               </Card>
@@ -93,13 +89,12 @@ export default function Home() {
                   <div className="mb-2 rounded-full bg-[#0a1e42]/10 p-2 w-fit">
                     <Globe className="h-6 w-6 text-[#0a1e42]" />
                   </div>
-                  <CardTitle className="text-[#0a1e42]">Online Mediation</CardTitle>
-                  <CardDescription>We make cross-border disputes easy to solve</CardDescription>
+                  <CardTitle className="text-[#0a1e42]">Predictive Justice Technologies</CardTitle>
+                  <CardDescription>AI-powered solutions for better outcomes</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-600">
-                    Our mediation services bridge geographical gaps, allowing parties from different countries to
-                    resolve disputes with professional mediators.
+                    Our advanced algorithms analyze case patterns to predict outcomes and suggest fair resolutions based on historical data.
                   </p>
                 </CardContent>
               </Card>
@@ -109,13 +104,12 @@ export default function Home() {
                   <div className="mb-2 rounded-full bg-[#0a1e42]/10 p-2 w-fit">
                     <Scale className="h-6 w-6 text-[#0a1e42]" />
                   </div>
-                  <CardTitle className="text-[#0a1e42]">Online Arbitration</CardTitle>
-                  <CardDescription>We introduce web solutions to arbitration cases</CardDescription>
+                  <CardTitle className="text-[#0a1e42]">Legal Tech Solutions for Court Integration</CardTitle>
+                  <CardDescription>Bridging traditional and digital justice</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-600">
-                    Our arbitration platform provides a formal dispute resolution process with legally binding decisions
-                    delivered entirely online.
+                    We develop seamless interfaces between conventional court systems and modern ODR platforms to enhance judicial efficiency.
                   </p>
                 </CardContent>
               </Card>
@@ -125,13 +119,12 @@ export default function Home() {
                   <div className="mb-2 rounded-full bg-[#0a1e42]/10 p-2 w-fit">
                     <BarChart className="h-6 w-6 text-[#0a1e42]" />
                   </div>
-                  <CardTitle className="text-[#0a1e42]">ODR in Consumer Disputes</CardTitle>
-                  <CardDescription>We provide e-resolving to e-shopping disputes</CardDescription>
+                  <CardTitle className="text-[#0a1e42]">Developing Automated Mediation Platforms</CardTitle>
+                  <CardDescription>AI-assisted conflict resolution</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-600">
-                    Specialized solutions for e-commerce disputes, helping consumers and businesses resolve issues
-                    quickly and fairly.
+                    Our intelligent platforms guide parties through structured mediation processes with automated suggestions and assistance.
                   </p>
                 </CardContent>
               </Card>
@@ -141,13 +134,12 @@ export default function Home() {
                   <div className="mb-2 rounded-full bg-[#0a1e42]/10 p-2 w-fit">
                     <Scale className="h-6 w-6 text-[#0a1e42]" />
                   </div>
-                  <CardTitle className="text-[#0a1e42]">ODR in Courts of Justice</CardTitle>
-                  <CardDescription>We contribute to the innovation of Justice</CardDescription>
+                  <CardTitle className="text-[#0a1e42]">Designing Case-Specific Online Arbitration Processes</CardTitle>
+                  <CardDescription>Customized digital arbitration solutions</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-600">
-                    Working with courts to implement ODR solutions that improve access to justice and streamline legal
-                    processes.
+                    We create specialized arbitration workflows adapted to specific dispute types, industries, and regulatory requirements.
                   </p>
                 </CardContent>
               </Card>
@@ -157,13 +149,27 @@ export default function Home() {
                   <div className="mb-2 rounded-full bg-[#0a1e42]/10 p-2 w-fit">
                     <Award className="h-6 w-6 text-[#0a1e42]" />
                   </div>
-                  <CardTitle className="text-[#0a1e42]">ODR Platforms & Apps</CardTitle>
-                  <CardDescription>We bring ODR technology one click closer</CardDescription>
+                  <CardTitle className="text-[#0a1e42]">Creating Personalized Dispute Resolution Pathways</CardTitle>
+                  <CardDescription>Tailored experiences for unique needs</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-600">
-                    Developing cutting-edge platforms and applications that make dispute resolution accessible on any
-                    device.
+                    Our adaptive platforms create custom resolution journeys based on dispute characteristics and party preferences.
+                  </p>
+                </CardContent>
+              </Card>
+              
+              <Card className="border-2 border-transparent transition-all hover:border-[#0a1e42]/10 hover:shadow-lg">
+                <CardHeader className="pb-2">
+                  <div className="mb-2 rounded-full bg-[#0a1e42]/10 p-2 w-fit">
+                    <Globe className="h-6 w-6 text-[#0a1e42]" />
+                  </div>
+                  <CardTitle className="text-[#0a1e42]">Building Multilingual Dispute Resolution Platforms</CardTitle>
+                  <CardDescription>Breaking language barriers in ODR</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-600">
+                    We develop inclusive platforms that support multiple languages to facilitate cross-border and cross-cultural dispute resolution.
                   </p>
                 </CardContent>
               </Card>
@@ -171,13 +177,13 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Video Section */}
+        {/* Video Section
         <section className="bg-[#0a1e42] py-16 text-white">
           <div className="container mx-auto px-4">
             <div className="grid gap-8 md:grid-cols-2">
               <div className="flex flex-col justify-center space-y-6">
                 <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
-                  See how ODR India is transforming dispute resolution
+                  See how ODR is transforming dispute resolution
                 </h2>
                 <p className="text-gray-200">
                   Watch our video to learn how our online dispute resolution services are making justice more
@@ -188,7 +194,7 @@ export default function Home() {
               <div className="relative aspect-video overflow-hidden rounded-lg shadow-xl">
                 <Image
                   src="/placeholder.svg?height=315&width=560"
-                  alt="ODR India Video"
+                  alt="ODR Video"
                   fill
                   className="object-cover"
                 />
@@ -211,14 +217,14 @@ export default function Home() {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/* Stats Section */}
         <section className="py-16">
           <div className="container mx-auto px-4">
             <div className="mb-12 text-center">
               <h2 className="mb-2 text-3xl font-bold tracking-tight text-[#0a1e42] md:text-4xl">
-                ODR India in Numbers
+                ODR in Numbers
               </h2>
               <p className="mx-auto max-w-[700px] text-gray-600">
                 Our impact on the world of online dispute resolution
@@ -261,67 +267,40 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Tabs Section */}
+        {/* Innovation Section */}
         <section className="bg-gray-50 py-16">
           <div className="container mx-auto px-4">
             <div className="mb-12 text-center">
               <h2 className="mb-2 text-3xl font-bold tracking-tight text-[#0a1e42] md:text-4xl">
-                How We Can Work Together
+              Contribute to the future of online dispute resolution
               </h2>
-              <p className="mx-auto max-w-[700px] text-gray-600">
-                Explore the different ways we can collaborate to resolve disputes
+              < p className="mx-auto max-w-[700px] text-2xl text-gray-600">
+              Open to Ideas
               </p>
             </div>
 
-            <Tabs defaultValue="partnerships" className="mx-auto max-w-3xl">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="partnerships">Partnerships</TabsTrigger>
-                <TabsTrigger value="innovation">Innovation</TabsTrigger>
-              </TabsList>
-              <TabsContent value="partnerships" className="mt-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Valuable Partnerships</CardTitle>
-                    <CardDescription>Join our network of partners to expand the reach of ODR services</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <p>
-                      We collaborate with courts, legal professionals, businesses, and organizations to implement
-                      effective ODR solutions. Our partnerships are built on shared values of accessibility, efficiency,
-                      and justice.
-                    </p>
-                    <ul className="ml-6 list-disc space-y-2">
-                      <li>Partner with courts and tribunals</li>
-                      <li>Collaborate with legal tech companies</li>
-                      <li>Work with e-commerce platforms</li>
-                      <li>Connect with legal professionals</li>
-                    </ul>
-                    <Button className="mt-4 bg-[#0a1e42] hover:bg-[#263e69]">Become a Partner</Button>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-              <TabsContent value="innovation" className="mt-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Open to Ideas</CardTitle>
-                    <CardDescription>Contribute to the future of online dispute resolution</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <p>
-                      We're constantly looking for innovative approaches to improve ODR. Share your ideas, research, or
-                      technology to help us advance the field and make justice more accessible to all.
-                    </p>
-                    <ul className="ml-6 list-disc space-y-2">
-                      <li>Propose new ODR methodologies</li>
-                      <li>Suggest technological improvements</li>
-                      <li>Share research findings</li>
-                      <li>Collaborate on pilot projects</li>
-                    </ul>
-                    <Button className="mt-4 bg-[#0a1e42] hover:bg-[#263e69]">Submit Your Idea</Button>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-            </Tabs>
+            <div className="mx-auto max-w-3xl">
+              <Card>
+                <CardContent className="space-y-4">
+                  <p>
+                    We're constantly looking for innovative approaches to improve ODR. Share your ideas, research, or
+                    technology to help us advance the field and make justice more accessible to all.
+                  </p>
+                  <ul className="ml-6 list-disc space-y-2">
+                    <li>Propose new ODR methodologies</li>
+                    <li>Suggest technological improvements</li>
+                    <li>Share research findings</li>
+                    <li>Collaborate on pilot projects</li>
+                  </ul>
+                    <Button 
+                    className="mt-4 bg-[#0a1e42] hover:bg-[#263e69]" 
+                    onClick={() => window.location.href = '/submit-idea'}
+                    >
+                    Submit Your Idea
+                    </Button>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </section>
 
@@ -349,8 +328,7 @@ export default function Home() {
         <section className="py-16">
           <div className="container mx-auto px-4">
             <div className="mb-12 text-center">
-              <h2 className="mb-2 text-3xl font-bold tracking-tight text-[#0a1e42] md:text-4xl">Latest News</h2>
-              <p className="mx-auto max-w-[700px] text-gray-600">Stay updated with the latest developments in ODR</p>
+              <h2 className="mb-2 text-3xl font-bold tracking-tight text-[#0a1e42] md:text-4xl">What's New</h2>
             </div>
 
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -359,7 +337,7 @@ export default function Home() {
                   <Image src="/placeholder.svg?height=200&width=400" alt="News Image" fill className="object-cover" />
                 </div>
                 <CardHeader>
-                  <CardTitle className="text-[#0a1e42]">ODR India at the 2023 ODR Conference</CardTitle>
+                  <CardTitle className="text-[#0a1e42]">ODR at the 2023 ODR Conference</CardTitle>
                   <CardDescription>May 15, 2023</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -379,7 +357,7 @@ export default function Home() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-600">
-                    ODR India has signed a new agreement to provide ODR services to several Indian courts.
+                    ODR has signed a new agreement to provide ODR services to several Indian courts.
                   </p>
                 </CardContent>
               </Card>

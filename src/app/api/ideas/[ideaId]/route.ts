@@ -1,7 +1,16 @@
 import { NextResponse } from "next/server";
 
 // This would be replaced with a database connection in production
-const mockIdeas = {
+const mockIdeas: Record<string, {
+  id: string;
+  name: string;
+  email: string;
+  country: string;
+  description: string;
+  attachments: { id: string; filename: string; url: string }[];
+  submittedAt: string;
+  likes: number;
+}> = {
   "idea-001": {
     id: "idea-001",
     name: "John Doe",

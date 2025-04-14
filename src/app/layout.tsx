@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ODR India - Online Dispute Resolution",
+  title: "ODR - Online Dispute Resolution",
   description: "Providing innovative online solutions for Alternative Dispute Resolution (ADR) practices and justice.",
 };
 

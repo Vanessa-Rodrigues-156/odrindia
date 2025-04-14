@@ -1,6 +1,12 @@
 import { NextResponse } from "next/server";
+import { readFile } from 'fs/promises';
+import { existsSync } from 'fs';
+import path from 'path';
 
-// This would be replaced with a database connection in production
+// Path to the submissions JSON file
+const SUBMISSIONS_FILE_PATH = path.join(process.cwd(), 'src', 'app', 'submit-idea', 'submissions.json');
+
+// Fallback mock ideas for when no submissions exist
 const mockIdeas = [
   {
     id: "idea-001",
@@ -33,5 +39,43 @@ const mockIdeas = [
 ];
 
 export async function GET() {
-  return NextResponse.json(mockIdeas);
+  try {
+    // Check if submissions file exists and read it
+    if (existsSync(SUBMISSIONS_FILE_PATH)) {
+      const submissionsData = await readFile(SUBMISSIONS_FILE_PATH, 'utf8');
+      const submissions = JSON.parse(submissionsData);
+      
+      // Map submissions to the expected format for ideas
+      const ideas = submissions.map((submission: { id: any; name: any; email: any; country: any; description: any; files: any[]; submittedAt: any; }) => ({
+        id: submission.id,
+        name: submission.name,
+        email: submission.email,
+        country: submission.country,
+        description: submission.description,
+        attachments: submission.files.map((filePath, index) => {
+          const filename = path.basename(filePath);
+          return {
+            id: `att-${submission.id}-${index}`,
+            filename: filename,
+            url: `/api/attachments/${submission.id}/${filename}`
+          };
+        }),
+        submittedAt: submission.submittedAt,
+        likes: 0,             // Default value for new submissions
+        commentCount: 0       // Default value for new submissions
+      }));
+      
+      // Combine real submissions with mock data or just return submissions
+      // return NextResponse.json([...ideas, ...mockIdeas]);
+      return NextResponse.json(ideas);
+    }
+    
+    // If file doesn't exist, return mock data
+    return NextResponse.json(mockIdeas);
+    
+  } catch (error) {
+    console.error('Error reading submissions:', error);
+    // Return mock data as fallback in case of any errors
+    return NextResponse.json(mockIdeas);
+  }
 }

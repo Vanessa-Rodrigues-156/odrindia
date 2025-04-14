@@ -329,7 +329,7 @@ export default function SubmitIdeaClientPage() {
                       <span className="text-sm">1</span>
                     </div>
                     <p className="text-gray-700">
-                      Our team will review your submission and evaluate its potential impact on ODR practices.
+                      Join the ODR Lab and discuss your innovative ideas with your peers.
                     </p>
                   </div>
                   <div className="flex items-start gap-3">
@@ -337,7 +337,7 @@ export default function SubmitIdeaClientPage() {
                       <span className="text-sm">2</span>
                     </div>
                     <p className="text-gray-700">
-                      If your idea aligns with our vision, we'll contact you to discuss it further.
+                      Connect with ODR Mentors.
                     </p>
                   </div>
                   <div className="flex items-start gap-3">
@@ -345,7 +345,7 @@ export default function SubmitIdeaClientPage() {
                       <span className="text-sm">3</span>
                     </div>
                     <p className="text-gray-700">
-                      Selected ideas may be developed into pilot projects or integrated into our existing services.
+                     Be Ready to Innovate, Impact and Inspire.
                     </p>
                   </div>
                 </div>

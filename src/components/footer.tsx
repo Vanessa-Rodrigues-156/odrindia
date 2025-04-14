@@ -10,7 +10,7 @@ export default function Footer() {
       <div className="container mx-auto px-4 py-12">
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           <div className="space-y-4">
-            <h3 className="text-xl font-bold">ODR India</h3>
+            <h3 className="text-xl font-bold">ODR</h3>
             <p className="text-gray-300">
               Online Dispute Resolution for ADR practices and Justice. Making dispute resolution accessible, efficient,
               and effective.
@@ -114,7 +114,7 @@ export default function Footer() {
         <div className="mt-12 border-t border-gray-700 pt-8">
           <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
             <p className="text-center text-sm text-gray-300 md:text-left">
-              © {new Date().getFullYear()} ODR INDIA. All rights reserved.
+              © {new Date().getFullYear()} ODR. All rights reserved.
             </p>
             <div className="flex space-x-6">
               <Link href="/privacy-policy" className="text-sm text-gray-300 hover:text-white">

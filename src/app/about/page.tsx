@@ -27,10 +27,10 @@ export default function AboutPage() {
           <div className="container mx-auto px-4">
             <div className="text-center">
               <h1 className="text-4xl font-bold leading-tight tracking-tighter md:text-5xl lg:text-6xl">
-                About <span className="text-sky-400">ODR</span> India
+                About <span className="text-sky-400">ODR</span> Labs
               </h1>
               <p className="mx-auto mt-4 max-w-[800px] text-lg text-gray-200 md:text-xl">
-                Pioneering online dispute resolution in India and setting new standards for accessible justice globally.
+              Connect, Collaborate, and Create innovative ODR systems — Shaping access to Justice
               </p>
             </div>
           </div>
@@ -73,7 +73,7 @@ export default function AboutPage() {
                     anywhere, anytime.
                   </p>
                   <p className="text-gray-600">
-                    We envision an India where disputes are resolved swiftly, fairly, and without the traditional barriers of 
+                    We envision a World where disputes are resolved swiftly, fairly, and without the traditional barriers of 
                     cost, distance, and procedural complexity that often deter people from seeking resolution.
                   </p>
                 </CardContent>
@@ -88,7 +88,7 @@ export default function AboutPage() {
             <div className="mb-12 text-center">
               <h2 className="mb-2 text-3xl font-bold tracking-tight text-[#0a1e42] md:text-4xl">Our Story</h2>
               <p className="mx-auto max-w-[700px] text-gray-600">
-                The journey of ODR India from concept to reality
+                The journey of ODR from concept to reality
               </p>
             </div>
 
@@ -96,7 +96,7 @@ export default function AboutPage() {
               <div className="relative aspect-square overflow-hidden rounded-lg shadow-xl">
                 <Image
                   src="/placeholder.svg?height=500&width=500"
-                  alt="ODR India Origin Story"
+                  alt="ODR Origin Story"
                   fill
                   className="object-cover"
                 />
@@ -108,7 +108,7 @@ export default function AboutPage() {
                     <h3 className="text-xl font-semibold text-[#0a1e42]">Our Beginning</h3>
                   </div>
                   <p className="text-gray-600">
-                    Founded in 2018 by a group of legal technologists and ADR experts, ODR India began with a simple mission: to bring 
+                    Founded in 2018 by a group of legal technologists and ADR experts, ODR began with a simple mission: to bring 
                     the benefits of technology to dispute resolution in a country facing massive judicial backlogs.
                   </p>
                 </div>
@@ -148,15 +148,15 @@ export default function AboutPage() {
         <section className="py-16">
           <div className="container mx-auto px-4">
             <div className="mb-12 text-center">
-              <h2 className="mb-2 text-3xl font-bold tracking-tight text-[#0a1e42] md:text-4xl">Our Leadership Team</h2>
+              <h2 className="mb-2 text-3xl font-bold tracking-tight text-[#0a1e42] md:text-4xl">Student Ambassadors</h2>
               <p className="mx-auto max-w-[700px] text-gray-600">
-                Meet the experts driving innovation in online dispute resolution
+                Industry Academia Team 
               </p>
             </div>
-
-            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-              {[1, 2, 3, 4].map((i) => (
-                <Card key={i} className="overflow-hidden border-none shadow-md">
+            <div>
+            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4 justify-center mx-auto">
+              {[1, 2].map((i) => (
+                <Card key={i} className="overflow-hidden border-none shadow-md max-w-xs">
                   <div className="relative h-64 w-full">
                     <Image 
                       src={`/placeholder.svg?height=300&width=300&text=Team Member ${i}`} 
@@ -177,11 +177,6 @@ export default function AboutPage() {
                 </Card>
               ))}
             </div>
-
-            <div className="mt-12 text-center">
-              <Button variant="outline" className="border-[#0a1e42] text-[#0a1e42] hover:bg-[#0a1e42] hover:text-white">
-                Meet Our Full Team
-              </Button>
             </div>
           </div>
         </section>
