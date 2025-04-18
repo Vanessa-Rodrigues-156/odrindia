@@ -22,24 +22,9 @@ const navItems = [
     href: "/resources",
     children: [
       {
-        title: "Online Negotiations",
-        href: "/services/negotiations",
-        description: "We help deals made & issues settled online",
-      },
-      {
-        title: "Online Mediation",
-        href: "/services/mediation",
-        description: "We make cross-border disputes easy to solve",
-      },
-      {
-        title: "Online Arbitration",
-        href: "/services/arbitration",
-        description: "We introduce web solutions to arbitration cases",
-      },
-      {
-        title: "Consumer Disputes",
-        href: "/services/consumer-disputes",
-        description: "We provide e-resolving to e-shopping disputes",
+        title: "ICODR standards",
+        href: "https://icodr.org/standards/",
+        description: "ICODR is an international nonprofit, incorporated in the United States, that drives the development, convergence, and adoption of open standards for the global effort to resolve disputes and conflicts using information and communications technology.",
       },
     ],
   },
@@ -50,6 +35,10 @@ const navItems = [
   {
     title: "ODR Lab",
     href: "/odrlabs",
+  },
+  {
+    title: "Chatbot",
+    href: "/chatbot",
   },
   {
     title: "Contact",

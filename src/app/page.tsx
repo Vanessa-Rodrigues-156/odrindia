@@ -31,7 +31,7 @@ export default function Home() {
               <span className="text-sky-400">ODR </span>Systems
             </h1>
             <p className="max-w-[600px] text-lg text-gray-200 md:text-xl">
-             Platform for co-creating online Alternative Dispute Resolution systems. 
+             Platform for co-creating Online Dispute Resolution systems. 
             </p>
             <div className="flex flex-col gap-4 sm:flex-row">
               <Button size="lg" className="bg-sky-500 hover:bg-sky-600" onClick={() => window.location.href = '/signup'}>
@@ -220,7 +220,7 @@ export default function Home() {
         </section> */}
 
         {/* Stats Section */}
-        <section className="py-16">
+        {/* <section className="py-16">
           <div className="container mx-auto px-4">
             <div className="mb-12 text-center">
               <h2 className="mb-2 text-3xl font-bold tracking-tight text-[#0a1e42] md:text-4xl">
@@ -265,14 +265,14 @@ export default function Home() {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/* Innovation Section */}
         <section className="bg-gray-50 py-16">
           <div className="container mx-auto px-4">
             <div className="mb-12 text-center">
               <h2 className="mb-2 text-3xl font-bold tracking-tight text-[#0a1e42] md:text-4xl">
-              Contribute to the future of online dispute resolution
+              Contribute to the future of Online Dispute Resolution
               </h2>
               < p className="mx-auto max-w-[700px] text-2xl text-gray-600">
               Open to Ideas
@@ -331,38 +331,23 @@ export default function Home() {
               <h2 className="mb-2 text-3xl font-bold tracking-tight text-[#0a1e42] md:text-4xl">What's New</h2>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div  className="grid gap-6 justify-center md:grid-cols-2 lg:grid-cols-3">
               <Card className="overflow-hidden">
                 <div className="relative h-48 w-full">
-                  <Image src="/placeholder.svg?height=200&width=400" alt="News Image" fill className="object-cover" />
+                  <Image src="/news1.png" alt="News Image" fill className="object-cover" />
                 </div>
                 <CardHeader>
-                  <CardTitle className="text-[#0a1e42]">ODR at the 2023 ODR Conference</CardTitle>
-                  <CardDescription>May 15, 2023</CardDescription>
+                  <CardTitle className="text-[#0a1e42]">25th International Forum on ODR  </CardTitle>
+                  <CardDescription>29th - 30th April 2025</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-600">
-                    Our team presented the latest innovations in online dispute resolution at the annual ODR Conference.
+                  The International Forum on Online Dispute Resolution was launched in 2001 by the National Center for Technology and Dispute Resolution at the University of Massachusetts (NCTDR) and it has since become the premiere ODR gathering for courts, providers, and academics. This year, the 25th forum will be held in London at the beautiful Old Royal Naval College, a UNESCO Heritage site.
                   </p>
                 </CardContent>
               </Card>
 
-              <Card className="overflow-hidden">
-                <div className="relative h-48 w-full">
-                  <Image src="/placeholder.svg?height=200&width=400" alt="News Image" fill className="object-cover" />
-                </div>
-                <CardHeader>
-                  <CardTitle className="text-[#0a1e42]">New Partnership with Indian Courts</CardTitle>
-                  <CardDescription>April 3, 2023</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600">
-                    ODR has signed a new agreement to provide ODR services to several Indian courts.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="overflow-hidden">
+              <Card className="overflow-hidden" onClick={() => window.location.href = ' https://icodr.org/standards/'}>
                 <div className="relative h-48 w-full">
                   <Image src="/placeholder.svg?height=200&width=400" alt="News Image" fill className="object-cover" />
                 </div>
@@ -378,11 +363,11 @@ export default function Home() {
               </Card>
             </div>
 
-            <div className="mt-8 text-center">
+            {/* <div className="mt-8 text-center">
               <Button variant="outline" className="border-[#0a1e42] text-[#0a1e42] hover:bg-[#0a1e42] hover:text-white">
                 View All News
               </Button>
-            </div>
+            </div> */}
           </div>
         </section>
       </main>
