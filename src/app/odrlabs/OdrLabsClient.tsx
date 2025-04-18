@@ -35,7 +35,7 @@ interface OdrLabsClientProps {
 }
 
 export default function OdrLabsClient({ initialIdeas }: OdrLabsClientProps) {
-  const [ideas, setIdeas] = useState<Idea[]>(initialIdeas)
+  const [ideas] = useState<Idea[]>(initialIdeas)
   const [searchTerm, setSearchTerm] = useState("")
   const [filter, setFilter] = useState("all")
   

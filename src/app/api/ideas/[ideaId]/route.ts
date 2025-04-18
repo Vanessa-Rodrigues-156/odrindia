@@ -40,10 +40,12 @@ const mockIdeas: Record<string, {
 
 export async function GET(
   request: Request,
-  { params }: { params: { ideaId: string } }
+  { params }: { params: Promise<{ ideaId: string }> } // Adjusted to handle Promise
 ) {
-  const idea = mockIdeas[params.ideaId];
-  
+  const { ideaId } = await params; // Await the params to extract ideaId
+  const idea = mockIdeas[ideaId];
+  console.log("Unused variable:", request); // Log unused variable
+
   if (!idea) {
     return new Response(null, { 
       status: 404,

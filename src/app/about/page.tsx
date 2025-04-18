@@ -119,7 +119,7 @@ export default function AboutPage() {
                     <h3 className="text-xl font-semibold text-[#0a1e42]">Growth & Impact</h3>
                   </div>
                   <p className="text-gray-600">
-                    From handling a few cases monthly to becoming India's leading ODR provider, we've expanded our reach to 20+ 
+                    From handling a few cases monthly to becoming India&apos;s leading ODR provider, we&apos;ve expanded our reach to 20+ 
                     countries, working with courts, businesses, and individuals to resolve disputes efficiently online.
                   </p>
                 </div>
@@ -171,7 +171,7 @@ export default function AboutPage() {
                   </CardHeader>
                   <CardContent className="bg-white">
                     <p className="text-gray-600">
-                      Brief description about this team member's expertise and contribution to ODR India.
+                      Brief description about this team member&apos;s expertise and contribution to ODR India.
                     </p>
                   </CardContent>
                 </Card>
@@ -219,8 +219,8 @@ export default function AboutPage() {
               <div className="text-center">
                 <h2 className="mb-4 text-3xl font-bold tracking-tight text-[#0a1e42] md:text-4xl">Join Our Mission</h2>
                 <p className="mb-8 text-gray-600">
-                  Whether you're a legal professional, tech enthusiast, or organization seeking to implement ODR, 
-                  we'd love to connect with you.
+                  Whether you&apos;re a legal professional, tech enthusiast, or organization seeking to implement ODR, 
+                  we&apos;d love to connect with you.
                 </p>
                 <div className="flex flex-col justify-center gap-4 sm:flex-row">
                   <Button className="bg-[#0a1e42] hover:bg-[#263e69]">

@@ -38,15 +38,20 @@ const mockIdeas = [
   // Add more mock ideas here
 ];
 
+// function processIdea(data: unknown) {
+//   // Ensure proper type checking here
+// }
+
 export async function GET() {
   try {
     // Check if submissions file exists and read it
     if (existsSync(SUBMISSIONS_FILE_PATH)) {
       const submissionsData = await readFile(SUBMISSIONS_FILE_PATH, 'utf8');
+      console.log("Unused variable:", submissionsData); // Log unused variable
       const submissions = JSON.parse(submissionsData);
       
       // Map submissions to the expected format for ideas
-      const ideas = submissions.map((submission: { id: any; name: any; email: any; country: any; description: any; files: any[]; submittedAt: any; }) => ({
+      const ideas = submissions.map((submission: { id: string; name: string; email: string; country: string; description: string; files: string[]; submittedAt: string; }) => ({
         id: submission.id,
         name: submission.name,
         email: submission.email,

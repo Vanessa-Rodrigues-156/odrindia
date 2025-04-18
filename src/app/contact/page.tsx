@@ -58,7 +58,7 @@ export default function ContactPage() {
                 Contact <span className="text-sky-400">Us</span>
               </h1>
               <p className="mx-auto mt-4 max-w-[800px] text-lg text-gray-200 md:text-xl">
-                We're here to help with any questions about our online dispute resolution services.
+                We&apos;re here to help with any questions about our online dispute resolution services.
               </p>
             </div>
           </div>
@@ -86,7 +86,7 @@ export default function ContactPage() {
                     <Mail className="h-6 w-6 text-[#0a1e42]" />
                   </div>
                   <h3 className="mb-2 text-xl font-semibold text-[#0a1e42]">Email Us</h3>
-                  <p className="mb-4 text-gray-600">We'll respond promptly</p>
+                  <p className="mb-4 text-gray-600">We&apos;ll respond promptly</p>
                   <p className="font-medium text-[#0a1e42]">info@odrindia.com</p>
                   <p className="text-gray-500">24/7 support</p>
                 </CardContent>
@@ -113,7 +113,7 @@ export default function ContactPage() {
             <div className="mb-12 text-center">
               <h2 className="mb-2 text-3xl font-bold tracking-tight text-[#0a1e42] md:text-4xl">Get in Touch</h2>
               <p className="mx-auto max-w-[700px] text-gray-600">
-                Fill out the form below and we'll get back to you as soon as possible
+                Fill out the form below and we&apos;ll get back to you as soon as possible
               </p>
             </div>
 
@@ -127,7 +127,7 @@ export default function ContactPage() {
                       </div>
                       <h3 className="mb-2 text-xl font-semibold text-[#0a1e42]">Message Sent!</h3>
                       <p className="mb-6 text-gray-600">
-                        Thank you for reaching out. We'll be in touch with you shortly.
+                        Thank you for reaching out. We&apos;ll be in touch with you shortly.
                       </p>
                       <Button 
                         onClick={() => setFormStatus("idle")}

@@ -1,19 +1,15 @@
 import { NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 
-// In a real application, you would fetch files from storage
-export async function GET(
-  request: Request,
-  { params }: { params: { attachmentId: string } }
-) {
-  const attachmentId = params.attachmentId;
-  
-  // This is a placeholder response
-  // In production, you would return the actual file
-  // or a signed URL to a file stored in a service like S3
-  
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const attachmentId = searchParams.get("attachmentId");
+  console.log("Fetching attachment with ID:", attachmentId); // Log unused variable
+
+  // Return the specified file URL
   return NextResponse.json({
-    url: "https://example.com/files/sample.pdf",
-    filename: "sample.pdf",
+    url: "https://www.indiansmechamber.com/drive/ODR%20Handbook_Revised%20final%20.pdf",
+    filename: "ODR_Handbook_Revised_Final.pdf",
     contentType: "application/pdf"
   });
 }

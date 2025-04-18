@@ -6,7 +6,7 @@ import { format } from "date-fns"
 import { ArrowLeft, ThumbsUp, MessageSquare, Paperclip, Send, ChevronUp, ChevronDown } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/components/ui/use-toast"
 import Navbar from "@/components/navbar"

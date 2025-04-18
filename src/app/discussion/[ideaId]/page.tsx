@@ -1,39 +1,39 @@
-import { Metadata } from "next"
-import { notFound } from "next/navigation"
-import DiscussionClient from "./DiscussionClient"
+import { Metadata } from "next";
+import { notFound } from "next/navigation";
+import DiscussionClient from "./DiscussionClient";
 
 interface DiscussionPageProps {
-  params: {
-    ideaId: string
-  }
+  params: Promise<{ ideaId: string }>; // Updated to handle Promise
 }
 
 export async function generateMetadata({ params }: DiscussionPageProps): Promise<Metadata> {
-  const idea = await fetchIdea(params.ideaId)
-  
+  const { ideaId } = await params; // Await the params to extract ideaId
+  const idea = await fetchIdea(ideaId);
+
   if (!idea) {
     return {
       title: "Idea Not Found",
-      description: "The requested idea could not be found."
-    }
+      description: "The requested idea could not be found.",
+    };
   }
-  
+
   return {
-    title: `Discussion: ${idea.description.split('.')[0]}`,
-    description: idea.description.substring(0, 160)
-  }
+    title: `Discussion: ${idea.description.split(".")[0]}`,
+    description: idea.description.substring(0, 160),
+  };
 }
 
 export default async function DiscussionPage({ params }: DiscussionPageProps) {
-  const idea = await fetchIdea(params.ideaId)
-  
+  const { ideaId } = await params; // Await the params to extract ideaId
+  const idea = await fetchIdea(ideaId);
+
   if (!idea) {
-    notFound()
+    notFound();
   }
-  
-  const comments = await fetchComments(params.ideaId)
-  
-  return <DiscussionClient idea={idea} initialComments={comments} />
+
+  const comments = await fetchComments(ideaId);
+
+  return <DiscussionClient idea={idea} initialComments={comments} />;
 }
 
 // Mock function to fetch an idea - replace with actual API call

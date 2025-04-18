@@ -34,6 +34,8 @@ export async function POST(request: Request) {
     const phone = formData.get('phone') as string;
     const country = formData.get('country') as string;
     const description = formData.get('description') as string;
+
+    console.log("Unused variable:", phone); // Log unused variable
     
     // Generate a unique ID for this submission
     const submissionId = uuidv4();

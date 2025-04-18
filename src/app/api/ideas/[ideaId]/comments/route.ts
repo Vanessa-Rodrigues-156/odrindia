@@ -1,8 +1,17 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-// Mock database for comments
-// In production, you'd use a real database
-const mockComments: Record<string, Array<{
+// Define types for comments and replies
+type Reply = {
+  id: string;
+  author: string;
+  authorRole: string;
+  content: string;
+  createdAt: string;
+  likes: number;
+  parentId: string;
+};
+
+type Comment = {
   id: string;
   author: string;
   authorRole: string;
@@ -10,16 +19,12 @@ const mockComments: Record<string, Array<{
   createdAt: string;
   likes: number;
   parentId: string | null;
-  replies: Array<{
-    id: string;
-    author: string;
-    authorRole: string;
-    content: string;
-    createdAt: string;
-    likes: number;
-    parentId: string;
-  }>;
-}>> = {
+  replies: Reply[];
+};
+
+// Mock database for comments
+// In production, you'd use a real database
+const mockComments: Record<string, Comment[]> = {
   "idea-001": [
     {
       id: "comment-001",
@@ -56,20 +61,24 @@ const mockComments: Record<string, Array<{
 };
 
 export async function GET(
-  request: Request,
-  { params }: { params: { ideaId: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ ideaId: string }> } // Adjusted to handle Promise
 ) {
-  const comments = mockComments[params.ideaId] || [];
+  const { ideaId } = await params; // Await the params to extract ideaId
+  const comments = mockComments[ideaId] || [];
+  console.log("unused variable:", request); // Log unused variable
   return NextResponse.json(comments);
 }
 
 export async function POST(
-  request: Request,
-  { params }: { params: { ideaId: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ ideaId: string }> } // Adjusted to handle Promise
 ) {
-  const ideaId = params.ideaId;
-  const data = await request.json();
-  
+  const { ideaId } = await params; // Await the params to extract ideaId
+  console.log("Creating comment for idea ID:", ideaId);
+
+  const data: { content: string; author: string; authorRole?: string; parentId?: string } = await request.json();
+
   // Validate required fields
   if (!data.content || !data.author) {
     return new Response(JSON.stringify({ error: 'Missing required fields' }), {
@@ -79,7 +88,7 @@ export async function POST(
   }
   
   // Create a new comment
-  const newComment = {
+  const newComment: Comment = {
     id: `comment-${Date.now()}`,
     author: data.author,
     authorRole: data.authorRole || "Community Member",

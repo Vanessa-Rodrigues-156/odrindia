@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import Footer from "@/components/footer"
 import Navbar from "@/components/navbar"
-import StatsCounter from "@/components/stats-counter"
 
 export default function Home() {
   return (
@@ -62,7 +61,7 @@ export default function Home() {
         <section className="py-16">
           <div className="container mx-auto px-4">
             <div className="mb-12 text-center">
-              <h2 className="mb-2 text-3xl font-bold tracking-tight text-[#0a1e42] md:text-4xl">LET'S COLLABORATE FOR</h2>
+              <h2 className="mb-2 text-3xl font-bold tracking-tight text-[#0a1e42] md:text-4xl">LET&apos;S COLLABORATE FOR</h2>
               <p className="mx-auto max-w-[700px] text-gray-600">
                 Innovative solutions advancing the future of dispute resolution
               </p>
@@ -283,7 +282,7 @@ export default function Home() {
               <Card>
                 <CardContent className="space-y-4">
                   <p>
-                    We're constantly looking for innovative approaches to improve ODR. Share your ideas, research, or
+                    We&apos;re constantly looking for innovative approaches to improve ODR. Share your ideas, research, or
                     technology to help us advance the field and make justice more accessible to all.
                   </p>
                   <ul className="ml-6 list-disc space-y-2">
@@ -328,7 +327,7 @@ export default function Home() {
         <section className="py-16">
           <div className="container mx-auto px-4">
             <div className="mb-12 text-center">
-              <h2 className="mb-2 text-3xl font-bold tracking-tight text-[#0a1e42] md:text-4xl">What's New</h2>
+              <h2 className="mb-2 text-3xl font-bold tracking-tight text-[#0a1e42] md:text-4xl">What&apos;s New</h2>
             </div>
 
             <div  className="grid gap-6 justify-center md:grid-cols-2 lg:grid-cols-3">
@@ -357,7 +356,7 @@ export default function Home() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-600">
-                    We're excited to announce the launch of our new and improved ODR platform with enhanced features.
+                    We&apos;re excited to announce the launch of our new and improved ODR platform with enhanced features.
                   </p>
                 </CardContent>
               </Card>
