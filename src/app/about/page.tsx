@@ -233,16 +233,6 @@ export default function AboutPage() {
             </div>
           </div>
         </section>
-
-      
-
-       
-                 
-                  
-
-                 
-        
-// ... existing code ...
         {/* Values */}
         <section className="bg-[#0a1e42] py-16 text-white">
           <div className="container mx-auto px-4">
@@ -288,13 +278,13 @@ export default function AboutPage() {
                   <Button className="bg-[#0a1e42] hover:bg-[#263e69]">
                     <a href="/contact">Contact Us</a>
                   </Button>
-                  <Button variant="outline" className="border-[#0a1e42] text-[#0a1e42] hover:bg-[#0a1e42] hover:text-white"></Button>
+                  <Button variant="outline" className="border-[#0a1e42] text-[#0a1e42] hover:bg-[#0a1e42] hover:text-white">
                     View Careers
                   </Button>
                 </div>
               </div>
             </div>
-          </div>
+            </div>
         </section>
       </main>
     </div>
