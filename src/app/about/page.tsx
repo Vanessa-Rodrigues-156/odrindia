@@ -80,13 +80,13 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Our Story */}
+         {/* Our Story */}
         <section className="bg-gray-50 py-16">
           <div className="container mx-auto px-4">
             <div className="mb-12 text-center">
               <h2 className="mb-2 text-3xl font-bold tracking-tight text-[#0a1e42] md:text-4xl">Our Story</h2>
               <p className="mx-auto max-w-[700px] text-gray-600">
-                The journey of ODR from concept to reality
+                ODR Lab was born from a shared vision among industry experts, passionate students, and forward-thinking academicians. It serves as a dynamic platform that bridges the gap between academia and industry, empowering innovators to connect with a global community around the design and development of Online Dispute Resolution (ODR) systems. Fueled by the eagerness of students to work on real-world challenges, the pressing societal need for more efficient justice mechanisms, and the collaborative spirit of global idea exchange, ODR Lab stands as a hub for innovation, dialogue, and impactful solutions.
               </p>
             </div>
 
@@ -99,40 +99,7 @@ export default function AboutPage() {
                   className="object-cover"
                 />
               </div>
-              <div className="flex flex-col justify-center space-y-6">
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2">
-                    <Clock className="h-5 w-5 text-[#0a1e42]" />
-                    <h3 className="text-xl font-semibold text-[#0a1e42]">Our Beginning</h3>
-                  </div>
-                  <p className="text-gray-600">
-                    Founded in 2018 by a group of legal technologists and ADR experts, ODR began with a simple mission: to bring 
-                    the benefits of technology to dispute resolution in a country facing massive judicial backlogs.
-                  </p>
-                </div>
-
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2">
-                    <Globe className="h-5 w-5 text-[#0a1e42]" />
-                    <h3 className="text-xl font-semibold text-[#0a1e42]">Growth & Impact</h3>
-                  </div>
-                  <p className="text-gray-600">
-                    From handling a few cases monthly to becoming India&apos;s leading ODR provider, we&apos;ve expanded our reach to 20+ 
-                    countries, working with courts, businesses, and individuals to resolve disputes efficiently online.
-                  </p>
-                </div>
-
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2">
-                    <Award className="h-5 w-5 text-[#0a1e42]" />
-                    <h3 className="text-xl font-semibold text-[#0a1e42]">Recognition</h3>
-                  </div>
-                  <p className="text-gray-600">
-                    Our innovative approach has earned recognition from legal institutions worldwide, including awards for 
-                    technological innovation in justice delivery and excellence in online dispute resolution.
-                  </p>
-                </div>
-
+              <div className="flex items-center justify-center">
                 <Button className="w-fit bg-[#0a1e42] hover:bg-[#263e69]">
                   Learn More About Our Journey
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -141,6 +108,7 @@ export default function AboutPage() {
             </div>
           </div>
         </section>
+         
 
         {/* Our Team */}
         <section className="py-16">
