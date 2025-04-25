@@ -283,7 +283,7 @@ export default function AboutPage() {
                   <Button className="bg-[#0a1e42] hover:bg-[#263e69]">
                     <a href="/contact">Contact Us</a>
                   </Button>
-                  <Button variant="outline" className="border-[#0a1e42] text-[#0a1e42] hover:bg-[#0a1e42] hover:text-white">
+                  <Button variant="outline" className="border-[#0a1e42] text-[#0a1e42] hover:bg-[#0a1e42] hover:text-white"></Button>
                     View Careers
                   </Button>
                 </div>
