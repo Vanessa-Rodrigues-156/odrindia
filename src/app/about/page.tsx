@@ -110,43 +110,87 @@ export default function AboutPage() {
         </section>
          
 
-        {/* Our Team */}
+      
+                   {/* Our Team */}
         <section className="py-16">
           <div className="container mx-auto px-4">
             <div className="mb-12 text-center">
-              <h2 className="mb-2 text-3xl font-bold tracking-tight text-[#0a1e42] md:text-4xl">Student Ambassadors</h2>
-              <p className="mx-auto max-w-[700px] text-gray-600">
-                Industry Academia Team 
-              </p>
+              <h2 className="mb-2 text-3xl font-bold tracking-tight text-[#0a1e42] md:text-4xl">Industry Academia Team</h2>
             </div>
-            <div>
-            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4 justify-center mx-auto">
-              {[1, 2].map((i) => (
-                <Card key={i} className="overflow-hidden border-none shadow-md max-w-xs">
+
+            {/* Industry Mentors */}
+            <div className="mb-16">
+              <h3 className="text-2xl font-bold text-[#0a1e42] text-center mb-8">Industry Mentors</h3>
+              <div className="grid gap-8 justify-center">
+                <Card className="overflow-hidden border-none shadow-md max-w-md mx-auto">
                   <div className="relative h-64 w-full">
                     <Image 
-                      src={`/placeholder.svg?height=300&width=300&text=Team Member ${i}`} 
-                      alt={`Team Member ${i}`} 
+                      src="/placeholder.svg?height=300&width=300&text=Chittu"
+                      alt="Chittu Nagrajan" 
                       fill 
                       className="object-cover"
                     />
                   </div>
                   <CardHeader className="bg-white pb-2">
-                    <CardTitle className="text-[#0a1e42]">Team Member {i}</CardTitle>
-                    <CardDescription>Position/Title</CardDescription>
+                    <CardTitle className="text-[#0a1e42]">Chittu Nagrajan</CardTitle>
+                    <CardDescription>Industry Mentor</CardDescription>
                   </CardHeader>
                   <CardContent className="bg-white">
                     <p className="text-gray-600">
-                      Brief description about this team member&apos;s expertise and contribution to ODR India.
+                      Guiding the development of innovative ODR solutions and sharing industry expertise.
                     </p>
                   </CardContent>
                 </Card>
-              ))}
+              </div>
             </div>
+
+            {/* Student Ambassadors */}
+            <div>
+              <h3 className="text-2xl font-bold text-[#0a1e42] text-center mb-8">Student Ambassadors</h3>
+              <div className="grid gap-8 sm:grid-cols-2 justify-center mx-auto">
+                <Card className="overflow-hidden border-none shadow-md max-w-xs">
+                  <div className="relative h-64 w-full">
+                    <Image 
+                      src="/placeholder.svg?height=300&width=300&text=Vanessa"
+                      alt="Vanessa Rodrigues" 
+                      fill 
+                      className="object-cover"
+                    />
+                  </div>
+                  <CardHeader className="bg-white pb-2">
+                    <CardTitle className="text-[#0a1e42]">Vanessa Rodrigues</CardTitle>
+                    <CardDescription>Student Ambassador</CardDescription>
+                  </CardHeader>
+                  <CardContent className="bg-white">
+                    <p className="text-gray-600">
+                      Contributing to the development and innovation of ODR solutions.
+                    </p>
+                  </CardContent>
+                </Card>
+
+                <Card className="overflow-hidden border-none shadow-md max-w-xs">
+                  <div className="relative h-64 w-full">
+                    <Image 
+                      src="/placeholder.svg?height=300&width=300&text=Anjali"
+                      alt="Anjali Singh" 
+                      fill 
+                      className="object-cover"
+                    />
+                  </div>
+                  <CardHeader className="bg-white pb-2">
+                    <CardTitle className="text-[#0a1e42]">Anjali Singh</CardTitle>
+                    <CardDescription>Student Ambassador</CardDescription>
+                  </CardHeader>
+                  <CardContent className="bg-white">
+                    <p className="text-gray-600">
+                      Contributing to the development and innovation of ODR solutions.
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
           </div>
         </section>
-
         {/* Values */}
         <section className="bg-[#0a1e42] py-16 text-white">
           <div className="container mx-auto px-4">
