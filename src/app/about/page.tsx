@@ -111,7 +111,9 @@ export default function AboutPage() {
          
 
       
-                   {/* Our Team */}
+
+        // ... existing code ...
+        {/* Our Team */}
         <section className="py-16">
           <div className="container mx-auto px-4">
             <div className="mb-12 text-center">
@@ -120,15 +122,16 @@ export default function AboutPage() {
 
             {/* Industry Mentors */}
             <div className="mb-16">
-              <h3 className="text-2xl font-bold text-[#0a1e42] text-center mb-8">Industry Mentors</h3>
-              <div className="grid gap-8 justify-center">
-                <Card className="overflow-hidden border-none shadow-md max-w-md mx-auto">
+              <h3 className="text-2xl font-bold text-[#0a1e42] text-center mb-8">Industry & Academic Mentors</h3>
+              <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 justify-center">
+                <Card className="overflow-hidden border-none shadow-md max-w-xs mx-auto">
                   <div className="relative h-64 w-full">
                     <Image 
-                      src="/placeholder.svg?height=300&width=300&text=Chittu"
+                      src="/chittu.jpg"
                       alt="Chittu Nagrajan" 
                       fill 
                       className="object-cover"
+                      priority
                     />
                   </div>
                   <CardHeader className="bg-white pb-2">
@@ -141,6 +144,48 @@ export default function AboutPage() {
                     </p>
                   </CardContent>
                 </Card>
+
+                <Card className="overflow-hidden border-none shadow-md max-w-xs mx-auto">
+                  <div className="relative h-64 w-full">
+                    <Image 
+                      src="/suman.jpg"
+                      alt="Dr Suman Kalani" 
+                      fill 
+                      className="object-cover"
+                      priority
+                    />
+                  </div>
+                  <CardHeader className="bg-white pb-2">
+                    <CardTitle className="text-[#0a1e42]">Dr Suman Kalani</CardTitle>
+                    <CardDescription>Academic Mentor</CardDescription>
+                  </CardHeader>
+                  <CardContent className="bg-white">
+                    <p className="text-gray-600">
+                      Providing academic guidance and research expertise in ODR development.
+                    </p>
+                  </CardContent>
+                </Card>
+
+                <Card className="overflow-hidden border-none shadow-md max-w-xs mx-auto">
+                  <div className="relative h-64 w-full">
+                    <Image 
+                      src="/aastha.jpg"
+                      alt="Assistant Professor Aastha Bhatia" 
+                      fill 
+                      className="object-cover"
+                      priority
+                    />
+                  </div>
+                  <CardHeader className="bg-white pb-2">
+                    <CardTitle className="text-[#0a1e42]">Assistant Professor Aastha Bhatia</CardTitle>
+                    <CardDescription>Academic Mentor</CardDescription>
+                  </CardHeader>
+                  <CardContent className="bg-white">
+                    <p className="text-gray-600">
+                      Contributing expertise in legal technology and ODR research.
+                    </p>
+                  </CardContent>
+                </Card>
               </div>
             </div>
 
@@ -148,13 +193,14 @@ export default function AboutPage() {
             <div>
               <h3 className="text-2xl font-bold text-[#0a1e42] text-center mb-8">Student Ambassadors</h3>
               <div className="grid gap-8 sm:grid-cols-2 justify-center mx-auto">
-                <Card className="overflow-hidden border-none shadow-md max-w-xs">
+                <Card className="overflow-hidden border-none shadow-md max-w-xs mx-auto">
                   <div className="relative h-64 w-full">
                     <Image 
-                      src="/placeholder.svg?height=300&width=300&text=Vanessa"
+                      src="/vanessa.jpg"
                       alt="Vanessa Rodrigues" 
                       fill 
                       className="object-cover"
+                      priority
                     />
                   </div>
                   <CardHeader className="bg-white pb-2">
@@ -168,13 +214,14 @@ export default function AboutPage() {
                   </CardContent>
                 </Card>
 
-                <Card className="overflow-hidden border-none shadow-md max-w-xs">
+                <Card className="overflow-hidden border-none shadow-md max-w-xs mx-auto">
                   <div className="relative h-64 w-full">
                     <Image 
-                      src="/placeholder.svg?height=300&width=300&text=Anjali"
+                      src="/anjali.jpg"
                       alt="Anjali Singh" 
                       fill 
                       className="object-cover"
+                      priority
                     />
                   </div>
                   <CardHeader className="bg-white pb-2">
@@ -191,6 +238,7 @@ export default function AboutPage() {
             </div>
           </div>
         </section>
+// ... existing code ...
         {/* Values */}
         <section className="bg-[#0a1e42] py-16 text-white">
           <div className="container mx-auto px-4">
