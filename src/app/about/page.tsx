@@ -5,13 +5,11 @@ import { ArrowRight, Award, Clock, Globe, Target, Users, Zap } from "lucide-reac
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import Navbar from "@/components/navbar"
-import Footer from "@/components/footer"
+
 
 export default function AboutPage() {
   return (
     <div className="flex min-h-screen flex-col">
-      <Navbar />
       <main className="flex-1">
         {/* Hero Section */}
         <section
@@ -235,7 +233,6 @@ export default function AboutPage() {
           </div>
         </section>
       </main>
-      <Footer />
     </div>
   )
 }

@@ -9,8 +9,6 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/components/ui/use-toast"
-import Navbar from "@/components/navbar"
-import Footer from "@/components/footer"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 
 type Attachment = {
@@ -291,7 +289,6 @@ export default function DiscussionClient({ idea, initialComments }: DiscussionCl
 
   return (
     <div className="flex min-h-screen flex-col">
-      <Navbar />
       <main className="flex-1">
         <section className="bg-[#0a1e42] py-8 text-white md:py-12">
           <div className="container mx-auto px-4">
@@ -404,7 +401,7 @@ export default function DiscussionClient({ idea, initialComments }: DiscussionCl
           </div>
         </section>
       </main>
-      <Footer />
+
     </div>
   )
 }

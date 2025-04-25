@@ -36,7 +36,9 @@ const SignUpPage = () => {
             setError('An account with this email already exists');
             return;
         }
-
+        else {
+            
+        }
         // In a real app, you would send this data to your backend API
         // For this demo, we'll just show a success message
         setSuccess('Account created successfully! Redirecting to sign in...');

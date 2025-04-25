@@ -9,8 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import Navbar from "@/components/navbar"
-import Footer from "@/components/footer"
+
 
 type Attachment = {
   id: string
@@ -59,7 +58,6 @@ export default function OdrLabsClient({ initialIdeas }: OdrLabsClientProps) {
   
   return (
     <div className="flex min-h-screen flex-col">
-      <Navbar />
       <main className="flex-1">
         <section className="bg-[#0a1e42] py-12 text-white md:py-16">
           <div className="container mx-auto px-4">
@@ -180,7 +178,6 @@ export default function OdrLabsClient({ initialIdeas }: OdrLabsClientProps) {
           </div>
         </section>
       </main>
-      <Footer />
     </div>
   )
 }

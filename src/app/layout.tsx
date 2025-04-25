@@ -3,7 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ToastProvider } from '@/components/ui/use-toast'
 import Chatbot from "@/components/Chatbot";
-
+import Navbar from "@/components/navbar";
+import Footer from "@/components/footer";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -30,10 +31,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <Navbar />
         <ToastProvider>
           {children}
-          <Chatbot />
         </ToastProvider>
+        <Footer />
       </body>
     </html>
   );

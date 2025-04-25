@@ -21,8 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import Navbar from "@/components/navbar"
-import Footer from "@/components/footer"
+
 
 export default function ContactPage() {
   const [formStatus, setFormStatus] = useState<"idle" | "submitting" | "submitted">("idle")
@@ -39,7 +38,7 @@ export default function ContactPage() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <Navbar />
+
       <main className="flex-1">
         {/* Hero Section */}
         <section
@@ -309,7 +308,7 @@ export default function ContactPage() {
           </div>
         </section>
       </main>
-      <Footer />
+      
     </div>
   )
 }

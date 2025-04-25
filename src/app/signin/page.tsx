@@ -42,7 +42,7 @@ const SignInPage = () => {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 text-gray-900 p-6">
+        <div className="flex flex-col items-center justify-center min-h-fit bg-gray-100 text-gray-900 p-6">
             <div className="w-full max-w-sm bg-white p-8 rounded-lg shadow-md">
                 <h1 className="text-2xl font-bold mb-6 text-center text-[#0a1e42]">Sign In</h1>
                 
