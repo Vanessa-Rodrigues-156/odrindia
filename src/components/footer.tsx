@@ -86,10 +86,10 @@ export default function Footer() {
                 <MapPin className="mr-2 h-5 w-5 shrink-0 text-sky-400" />
                 <span className="text-gray-300">New:41 Old:44,M.G.Ramachandran Road,Besant Nagar,Chennai-600090. </span>
               </li>
-              <li className="flex items-center">
+              {/* <li className="flex items-center">
                 <Phone className="mr-2 h-5 w-5 shrink-0 text-sky-400" />
                 <span className="text-gray-300">+30 123 456 7890</span>
-              </li>
+              </li> */}
               <li className="flex items-center">
                 <Mail className="mr-2 h-5 w-5 shrink-0 text-sky-400" />
                 <span className="text-gray-300">contact@crekodr.com</span>

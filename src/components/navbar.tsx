@@ -29,6 +29,10 @@ const navItems = [
     ],
   },
   {
+    title: "Chatbot",
+    href: "/chatbot",
+  },
+  {
     title: "Idea Board",
     href: "/submit-idea",
   },
@@ -37,8 +41,8 @@ const navItems = [
     href: "/odrlabs",
   },
   {
-    title: "Chatbot",
-    href: "/chatbot",
+    title: "Reflect Results",
+    href: "/results",
   },
   {
     title: "Contact",

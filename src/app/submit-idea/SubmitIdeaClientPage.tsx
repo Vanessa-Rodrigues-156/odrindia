@@ -7,8 +7,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import Footer from "@/components/footer"
-import Navbar from "@/components/navbar"
 import { useToast } from "@/components/ui/use-toast"
 
 export default function SubmitIdeaClientPage() {
@@ -120,7 +118,6 @@ export default function SubmitIdeaClientPage() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <Navbar />
       <main className="flex-1">
         <section className="bg-[#0a1e42] py-12 text-white md:py-16">
           <div className="container mx-auto px-4">
@@ -354,7 +351,6 @@ export default function SubmitIdeaClientPage() {
           </div>
         </section>
       </main>
-      <Footer />
     </div>
   )
 }

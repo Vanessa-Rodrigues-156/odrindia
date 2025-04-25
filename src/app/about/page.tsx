@@ -111,13 +111,9 @@ export default function AboutPage() {
                  {/* Our Team */}
         <section className="py-16">
           <div className="container mx-auto px-4">
-            <div className="mb-12 text-center">
-              <h2 className="mb-2 text-3xl font-bold tracking-tight text-[#0a1e42] md:text-4xl">Industry Academia Team</h2>
-            </div>
-
             {/* Industry & Academic Mentors */}
             <div className="mb-16">
-              <h3 className="text-2xl font-bold text-[#0a1e42] text-center mb-8">Industry & Academic Mentors</h3>
+              <h3 className="text-3xl font-bold text-[#0a1e42] text-center mb-8">Industry Academia Mentors</h3>
               <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 justify-center">
                 <Card className="overflow-hidden border-none shadow-md max-w-xs mx-auto">
                   <div className="relative h-64 w-full">
@@ -131,7 +127,7 @@ export default function AboutPage() {
                   </div>
                   <CardHeader className="bg-white pb-2">
                     <CardTitle className="text-[#0a1e42]">Chittu Nagrajan</CardTitle>
-                    <CardDescription>Industry Mentor</CardDescription>
+                    <CardDescription>Founder CREK ODR</CardDescription>
                   </CardHeader>
                   <CardContent className="bg-white">
                     <p className="text-gray-600">
@@ -151,8 +147,8 @@ export default function AboutPage() {
                     />
                     </div>
                   <CardHeader className="bg-white pb-2">
-                    <CardTitle className="text-[#0a1e42]">Dr Suman Kalani</CardTitle>
-                    <CardDescription>Academic Mentor</CardDescription>
+                    <CardTitle className="text-[#0a1e42]">Dr. Suman Kalani</CardTitle>
+                    <CardDescription>Associate Professor,SVKM's Pravin Gandhi College of Law</CardDescription>
                   </CardHeader>
                   <CardContent className="bg-white">
                     <p className="text-gray-600">
@@ -172,12 +168,12 @@ export default function AboutPage() {
                     />
                   </div>
                   <CardHeader className="bg-white pb-2">
-                    <CardTitle className="text-[#0a1e42]">Assistant Professor Aastha Bhatia</CardTitle>
-                    <CardDescription>Academic Mentor</CardDescription>
+                    <CardTitle className="text-[#0a1e42]">Aastha Bhatia</CardTitle>
+                    <CardDescription>Assistant Professor, Communication Skills, Fr. Conceicao Rodrigues College of Engineering</CardDescription>
                   </CardHeader>
                   <CardContent className="bg-white">
                     <p className="text-gray-600">
-                      Contributing expertise in legal technology and ODR research.
+                      Communication Skills expert and Soft Skills Enthusiast.
                     </p>
                   </CardContent>
                 </Card>
@@ -186,7 +182,7 @@ export default function AboutPage() {
 
             {/* Student Ambassadors */}
             <div>
-              <h3 className="text-2xl font-bold text-[#0a1e42] text-center mb-8">Student Ambassadors</h3>
+              <h3 className="text-3xl font-bold text-[#0a1e42] text-center mb-8">Student Ambassadors</h3>
               <div className="grid gap-8 sm:grid-cols-2 justify-center mx-auto">
                 <Card className="overflow-hidden border-none shadow-md max-w-xs mx-auto">
                   <div className="relative h-64 w-full">
@@ -221,7 +217,7 @@ export default function AboutPage() {
                   </div>
                   <CardHeader className="bg-white pb-2">
                     <CardTitle className="text-[#0a1e42]">Anjali Singh</CardTitle>
-                    <CardDescription>Student Ambassador</CardDescription>
+                    <CardDescription>Masters Student, University of Dublin</CardDescription>
                   </CardHeader>
                   <CardContent className="bg-white">
                     <p className="text-gray-600">
@@ -237,10 +233,7 @@ export default function AboutPage() {
         <section className="bg-[#0a1e42] py-16 text-white">
           <div className="container mx-auto px-4">
             <div className="mb-12 text-center">
-              <h2 className="mb-2 text-3xl font-bold md:text-4xl">Our Core Values</h2>
-              <p className="mx-auto max-w-[700px] text-gray-200">
-                Core Values of Dispute Designs Systems 
-              </p>
+              <h2 className="mb-2 text-3xl font-bold md:text-4xl">Core Values of Dispute Design Systems </h2>
             </div>
 
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
