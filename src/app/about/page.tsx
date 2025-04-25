@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { ArrowRight, Award, Clock, Globe, Target, Users, Zap } from "lucide-react"
+import { Award, Clock, Globe, Target, Users, Zap } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -148,7 +148,7 @@ export default function AboutPage() {
                     </div>
                   <CardHeader className="bg-white pb-2">
                     <CardTitle className="text-[#0a1e42]">Dr. Suman Kalani</CardTitle>
-                    <CardDescription>Associate Professor,SVKM's Pravin Gandhi College of Law</CardDescription>
+                    <CardDescription>Associate Professor,SVKM&apos;s Pravin Gandhi College of Law</CardDescription>
                   </CardHeader>
                   <CardContent className="bg-white">
                     <p className="text-gray-600">
@@ -173,7 +173,7 @@ export default function AboutPage() {
                   </CardHeader>
                   <CardContent className="bg-white">
                     <p className="text-gray-600">
-                      Communication Skills expert and Soft Skills Enthusiast.
+                      Contributing as a Communication Skills expert and Soft Skills Enthusiast.
                     </p>
                   </CardContent>
                 </Card>
