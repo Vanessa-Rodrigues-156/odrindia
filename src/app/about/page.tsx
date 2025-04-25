@@ -122,7 +122,7 @@ export default function AboutPage() {
                 <Card className="overflow-hidden border-none shadow-md max-w-xs mx-auto">
                   <div className="relative h-64 w-full">
                     <Image 
-                      src="/chittu.jpg"
+                      src="/chittu.jpeg"
                       alt="Chittu Nagrajan" 
                       fill 
                       className="object-cover"
