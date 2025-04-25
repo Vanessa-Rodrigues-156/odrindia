@@ -120,7 +120,7 @@ export default function AboutPage() {
               <h2 className="mb-2 text-3xl font-bold tracking-tight text-[#0a1e42] md:text-4xl">Industry Academia Team</h2>
             </div>
 
-            {/* Industry Mentors */}
+   {/* Industry Mentors */}
             <div className="mb-16">
               <h3 className="text-2xl font-bold text-[#0a1e42] text-center mb-8">Industry & Academic Mentors</h3>
               <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 justify-center">
@@ -188,8 +188,7 @@ export default function AboutPage() {
                 </Card>
               </div>
             </div>
-
-            {/* Student Ambassadors */}
+   {/* Student Ambassadors */}
             <div>
               <h3 className="text-2xl font-bold text-[#0a1e42] text-center mb-8">Student Ambassadors</h3>
               <div className="grid gap-8 sm:grid-cols-2 justify-center mx-auto">
