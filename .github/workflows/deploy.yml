@@ -1,29 +1,46 @@
-name: Deploy ODR India App
+name: Deploy to EC2
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main  # or whichever branch you deploy from
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Set up SSH
+      - name: Setup SSH Key
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.EC2_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
+          echo "${{ secrets.EC2_KEY }}" > key.pem
+          chmod 400 key.pem
 
-      - name: Deploy to EC2
+      - name: Deploy via SSH
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+          ssh -i key.pem -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
             cd ~/odrindia
+
+            # Reset local changes just in case
+            git reset --hard
+
+            # Pull the latest code
             git pull origin main
+
+            # Install dependencies
             npm install
+
+            # Build the Next.js app
             npm run build
-            pm2 restart odrindia
+
+            # Restart PM2 process (or start if not running)
+            pm2 describe odrindia > /dev/null
+            if [ $? -eq 0 ]; then
+              pm2 restart odrindia
+            else
+              pm2 start npm --name odrindia -- start
+              pm2 save
+            fi
           EOF
