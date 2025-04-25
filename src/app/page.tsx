@@ -55,6 +55,52 @@ export default function Home() {
           </div>
         </section>
 
+        <div className="mt-12 rounded-lg bg-gray-50 p-6 ">
+                <h3 className="mb-4 text-xl font-bold text-[#0a1e42]">How to use ODR LAB?</h3>
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#0a1e42] text-white">
+                      <span className="text-sm">1</span>
+                    </div>
+                    <p className="text-gray-700">
+                      Sign to idea board.
+                    </p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#0a1e42] text-white">
+                      <span className="text-sm">2</span>
+                    </div>
+                    <p className="text-gray-700">
+                      Join the ODR lab.
+                    </p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#0a1e42] text-white">
+                      <span className="text-sm">3</span>
+                    </div>
+                    <p className="text-gray-700">
+                     Deliberate and Discuss.
+                    </p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#0a1e42] text-white">
+                      <span className="text-sm">4</span>
+                    </div>
+                    <p className="text-gray-700">
+                    Connect with mentors and Use the Chatbot it Requires  
+                    </p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#0a1e42] text-white">
+                      <span className="text-sm">5</span>
+                    </div>
+                    <p className="text-gray-700">
+                     Reflect results.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
         {/* Services Section */}
         <section className="py-16">
           <div className="container mx-auto px-4">

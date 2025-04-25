@@ -90,7 +90,7 @@ export default function AboutPage() {
               </p>
             </div>
 
-            <div className="grid gap-8 md:grid-cols-2">
+            {/* <div className="grid gap-8 md:grid-cols-2">
               <div className="relative aspect-square overflow-hidden rounded-lg shadow-xl">
                 <Image
                   src="/placeholder.svg?height=500&width=500"
@@ -105,7 +105,7 @@ export default function AboutPage() {
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </div>
-            </div>
+            </div> */}
           </div>
         </section>
                  {/* Our Team */}
@@ -141,15 +141,15 @@ export default function AboutPage() {
                 </Card>
 
                 <Card className="overflow-hidden border-none shadow-md max-w-xs mx-auto">
-                  <div className="relative h-64 w-full">
+                    <div className="relative h-64 w-full">
                     <Image 
-                      src="/suman.jpg"
+                      src="/suman.JPG"
                       alt="Dr Suman Kalani" 
                       fill 
-                      className="object-cover"
+                      className="object-contain"
                       priority
                     />
-                  </div>
+                    </div>
                   <CardHeader className="bg-white pb-2">
                     <CardTitle className="text-[#0a1e42]">Dr Suman Kalani</CardTitle>
                     <CardDescription>Academic Mentor</CardDescription>
