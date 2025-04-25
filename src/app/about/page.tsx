@@ -197,7 +197,7 @@ export default function AboutPage() {
             <div className="mb-12 text-center">
               <h2 className="mb-2 text-3xl font-bold md:text-4xl">Our Core Values</h2>
               <p className="mx-auto max-w-[700px] text-gray-200">
-                The principles that guide our work and relationships
+                Core Values of Dispute Designs Systems 
               </p>
             </div>
 
