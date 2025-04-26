@@ -196,7 +196,7 @@ export default function AboutPage() {
                   </div>
                   <CardHeader className="bg-white pb-2">
                     <CardTitle className="text-[#0a1e42]">Vanessa Rodrigues</CardTitle>
-                    <CardDescription>Second Year  Engineering Student,Fr. Conceicao Rodrigues College of Engineering</CardDescription>
+                    <CardDescription>Second Year Computer Engineering Student,Fr. Conceicao Rodrigues College of Engineering</CardDescription>
                   </CardHeader>
                   <CardContent className="bg-white">
                     <p className="text-gray-600">
