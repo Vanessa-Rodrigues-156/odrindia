@@ -196,7 +196,7 @@ export default function AboutPage() {
                   </div>
                   <CardHeader className="bg-white pb-2">
                     <CardTitle className="text-[#0a1e42]">Vanessa Rodrigues</CardTitle>
-                    <CardDescription>Second Year Computer Engineering Student,Fr. Conceicao Rodrigues College of Engineering</CardDescription>
+                    <CardDescription>Second Year  Engineering Student,Fr. Conceicao Rodrigues College of Engineering</CardDescription>
                   </CardHeader>
                   <CardContent className="bg-white">
                     <p className="text-gray-600">
@@ -217,7 +217,7 @@ export default function AboutPage() {
                   </div>
                   <CardHeader className="bg-white pb-2">
                     <CardTitle className="text-[#0a1e42]">Anjali Singh</CardTitle>
-                    <CardDescription>Masters Student, University College of Dublin</CardDescription>
+                    <CardDescription> Bachelor of Science in Information Technology Student, SVKM's Usha Pravin Gandhi College </CardDescription>
                   </CardHeader>
                   <CardContent className="bg-white">
                     <p className="text-gray-600">
