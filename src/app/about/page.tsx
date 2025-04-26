@@ -217,7 +217,7 @@ export default function AboutPage() {
                   </div>
                   <CardHeader className="bg-white pb-2">
                     <CardTitle className="text-[#0a1e42]">Anjali Singh</CardTitle>
-                    <CardDescription> Bachelor of Science in Information Technology Student, SVKM's Usha Pravin Gandhi College </CardDescription>
+                    <CardDescription> Bachelor of Science in Information Technology Student, SVKM&apos;s Usha Pravin Gandhi College </CardDescription>
                   </CardHeader>
                   <CardContent className="bg-white">
                     <p className="text-gray-600">
