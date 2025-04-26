@@ -1,10 +1,11 @@
 "use client"
 import "./globals.css"
 import Image from "next/image"
-import { ArrowRight, Award, BarChart, Globe, MessageSquare, Scale } from "lucide-react"
-
+import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import HowToCard from "@/components/howtocard"
+import { LetsCollaborate } from "@/components/letscolaborate"
 
 
 export default function Home() {
@@ -40,275 +41,14 @@ export default function Home() {
               </Button>
             </div>
             </div>
-              {/* <div className="flex items-center justify-center">
-            <div className="relative h-[300px] w-full max-w-[500px] overflow-hidden rounded-lg shadow-xl md:h-[400px]">
-              <Image
-                src="/hero.jpg"
-                alt="ODR Platform"
-                fill
-                className="object-cover"
-                priority
-              />
-            </div>
-              </div> */}
             </div>
           </div>
         </section>
+        {/* How It Works Section */}
+        <HowToCard/>
 
-        <div className="mt-12 rounded-lg bg-gray-50 p-6 ">
-                <h3 className="mb-4 text-xl font-bold text-[#0a1e42]">How to use ODR LAB?</h3>
-                <div className="space-y-4">
-                  <div className="flex items-start gap-3">
-                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#0a1e42] text-white">
-                      <span className="text-sm">1</span>
-                    </div>
-                    <p className="text-gray-700">
-                      Sign to idea board.
-                    </p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#0a1e42] text-white">
-                      <span className="text-sm">2</span>
-                    </div>
-                    <p className="text-gray-700">
-                      Join the ODR lab.
-                    </p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#0a1e42] text-white">
-                      <span className="text-sm">3</span>
-                    </div>
-                    <p className="text-gray-700">
-                     Deliberate and Discuss.
-                    </p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#0a1e42] text-white">
-                      <span className="text-sm">4</span>
-                    </div>
-                    <p className="text-gray-700">
-                    Connect with mentors and Use the Chatbot it Requires  
-                    </p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#0a1e42] text-white">
-                      <span className="text-sm">5</span>
-                    </div>
-                    <p className="text-gray-700">
-                     Reflect results.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-        {/* Services Section */}
-        <section className="py-16">
-          <div className="container mx-auto px-4">
-            <div className="mb-12 text-center">
-              <h2 className="mb-2 text-3xl font-bold tracking-tight text-[#0a1e42] md:text-4xl">LET&apos;S COLLABORATE FOR</h2>
-              <p className="mx-auto max-w-[700px] text-gray-600">
-                Innovative solutions advancing the future of dispute resolution
-              </p>
-            </div>
-
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              <Card className="border-2 border-transparent transition-all hover:border-[#0a1e42]/10 hover:shadow-lg">
-                <CardHeader className="pb-2">
-                  <div className="mb-2 rounded-full bg-[#0a1e42]/10 p-2 w-fit">
-                    <MessageSquare className="h-6 w-6 text-[#0a1e42]" />
-                  </div>
-                  <CardTitle className="text-[#0a1e42]">Designing Dispute Resolution Systems</CardTitle>
-                  <CardDescription>Custom solutions for complex dispute scenarios</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600">
-                    We create comprehensive dispute resolution systems tailored to specific industries, combining technology and human expertise.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="border-2 border-transparent transition-all hover:border-[#0a1e42]/10 hover:shadow-lg">
-                <CardHeader className="pb-2">
-                  <div className="mb-2 rounded-full bg-[#0a1e42]/10 p-2 w-fit">
-                    <Globe className="h-6 w-6 text-[#0a1e42]" />
-                  </div>
-                  <CardTitle className="text-[#0a1e42]">Predictive Justice Technologies</CardTitle>
-                  <CardDescription>AI-powered solutions for better outcomes</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600">
-                    Our advanced algorithms analyze case patterns to predict outcomes and suggest fair resolutions based on historical data.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="border-2 border-transparent transition-all hover:border-[#0a1e42]/10 hover:shadow-lg">
-                <CardHeader className="pb-2">
-                  <div className="mb-2 rounded-full bg-[#0a1e42]/10 p-2 w-fit">
-                    <Scale className="h-6 w-6 text-[#0a1e42]" />
-                  </div>
-                  <CardTitle className="text-[#0a1e42]">Legal Tech Solutions for Court Integration</CardTitle>
-                  <CardDescription>Bridging traditional and digital justice</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600">
-                    We develop seamless interfaces between conventional court systems and modern ODR platforms to enhance judicial efficiency.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="border-2 border-transparent transition-all hover:border-[#0a1e42]/10 hover:shadow-lg">
-                <CardHeader className="pb-2">
-                  <div className="mb-2 rounded-full bg-[#0a1e42]/10 p-2 w-fit">
-                    <BarChart className="h-6 w-6 text-[#0a1e42]" />
-                  </div>
-                  <CardTitle className="text-[#0a1e42]">Developing Automated Mediation Platforms</CardTitle>
-                  <CardDescription>AI-assisted conflict resolution</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600">
-                    Our intelligent platforms guide parties through structured mediation processes with automated suggestions and assistance.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="border-2 border-transparent transition-all hover:border-[#0a1e42]/10 hover:shadow-lg">
-                <CardHeader className="pb-2">
-                  <div className="mb-2 rounded-full bg-[#0a1e42]/10 p-2 w-fit">
-                    <Scale className="h-6 w-6 text-[#0a1e42]" />
-                  </div>
-                  <CardTitle className="text-[#0a1e42]">Designing Case-Specific Online Arbitration Processes</CardTitle>
-                  <CardDescription>Customized digital arbitration solutions</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600">
-                    We create specialized arbitration workflows adapted to specific dispute types, industries, and regulatory requirements.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="border-2 border-transparent transition-all hover:border-[#0a1e42]/10 hover:shadow-lg">
-                <CardHeader className="pb-2">
-                  <div className="mb-2 rounded-full bg-[#0a1e42]/10 p-2 w-fit">
-                    <Award className="h-6 w-6 text-[#0a1e42]" />
-                  </div>
-                  <CardTitle className="text-[#0a1e42]">Creating Personalized Dispute Resolution Pathways</CardTitle>
-                  <CardDescription>Tailored experiences for unique needs</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600">
-                    Our adaptive platforms create custom resolution journeys based on dispute characteristics and party preferences.
-                  </p>
-                </CardContent>
-              </Card>
-              
-              <Card className="border-2 border-transparent transition-all hover:border-[#0a1e42]/10 hover:shadow-lg">
-                <CardHeader className="pb-2">
-                  <div className="mb-2 rounded-full bg-[#0a1e42]/10 p-2 w-fit">
-                    <Globe className="h-6 w-6 text-[#0a1e42]" />
-                  </div>
-                  <CardTitle className="text-[#0a1e42]">Building Multilingual Dispute Resolution Platforms</CardTitle>
-                  <CardDescription>Breaking language barriers in ODR</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600">
-                    We develop inclusive platforms that support multiple languages to facilitate cross-border and cross-cultural dispute resolution.
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </section>
-
-        {/* Video Section
-        <section className="bg-[#0a1e42] py-16 text-white">
-          <div className="container mx-auto px-4">
-            <div className="grid gap-8 md:grid-cols-2">
-              <div className="flex flex-col justify-center space-y-6">
-                <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
-                  See how ODR is transforming dispute resolution
-                </h2>
-                <p className="text-gray-200">
-                  Watch our video to learn how our online dispute resolution services are making justice more
-                  accessible, efficient, and effective.
-                </p>
-                <Button className="w-fit bg-white text-[#0a1e42] hover:bg-gray-100">Watch Video</Button>
-              </div>
-              <div className="relative aspect-video overflow-hidden rounded-lg shadow-xl">
-                <Image
-                  src="/placeholder.svg?height=315&width=560"
-                  alt="ODR Video"
-                  fill
-                  className="object-cover"
-                />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="rounded-full bg-white/90 p-4">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="h-8 w-8 text-[#0a1e42]"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section> */}
-
-        {/* Stats Section */}
-        {/* <section className="py-16">
-          <div className="container mx-auto px-4">
-            <div className="mb-12 text-center">
-              <h2 className="mb-2 text-3xl font-bold tracking-tight text-[#0a1e42] md:text-4xl">
-                ODR in Numbers
-              </h2>
-              <p className="mx-auto max-w-[700px] text-gray-600">
-                Our impact on the world of online dispute resolution
-              </p>
-            </div>
-
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              <div className="rounded-lg bg-white p-6 shadow-md">
-                <p className="mb-2 text-sm font-medium text-gray-500">Monthly Website Visitors</p>
-                <StatsCounter end={6000} prefix="+" className="text-3xl font-bold text-[#0a1e42]" />
-                <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-[#dce5f3]">
-                  <div className="h-full w-[85%] rounded-full bg-[#0a1e42]" />
-                </div>
-              </div>
-
-              <div className="rounded-lg bg-white p-6 shadow-md">
-                <p className="mb-2 text-sm font-medium text-gray-500">e-presence in Countries</p>
-                <StatsCounter end={20} prefix="+" className="text-3xl font-bold text-[#0a1e42]" />
-                <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-[#dce5f3]">
-                  <div className="h-full w-[65%] rounded-full bg-[#0a1e42]" />
-                </div>
-              </div>
-
-              <div className="rounded-lg bg-white p-6 shadow-md">
-                <p className="mb-2 text-sm font-medium text-gray-500">Hours of ODR Experience</p>
-                <StatsCounter end={4500} prefix="+" className="text-3xl font-bold text-[#0a1e42]" />
-                <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-[#dce5f3]">
-                  <div className="h-full w-[75%] rounded-full bg-[#0a1e42]" />
-                </div>
-              </div>
-
-              <div className="rounded-lg bg-white p-6 shadow-md">
-                <p className="mb-2 text-sm font-medium text-gray-500">Connected Businesses & Entities</p>
-                <StatsCounter end={1200} prefix="+" className="text-3xl font-bold text-[#0a1e42]" />
-                <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-[#dce5f3]">
-                  <div className="h-full w-[80%] rounded-full bg-[#0a1e42]" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </section> */}
+        {/* Lets Collaborate for*/}
+        <LetsCollaborate/>
 
         {/* Innovation Section */}
         <section className="bg-gray-50 py-16">
@@ -405,12 +145,6 @@ export default function Home() {
                 </CardContent>
               </Card>
             </div>
-
-            {/* <div className="mt-8 text-center">
-              <Button variant="outline" className="border-[#0a1e42] text-[#0a1e42] hover:bg-[#0a1e42] hover:text-white">
-                View All News
-              </Button>
-            </div> */}
           </div>
         </section>
       </main>
