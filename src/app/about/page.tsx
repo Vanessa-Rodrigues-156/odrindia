@@ -116,12 +116,12 @@ export default function AboutPage() {
               <h3 className="text-3xl font-bold text-[#0a1e42] text-center mb-8">Industry Academia Mentors</h3>
               <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 justify-center">
                 <Card className="overflow-hidden border-none shadow-md max-w-xs mx-auto">
-                  <div className="relative h-72 w-full">
+                  <div className="relative h-80 w-full">
                     <Image 
-                      src="/chittu.jpeg"
+                      src="/chittu.png"
                       alt="Chittu Nagrajan" 
                       fill 
-                      className="object-fit"
+                      className="object-cover object-top"
                       priority
                     />
                   </div>
@@ -137,12 +137,12 @@ export default function AboutPage() {
                 </Card>
 
                 <Card className="overflow-hidden border-none shadow-md max-w-xs mx-auto">
-                    <div className="relative h-72 w-full">
+                    <div className="relative h-80 w-full">
                     <Image 
                       src="/suman.png"
                       alt="Dr Suman Kalani" 
                       fill 
-                      className="object-fit"
+                      className="object-cover object-top"
                       priority
                     />
                     </div>
@@ -158,7 +158,7 @@ export default function AboutPage() {
                 </Card>
 
                 <Card className="overflow-hidden border-none shadow-md max-w-xs mx-auto">
-                  <div className="relative h-72 w-full">
+                  <div className="relative h-80 w-full">
                     <Image 
                       src="/aastha.jpg"
                       alt="Assistant Professor Aastha Bhatia" 
@@ -211,7 +211,7 @@ export default function AboutPage() {
                       src="/anjali.jpg"
                       alt="Anjali Singh" 
                       fill 
-                      className="object-cover"
+                      className="object-cover object-top"
                       priority
                     />
                   </div>
