@@ -47,9 +47,7 @@ export default function AboutPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-gray-600">
-                    To democratize access to justice through innovative online dispute resolution technologies and 
-                    services, making conflict resolution more accessible, efficient, and affordable for all Indians 
-                    regardless of location or economic status.
+                  To democratize access to justice through innovative online dispute resolution technologies and services, making conflict prevention and resolution more accessible, efficient, and affordable for all regardless of location or economic status.
                   </p>
                   <p className="text-gray-600">
                     We strive to reduce the burden on traditional courts while providing high-quality ADR services 
