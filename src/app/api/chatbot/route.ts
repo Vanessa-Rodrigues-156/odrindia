@@ -10,13 +10,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Message is required" }, { status: 400 });
     }
 
-    const client = await Client.connect("AnjaliSingh24/model");
+    // Connect to the Gradio model
+    const client = await Client.connect("hysts/mistral-7b");
+
+    // Call the /chat endpoint with parameters similar to your snippet
     const result = await client.predict("/chat", {
-      message,
-      system_message: "You are a ODR assistant. You help users with their queries related to online dispute resolution.",
-      max_tokens: 50,
-      temperature: 0.7,
-      top_p: 0.9,
+      message: message,
+      param_2: 1024,
+      param_3: 0.6,
+      param_4: 0.9,
+      param_5: 50,
+      param_6: 1.2,
     });
 
     return NextResponse.json({ response: result.data });
