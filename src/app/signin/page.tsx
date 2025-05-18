@@ -7,37 +7,41 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import userData from './data.json';
 
 const SignInPage = () => {
     const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
     const router = useRouter();
 
-    const handleSignIn = (event: React.FormEvent) => {
+    const handleSignIn = async (event: React.FormEvent) => {
         event.preventDefault();
         setError(null);
-        
+        setLoading(true);
+
         const formData = new FormData(event.target as HTMLFormElement);
         const email = formData.get('email') as string;
         const password = formData.get('password') as string;
 
-        // Validate against data.json
-        const user = userData.users.find(
-            (user) => user.email === email && user.password === password
-        );
+        try {
+            const res = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password }),
+            });
 
-        if (user) {
-            // Store user info in localStorage (in a real app, use proper session management)
-            localStorage.setItem('currentUser', JSON.stringify({ email: user.email }));
-            router.push('/dashboard'); // Redirect to dashboard or home page
-        } else {
-            // Check if email exists to provide better error message
-            const emailExists = userData.users.some((user) => user.email === email);
-            if (emailExists) {
-                setError('Invalid password. Please try again.');
+            const data = await res.json();
+
+            if (res.ok) {
+                // Store user info in localStorage (for demo; use proper session in production)
+                localStorage.setItem('currentUser', JSON.stringify(data.user));
+                router.push('/dashboard');
             } else {
-                setError('Account not found. Please sign up first.');
+                setError(data.error || 'Login failed');
             }
+        } catch (err) {
+            setError('Something went wrong. Please try again.');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -61,8 +65,8 @@ const SignInPage = () => {
                         <Label htmlFor="password">Password</Label>
                         <Input id="password" name="password" type="password" placeholder="Enter your password" required />
                     </div>
-                    <Button type="submit" className="w-full bg-[#0a1e42] hover:bg-[#162d5a]">
-                        Sign In
+                    <Button type="submit" className="w-full bg-[#0a1e42] hover:bg-[#162d5a]" disabled={loading}>
+                        {loading ? 'Signing In...' : 'Sign In'}
                     </Button>
                 </form>
                 

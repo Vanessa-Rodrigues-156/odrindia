@@ -8,8 +8,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model playing_with_neon {
-  id    Int    @id @default(autoincrement())
-  name  String
-  value Float? @db.Real
+enum Role {
+  USER
+  MENTOR
+  ADMIN
 }
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+}
+
+

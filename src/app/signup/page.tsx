@@ -7,46 +7,53 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import userData from '../signin/data.json';
 
 const SignUpPage = () => {
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
     const router = useRouter();
 
-    const handleSignUp = (event: React.FormEvent) => {
+    const handleSignUp = async (event: React.FormEvent) => {
         event.preventDefault();
         setError(null);
         setSuccess(null);
-        
+        setLoading(true);
+
         const formData = new FormData(event.target as HTMLFormElement);
+        const name = formData.get('name') as string;
         const email = formData.get('email') as string;
         const password = formData.get('password') as string;
         const confirmPassword = formData.get('confirmPassword') as string;
 
-        // Basic validation
         if (password !== confirmPassword) {
             setError("Passwords don't match");
+            setLoading(false);
             return;
         }
 
-        // Check if email already exists
-        const emailExists = userData.users.some((user) => user.email === email);
-        if (emailExists) {
-            setError('An account with this email already exists');
-            return;
+        try {
+            const res = await fetch('/api/auth/signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, password }),
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                setSuccess('Account created successfully! Redirecting to sign in...');
+                setTimeout(() => {
+                    router.push('/signin');
+                }, 2000);
+            } else {
+                setError(data.error || 'Signup failed');
+            }
+        } catch (err) {
+            setError('Something went wrong. Please try again.');
+        } finally {
+            setLoading(false);
         }
-        else {
-            
-        }
-        // In a real app, you would send this data to your backend API
-        // For this demo, we'll just show a success message
-        setSuccess('Account created successfully! Redirecting to sign in...');
-        
-        // Simulate account creation and redirect
-        setTimeout(() => {
-            router.push('/signin');
-        }, 2000);
     };
 
     return (
@@ -96,8 +103,8 @@ const SignUpPage = () => {
                             required
                         />
                     </div>
-                    <Button type="submit" className="w-full bg-[#0a1e42] hover:bg-[#162d5a]">
-                        Sign Up
+                    <Button type="submit" className="w-full bg-[#0a1e42] hover:bg-[#162d5a]" disabled={loading}>
+                        {loading ? 'Signing Up...' : 'Sign Up'}
                     </Button>
                 </form>
                 

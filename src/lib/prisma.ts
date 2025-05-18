@@ -1,29 +1,36 @@
-// import { PrismaClient } from "@prisma/client"
-
-// const globalForPrisma = global as unknown as { prisma: PrismaClient }
-
-// export const prisma =
-//   globalForPrisma.prisma ||
-//   new PrismaClient({
-//     log: ["query"],
-//   })
-
-// if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma
-import 'dotenv/config';
 import { PrismaClient } from '@prisma/client';
 import { PrismaNeon } from '@prisma/adapter-neon';
 import { neonConfig } from '@neondatabase/serverless';
 import ws from 'ws';
-neonConfig.webSocketConstructor = ws;
-// To work in edge environments (Cloudflare Workers, Vercel Edge, etc.), enable querying over fetch
-// neonConfig.poolQueryViaFetch = true
-// Type definitions
-// declare global {
-//   var prisma: PrismaClient | undefined
-// }
-const connectionString = `${process.env.DATABASE_URL}`;
-const adapter = new PrismaNeon({ connectionString });
-const prisma = global.prisma || new PrismaClient({ adapter });
 
-if (process.env.NODE_ENV === 'development') global.prisma = prisma;
+// Configure Neon to use ws for WebSocket connections
+neonConfig.webSocketConstructor = ws;
+
+// Ensure DATABASE_URL is defined
+const connectionString = process.env.DATABASE_URL as string;
+if (!connectionString) {
+    throw new Error('DATABASE_URL environment variable is not set');
+}
+
+// Create Neon adapter
+const adapter = new PrismaNeon({ connectionString });
+
+// Augment global type for TypeScript
+declare global {
+    // eslint-disable-next-line no-var
+    var prisma: PrismaClient | undefined;
+}
+
+// Use a singleton pattern for PrismaClient
+export const prisma =
+    global.prisma ||
+    new PrismaClient({
+        adapter,
+    });
+
+if (process.env.NODE_ENV !== 'development') {
+    // Prevents the Prisma Client from being instantiated multiple times in development
+    global.prisma = prisma;
+}
+
 export default prisma;
