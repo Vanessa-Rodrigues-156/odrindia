@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/components/ui/use-toast"
+import { ideaSubmissionSchema } from "./ideaSchema";
 
 export default function SubmitIdeaClientPage() {
   const { toast } = useToast();
@@ -18,10 +19,15 @@ export default function SubmitIdeaClientPage() {
     name: '',
     email: '',
     phone: '',
-    country: '',
+    address: '',
+    role: '',
+    course: '',
+    institution: '',
+    idea_caption: '',
     description: '',
     consent: false
   });
+  const [formErrors, setFormErrors] = useState<Record<string, string[]>>({});
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -54,7 +60,21 @@ export default function SubmitIdeaClientPage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
+    // Client-side Zod validation
+    const parsed = ideaSubmissionSchema.safeParse(formData);
+    if (!parsed.success) {
+      setFormErrors(parsed.error.flatten().fieldErrors);
+      toast({
+        title: "Validation Error",
+        description: "Please correct the highlighted fields.",
+        variant: "destructive"
+      });
+      return;
+    } else {
+      setFormErrors({});
+    }
+
     if (!formData.consent) {
       toast({
         title: "Consent required",
@@ -63,7 +83,7 @@ export default function SubmitIdeaClientPage() {
       });
       return;
     }
-    
+
     setIsSubmitting(true);
     
     try {
@@ -98,7 +118,11 @@ export default function SubmitIdeaClientPage() {
         name: '',
         email: '',
         phone: '',
-        country: '',
+        address: '',
+        role: '',
+        course: '',
+        institution: '',
+        idea_caption: '',
         description: '',
         consent: false
       });
@@ -160,6 +184,9 @@ export default function SubmitIdeaClientPage() {
                           placeholder="Enter your full name" 
                           required 
                         />
+                        {formErrors.name && (
+                          <p className="text-xs text-red-600">{formErrors.name[0]}</p>
+                        )}
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="email">Email Address</Label>
@@ -172,65 +199,118 @@ export default function SubmitIdeaClientPage() {
                           placeholder="Enter your email address" 
                           required 
                         />
+                        {formErrors.email && (
+                          <p className="text-xs text-red-600">{formErrors.email[0]}</p>
+                        )}
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="phone">Phone Number</Label>
+                      <Label htmlFor="phone">Mobile Number</Label>
                       <Input 
                         id="phone" 
                         name="phone"
                         type="tel" 
                         value={formData.phone}
                         onChange={handleInputChange}
-                        placeholder="Enter your phone number" 
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="country">Country</Label>
-                      <select
-                        id="country"
-                        name="country"
-                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-sky-500 focus:ring-sky-500"
-                        value={formData.country}
-                        onChange={handleInputChange}
+                        placeholder="Enter your mobile number" 
                         required
-                      >
-                        <option value="" disabled>Select a country</option>
-                        {[
-                          { code: "US", name: "United States" },
-                          { code: "IN", name: "India" },
-                          { code: "CA", name: "Canada" },
-                          { code: "GB", name: "United Kingdom" },
-                          { code: "AU", name: "Australia" },
-                          { code: "DE", name: "Germany" },
-                          { code: "FR", name: "France" },
-                          { code: "JP", name: "Japan" },
-                          { code: "CN", name: "China" },
-                          { code: "BR", name: "Brazil" },
-                          { code: "ZA", name: "South Africa" },
-                          { code: "IT", name: "Italy" },
-                          { code: "ES", name: "Spain" },
-                          { code: "RU", name: "Russia" },
-                          { code: "MX", name: "Mexico" },
-                          { code: "KR", name: "South Korea" },
-                          { code: "NG", name: "Nigeria" },
-                          { code: "AR", name: "Argentina" },
-                          { code: "NL", name: "Netherlands" },
-                        ].map((country) => (
-                          <option
-                            key={country.code}
-                            value={country.code}
-                            className="text-[#0a1e42] bg-white"
-                          >
-                            {country.name}
-                          </option>
-                        ))}
-                      </select>
+                      />
+                      {formErrors.phone && (
+                        <p className="text-xs text-red-600">{formErrors.phone[0]}</p>
+                      )}
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="description">Brief Description of Your Idea</Label>
+                      <Label htmlFor="address">Residential Address</Label>
+                      <Input 
+                        id="address" 
+                        name="address"
+                        value={formData.address}
+                        onChange={handleInputChange}
+                        placeholder="Enter your residential address" 
+                        required
+                      />
+                      {formErrors.address && (
+                        <p className="text-xs text-red-600">{formErrors.address[0]}</p>
+                      )}
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="role">Are you a</Label>
+                      <select
+                        id="role"
+                        name="role"
+                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-sky-500 focus:ring-sky-500"
+                        value={formData.role}
+                        onChange={handleInputChange}
+                        required
+                      >
+                        <option value="" disabled>Select your role</option>
+                        <option value="student">Student</option>
+                        <option value="lawyer">Professional (Lawyer)</option>
+                        <option value="engineer">Professional (Engineer)</option>
+                        <option value="humanities_management">Professional (Humanities/Management)</option>
+                        <option value="entrepreneur">Professional (Entrepreneur)</option>
+                        <option value="enthusiast">Enthusiast to contribute</option>
+                        <option value="retired">Retired Professional</option>
+                      </select>
+                      {formErrors.role && (
+                        <p className="text-xs text-red-600">{formErrors.role[0]}</p>
+                      )}
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="course">Course pursued or Pursuing</Label>
+                      <Input 
+                        id="course" 
+                        name="course"
+                        value={formData.course}
+                        onChange={handleInputChange}
+                        placeholder="Write the name of the Course" 
+                        required={formData.role === "student"}
+                        disabled={formData.role !== "student"}
+                      />
+                      {formErrors.course && (
+                        <p className="text-xs text-red-600">{formErrors.course[0]}</p>
+                      )}
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="institution">Name of the Institution (if student)</Label>
+                      <Input 
+                        id="institution" 
+                        name="institution"
+                        value={formData.institution}
+                        onChange={handleInputChange}
+                        placeholder="Enter institution name"
+                        required={formData.role === "student"}
+                        disabled={formData.role !== "student"}
+                      />
+                      {formErrors.institution && (
+                        <p className="text-xs text-red-600">{formErrors.institution[0]}</p>
+                      )}
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="idea_caption">Caption for Your Idea</Label>
+                      <Input
+                        id="idea_caption"
+                        name="idea_caption"
+                        value={formData.idea_caption}
+                        onChange={handleInputChange}
+                        placeholder="Eg. Succession Disputes, Contract Disputes, etc."
+                        required
+                      />
+                      {formErrors.idea_caption && (
+                        <p className="text-xs text-red-600">{formErrors.idea_caption[0]}</p>
+                      )}
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="description">
+                        Briefly describe your concept, specifying the area of dispute it addresses and your vision for designing an ODR system to resolve it.
+                      </Label>
                       <Textarea
                         id="description"
                         name="description"
@@ -240,6 +320,9 @@ export default function SubmitIdeaClientPage() {
                         className="min-h-[150px]"
                         required
                       />
+                      {formErrors.description && (
+                        <p className="text-xs text-red-600">{formErrors.description[0]}</p>
+                      )}
                     </div>
 
                     <div className="space-y-2">

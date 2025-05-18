@@ -22,5 +22,19 @@ model User {
   role      Role     @default(USER)
   createdAt DateTime @default(now())
 }
-
+model IdeaSubmission {
+  id           String   @id @default(uuid())
+  name         String
+  email        String
+  phone        String
+  address      String
+  role         String
+  course       String?
+  institution  String?
+  ideaCaption  String
+  description  String
+  files        String[] // store file paths or URLs
+  consent      Boolean
+  createdAt    DateTime @default(now())
+}
 
