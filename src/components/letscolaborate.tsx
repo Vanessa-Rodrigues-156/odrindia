@@ -84,7 +84,7 @@ export function LetsCollaborate() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-600">
-                   Develop specialized arbitration workflows tailored to specific dispute types, industries, and regulatory requirements
+                   Developspecialized arbitration workflows tailored to specific dispute types, industries, and regulatory requirements
                   </p>
                 </CardContent>
               </Card>
