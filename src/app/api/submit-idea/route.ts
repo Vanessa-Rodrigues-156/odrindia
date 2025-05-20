@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ideaSubmissionSchema } from "../../submit-idea/ideaSchema";
 import { prisma } from "@/lib/prisma";
-import { z } from "zod";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
@@ -30,7 +29,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Handle file uploads
-    let filePaths: string[] = [];
+    const filePaths: string[] = [];
     if (files && files.length > 0 && files[0] instanceof File) {
       const submissionId = uuidv4();
       const uploadDir = path.join(process.cwd(), "src/app/submit-idea/data", submissionId);
