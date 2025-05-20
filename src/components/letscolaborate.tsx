@@ -99,7 +99,7 @@ export function LetsCollaborate() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-600">
-                    Customized resolution journeys based on the unique characteristics of disputes and the preferences of the parties involved."
+                    Customized resolution journeys based on the unique characteristics of disputes and the preferences of the parties involved.
                   </p>
                 </CardContent>
               </Card>

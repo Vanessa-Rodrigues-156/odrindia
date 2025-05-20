@@ -3,9 +3,9 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { ideaId: string } }
+  { params }: { params: Promise<{ ideaId: string }> }
 ) {
-  const { ideaId } = params;
+  const { ideaId } = await params;
   // Fetch all top-level comments for the idea
   const comments = await prisma.comment.findMany({
     where: { ideaId, parentId: null },
@@ -21,9 +21,9 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { ideaId: string } }
+  { params }: { params: Promise<{ ideaId: string }> }
 ) {
-  const { ideaId } = params;
+  const { ideaId } = await params;
   const data: { content: string; author: string; authorRole?: string; parentId?: string } = await request.json();
 
   if (!data.content || !data.author) {

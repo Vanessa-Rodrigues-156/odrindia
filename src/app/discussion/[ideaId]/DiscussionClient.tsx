@@ -54,7 +54,7 @@ export default function DiscussionClient({ idea, initialComments }: DiscussionCl
       .then(res => res.json())
       .then((data) => setComments(data))
       .catch(() => toast({ title: "Error", description: "Failed to load comments." }));
-  }, [idea.id]);
+  }, [idea.id, toast]);
 
   const handleLikeIdea = async () => {
     const action = hasLiked ? "unlike" : "like";
@@ -71,7 +71,7 @@ export default function DiscussionClient({ idea, initialComments }: DiscussionCl
       } else {
         toast({ title: "Error", description: "Failed to update like." });
       }
-    } catch (err) {
+    } catch {
       toast({ title: "Error", description: "Failed to update like." });
     }
   }
@@ -88,14 +88,13 @@ export default function DiscussionClient({ idea, initialComments }: DiscussionCl
       if (res.ok) {
         const data = await res.json();
         setCommentLikes((prev) => ({ ...prev, [commentId]: !isLiked }));
-        // Optionally update the comment's like count in state if you want real-time UI
         setComments((prev) => prev.map(c =>
           c.id === commentId ? { ...c, likes: data.likes } : c
         ));
       } else {
         toast({ title: "Error", description: "Failed to update comment like." });
       }
-    } catch (err) {
+    } catch {
       toast({ title: "Error", description: "Failed to update comment like." });
     }
   }
@@ -125,7 +124,7 @@ export default function DiscussionClient({ idea, initialComments }: DiscussionCl
       } else {
         toast({ title: "Error", description: "Failed to post comment." });
       }
-    } catch (err) {
+    } catch {
       toast({ title: "Error", description: "Failed to post comment." });
     }
   }
@@ -159,7 +158,7 @@ export default function DiscussionClient({ idea, initialComments }: DiscussionCl
       } else {
         toast({ title: "Error", description: "Failed to post reply." });
       }
-    } catch (err) {
+    } catch {
       toast({ title: "Error", description: "Failed to post reply." });
     }
   }

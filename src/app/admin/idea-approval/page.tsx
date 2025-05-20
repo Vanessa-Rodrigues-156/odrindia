@@ -3,8 +3,25 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
+interface IdeaSubmission {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  role: string;
+  course?: string;
+  institution?: string;
+  ideaCaption: string;
+  description: string;
+  consent: boolean;
+  approved: boolean;
+  ideaId?: string;
+  createdAt: string;
+}
+
 export default function AdminIdeaApprovalPage() {
-  const [submissions, setSubmissions] = useState([]);
+  const [submissions, setSubmissions] = useState<IdeaSubmission[]>([]);
   const [loading, setLoading] = useState(true);
   const [approving, setApproving] = useState<string | null>(null);
 
@@ -23,7 +40,7 @@ export default function AdminIdeaApprovalPage() {
       body: JSON.stringify({ submissionId: id }),
     });
     if (res.ok) {
-      setSubmissions((subs) => subs.filter((s: any) => s.id !== id));
+      setSubmissions((subs) => subs.filter((s) => s.id !== id));
     }
     setApproving(null);
   };
@@ -37,7 +54,7 @@ export default function AdminIdeaApprovalPage() {
         <div>No pending submissions.</div>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {submissions.map((s: any) => (
+          {submissions.map((s) => (
             <Card key={s.id}>
               <CardHeader>
                 <CardTitle>{s.ideaCaption}</CardTitle>
