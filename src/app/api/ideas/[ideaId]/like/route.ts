@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 
 export async function POST(
   request: NextRequest,
@@ -9,11 +10,24 @@ export async function POST(
   const action = data.action; // 'like' or 'unlike'
   console.log("Updating like status for idea ID:", ideaId, "Action:", action);
 
-  // Log unused variable
-  console.log("Unused variable:", request);
+  // Fetch the idea
+  const idea = await prisma.idea.findUnique({ where: { id: ideaId } });
+  if (!idea) {
+    return NextResponse.json({ error: "Idea not found" }, { status: 404 });
+  }
+
+  // Update likes
+  let newLikes = idea.likes;
+  if (action === "like") {
+    newLikes = idea.likes + 1;
+  } else if (action === "unlike" && idea.likes > 0) {
+    newLikes = idea.likes - 1;
+  }
+  await prisma.idea.update({ where: { id: ideaId }, data: { likes: newLikes } });
 
   return NextResponse.json({ 
     success: true, 
+    likes: newLikes,
     message: `Idea ${action === 'like' ? 'liked' : 'unliked'} successfully` 
   });
 }

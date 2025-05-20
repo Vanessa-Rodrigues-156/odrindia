@@ -1,6 +1,6 @@
 "use client"
-import { LightbulbIcon, Upload } from "lucide-react"
-import { useState, useRef } from "react"
+import { LightbulbIcon } from "lucide-react"
+import { useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -12,9 +12,7 @@ import { ideaSubmissionSchema } from "./ideaSchema";
 
 export default function SubmitIdeaClientPage() {
   const { toast } = useToast();
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -37,25 +35,6 @@ export default function SubmitIdeaClientPage() {
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
     setFormData(prev => ({ ...prev, [name]: checked }));
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const filesArray = Array.from(e.target.files);
-      
-      // Filter files larger than 10MB
-      const validFiles = filesArray.filter(file => file.size <= 10 * 1024 * 1024);
-      
-      if (validFiles.length < filesArray.length) {
-        toast({
-          title: "File size exceeded",
-          description: "Some files were larger than 10MB and were not selected.",
-          variant: "destructive"
-        });
-      }
-      
-      setSelectedFiles(validFiles);
-    }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -94,11 +73,6 @@ export default function SubmitIdeaClientPage() {
         submissionData.append(key, value.toString());
       });
       
-      // Append files
-      selectedFiles.forEach(file => {
-        submissionData.append('files', file);
-      });
-      
       const response = await fetch('/api/submit-idea', {
         method: 'POST',
         body: submissionData,
@@ -126,7 +100,6 @@ export default function SubmitIdeaClientPage() {
         description: '',
         consent: false
       });
-      setSelectedFiles([]);
       
     } catch (error) {
       console.error('Error submitting form:', error);
@@ -319,53 +292,6 @@ export default function SubmitIdeaClientPage() {
                       {formErrors.description && (
                         <p className="text-xs text-red-600">{formErrors.description[0]}</p>
                       )}
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="file">Supporting Documents (Optional)</Label>
-                      <div className="rounded-lg border border-dashed border-gray-300 p-6">
-                        <div className="flex flex-col items-center justify-center space-y-2 text-center">
-                          <Upload className="h-8 w-8 text-gray-400" />
-                          <div className="space-y-1">
-                            <p className="text-sm font-medium text-[#0a1e42]">
-                              Drag & drop files here or click to browse
-                            </p>
-                            <p className="text-xs text-gray-500">
-                              Supports images, videos, and PDFs (Max file size: 10MB)
-                            </p>
-                          </div>
-                          <Input 
-                            ref={fileInputRef}
-                            id="file" 
-                            type="file" 
-                            className="hidden" 
-                            accept="image/*,video/*,.pdf" 
-                            multiple 
-                            onChange={handleFileChange}
-                          />
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            className="mt-2"
-                            onClick={() => fileInputRef.current?.click()}
-                          >
-                            Select Files
-                          </Button>
-                          {selectedFiles.length > 0 && (
-                            <div className="mt-3 w-full">
-                              <p className="text-sm font-medium text-[#0a1e42]">{selectedFiles.length} file(s) selected</p>
-                              <ul className="mt-2 max-h-32 overflow-y-auto text-left text-xs text-gray-500">
-                                {selectedFiles.map((file, index) => (
-                                  <li key={index} className="truncate">
-                                    {file.name} ({(file.size / 1024).toFixed(1)} KB)
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
-                        </div>
-                      </div>
                     </div>
 
                     <div className="flex items-center space-x-2">

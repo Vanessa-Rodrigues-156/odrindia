@@ -6,13 +6,7 @@ export const ideaSubmissionSchema = z.object({
   phone: z.string().min(7, "Phone number is required"),
   address: z.string().min(1, "Address is required"),
   role: z.enum([
-    "student",
-    "lawyer",
-    "engineer",
-    "humanities_management",
-    "entrepreneur",
-    "enthusiast",
-    "retired"
+    "student","law","tech","researcher"
   ], { required_error: "Role is required" }),
   course: z.string().optional().or(z.literal("")),
   institution: z.string().optional().or(z.literal("")),

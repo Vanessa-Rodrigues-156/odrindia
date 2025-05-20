@@ -22,6 +22,7 @@ model User {
   role      Role     @default(USER)
   createdAt DateTime @default(now())
 }
+
 model IdeaSubmission {
   id           String   @id @default(uuid())
   name         String
@@ -33,8 +34,34 @@ model IdeaSubmission {
   institution  String?
   ideaCaption  String
   description  String
-  files        String[] // store file paths or URLs
   consent      Boolean
+  approved     Boolean  @default(false)
+  ideaId       String?
   createdAt    DateTime @default(now())
+}
+
+model Idea {
+  id           String   @id @default(uuid())
+  name         String
+  email        String
+  country      String
+  description  String
+  createdAt    DateTime @default(now())
+  likes        Int      @default(0)
+  comments     Comment[]
+}
+
+model Comment {
+  id         String   @id @default(uuid())
+  content    String
+  author     String
+  authorRole String
+  createdAt  DateTime @default(now())
+  likes      Int      @default(0)
+  ideaId     String
+  idea       Idea     @relation(fields: [ideaId], references: [id], onDelete: Cascade)
+  parentId   String?  // For threaded/nested comments
+  parent     Comment? @relation("CommentReplies", fields: [parentId], references: [id])
+  replies    Comment[] @relation("CommentReplies")
 }
 
