@@ -91,7 +91,7 @@ export default function Home() {
         <section className="bg-[#0a1e42] py-16 text-white">
           <div className="container mx-auto px-4">
             <div className="mx-auto max-w-3xl text-center">
-              <h2 className="mb-4 text-3xl font-bold tracking-tight md:text-4xl">Ready to Resolve Disputes Online?</h2>
+              <h2 className="mb-4 text-3xl font-bold tracking-tight md:text-4xl">READY TO BE  PART OF ONLINE DISPUTE RESOLUTION CREATORS GLOBAL NETWORK ?</h2>
               <p className="mb-8 text-lg text-gray-200">
                 Join thousands of businesses and individuals who are already benefiting from our ODR solutions.
               </p>
