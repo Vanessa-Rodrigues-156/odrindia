@@ -129,7 +129,7 @@ export function LetsCollaborate() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-600">
-                    Conduct ODR research from a multidisciplinary perspective, providing a strong foundation for the development of ODR systems
+                    ConductODR research from a multidisciplinary perspective, providing a strong foundation for the development of ODR systems
                   </p>
                 </CardContent>
               </Card>
