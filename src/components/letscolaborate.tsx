@@ -114,7 +114,7 @@ export function LetsCollaborate() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-600">
-                    Design Inclusive Dispute Resolution platform that cater to special needs languages that support multiple languages to facilitate cross-border and cross-cultural dispute resolution
+                    DesignInclusive Dispute Resolution platform that cater to special needs languages that support multiple languages to facilitate cross-border and cross-cultural dispute resolution
                   </p>
                 </CardContent>
 
