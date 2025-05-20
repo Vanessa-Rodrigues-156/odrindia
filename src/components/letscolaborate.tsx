@@ -145,7 +145,7 @@ export function LetsCollaborate() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-600">
-                    Conduct impact assessment studies on existing ODR systems through empirical research involving stakeholders to both improve current platforms and provide valuable insights for the development of future systems
+                    Conductimpact assessment studies on existing ODR systems through empirical research involving stakeholders to both improve current platforms and provide valuable insights for the development of future systems
                   </p>
                 </CardContent>
               </Card>
