@@ -54,7 +54,7 @@ export function LetsCollaborate() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-600">
-                   Deevelop seamless interfaces between conventional court systems and modern ODR platforms to enhance judicial efficiency.
+                   Develop seamless interfaces between conventional court systems and modern ODR platforms to enhance judicial efficiency.
                   </p>
                 </CardContent>
               </Card>
