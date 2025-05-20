@@ -1,9 +1,9 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { format } from "date-fns"
-import { ArrowLeft, ThumbsUp, MessageSquare, Paperclip, Send, ChevronUp, ChevronDown } from "lucide-react"
+import { ArrowLeft, ThumbsUp, MessageSquare, ChevronUp, ChevronDown } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -11,19 +11,12 @@ import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/components/ui/use-toast"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 
-type Attachment = {
-  id: string
-  filename: string
-  url: string
-}
-
 type Idea = {
   id: string
   name: string
   email: string
   country: string
   description: string
-  attachments: Attachment[]
   submittedAt: string
   likes: number
 }
@@ -55,24 +48,56 @@ export default function DiscussionClient({ idea, initialComments }: DiscussionCl
   const [hasLiked, setHasLiked] = useState(false)
   const [commentLikes, setCommentLikes] = useState<Record<string, boolean>>({})
 
-  const handleLikeIdea = () => {
-    if (hasLiked) {
-      setIdeaLikes(prev => prev - 1)
-      setHasLiked(false)
-    } else {
-      setIdeaLikes(prev => prev + 1)
-      setHasLiked(true)
+  useEffect(() => {
+    // Fetch comments from the API on mount
+    fetch(`/api/ideas/${idea.id}/comments`)
+      .then(res => res.json())
+      .then((data) => setComments(data))
+      .catch(() => toast({ title: "Error", description: "Failed to load comments." }));
+  }, [idea.id]);
+
+  const handleLikeIdea = async () => {
+    const action = hasLiked ? "unlike" : "like";
+    try {
+      const res = await fetch(`/api/ideas/${idea.id}/like`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setIdeaLikes(data.likes);
+        setHasLiked(!hasLiked);
+      } else {
+        toast({ title: "Error", description: "Failed to update like." });
+      }
+    } catch (err) {
+      toast({ title: "Error", description: "Failed to update like." });
     }
-    
-    // Here you would make an API call to update the like count
   }
   
-  const handleLikeComment = (commentId: string) => {
-    const newLikes = { ...commentLikes }
-    newLikes[commentId] = !newLikes[commentId]
-    setCommentLikes(newLikes)
-    
-    // Here you would update the actual comment likes in the database
+  const handleLikeComment = async (commentId: string) => {
+    const isLiked = commentLikes[commentId];
+    const action = isLiked ? "unlike" : "like";
+    try {
+      const res = await fetch(`/api/ideas/${idea.id}/comments/${commentId}/like`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setCommentLikes((prev) => ({ ...prev, [commentId]: !isLiked }));
+        // Optionally update the comment's like count in state if you want real-time UI
+        setComments((prev) => prev.map(c =>
+          c.id === commentId ? { ...c, likes: data.likes } : c
+        ));
+      } else {
+        toast({ title: "Error", description: "Failed to update comment like." });
+      }
+    } catch (err) {
+      toast({ title: "Error", description: "Failed to update comment like." });
+    }
   }
 
   const handleReply = (parentId: string) => {
@@ -80,75 +105,63 @@ export default function DiscussionClient({ idea, initialComments }: DiscussionCl
     setReplyContent("")
   }
   
-  const submitReply = (parentId: string) => {
-    if (!replyContent.trim()) return
-    
-    const newReply: Comment = {
-      id: `comment-${Date.now()}`,
-      author: "Current User", // This would come from authentication
-      authorRole: "Community Member",
-      content: replyContent,
-      createdAt: new Date().toISOString(),
-      likes: 0,
-      parentId: parentId
-    }
-    
-    // Find the parent comment and add the reply
-    const updateComments = (comments: Comment[]): Comment[] => {
-      return comments.map(comment => {
-        if (comment.id === parentId) {
-          return {
-            ...comment,
-            replies: [...(comment.replies || []), newReply]
-          }
-        } else if (comment.replies && comment.replies.length > 0) {
-          return {
-            ...comment,
-            replies: updateComments(comment.replies)
-          }
-        }
-        return comment
-      })
-    }
-    
-    // If replying to a top-level comment
-    if (comments.some(c => c.id === parentId)) {
-      setComments(updateComments(comments))
-    } else {
-      // If replying to a nested comment, need to recursively find it
-      setComments(updateComments(comments))
-    }
-    
-    setReplyingTo(null)
-    setReplyContent("")
-    
-    toast({
-      title: "Reply posted",
-      description: "Your reply has been added to the discussion."
-    })
-  }
-  
-  const submitComment = () => {
+  const submitComment = async () => {
     if (!commentContent.trim()) return
-    
-    const newComment: Comment = {
-      id: `comment-${Date.now()}`,
-      author: "Current User", // This would come from authentication
-      authorRole: "Community Member",
-      content: commentContent,
-      createdAt: new Date().toISOString(),
-      likes: 0,
-      parentId: null,
-      replies: []
+    try {
+      const res = await fetch(`/api/ideas/${idea.id}/comments`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          content: commentContent,
+          author: "Current User", // Replace with actual user
+          authorRole: "Community Member",
+        }),
+      });
+      if (res.ok) {
+        const newComment = await res.json();
+        setComments((prev) => [...prev, { ...newComment, replies: [] }]);
+        setCommentContent("");
+        toast({ title: "Comment posted", description: "Your comment has been added to the discussion." });
+      } else {
+        toast({ title: "Error", description: "Failed to post comment." });
+      }
+    } catch (err) {
+      toast({ title: "Error", description: "Failed to post comment." });
     }
-    
-    setComments([...comments, newComment])
-    setCommentContent("")
-    
-    toast({
-      title: "Comment posted",
-      description: "Your comment has been added to the discussion."
-    })
+  }
+
+  const submitReply = async (parentId: string) => {
+    if (!replyContent.trim()) return
+    try {
+      const res = await fetch(`/api/ideas/${idea.id}/comments`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          content: replyContent,
+          author: "Current User", // Replace with actual user
+          authorRole: "Community Member",
+          parentId,
+        }),
+      });
+      if (res.ok) {
+        const newReply = await res.json();
+        // Update comments state to add the reply to the correct parent
+        const addReply = (comments: Comment[]): Comment[] =>
+          comments.map(comment =>
+            comment.id === parentId
+              ? { ...comment, replies: [...(comment.replies || []), newReply] }
+              : { ...comment, replies: comment.replies ? addReply(comment.replies) : [] }
+          );
+        setComments(prev => addReply(prev));
+        setReplyingTo(null);
+        setReplyContent("");
+        toast({ title: "Reply posted", description: "Your reply has been added to the discussion." });
+      } else {
+        toast({ title: "Error", description: "Failed to post reply." });
+      }
+    } catch (err) {
+      toast({ title: "Error", description: "Failed to post reply." });
+    }
   }
   
   const toggleCommentExpanded = (commentId: string) => {
@@ -331,30 +344,6 @@ export default function DiscussionClient({ idea, initialComments }: DiscussionCl
                   <div className="prose max-w-none">
                     <p>{idea.description}</p>
                   </div>
-                  
-                  {idea.attachments.length > 0 && (
-                    <div className="mt-6 rounded-lg border border-gray-200 p-4">
-                      <div className="mb-2 flex items-center gap-2">
-                        <Paperclip className="h-4 w-4 text-gray-500" />
-                        <span className="font-medium text-gray-700">Attachments</span>
-                      </div>
-                      <ul className="space-y-2">
-                        {idea.attachments.map((attachment) => (
-                          <li key={attachment.id}>
-                            <a
-                              href={attachment.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex items-center gap-2 rounded-md border border-transparent p-2 text-sky-600 hover:bg-gray-50 hover:underline"
-                            >
-                              {attachment.filename}
-                              <span className="text-xs text-gray-500">↗</span>
-                            </a>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
                 </CardContent>
               </Card>
               
@@ -378,7 +367,6 @@ export default function DiscussionClient({ idea, initialComments }: DiscussionCl
                         className="bg-[#0a1e42] hover:bg-[#263e69]"
                         disabled={!commentContent.trim()}
                       >
-                        <Send className="mr-2 h-4 w-4" />
                         Post Comment
                       </Button>
                     </div>

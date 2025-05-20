@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Search, Filter, ThumbsUp, MessageSquare, Paperclip } from "lucide-react"
+import { Search, Filter, ThumbsUp, MessageSquare } from "lucide-react"
 import Link from "next/link"
 import { format } from "date-fns"
 
@@ -11,19 +11,12 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 
-type Attachment = {
-  id: string
-  filename: string
-  url: string
-}
-
 type Idea = {
   id: string
   name: string
   email: string
   country: string
   description: string
-  attachments: Attachment[]
   submittedAt: string
   likes: number
   commentCount: number
@@ -51,7 +44,6 @@ export default function OdrLabsClient({ initialIdeas }: OdrLabsClientProps) {
       oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
       return matchesSearch && ideaDate > oneWeekAgo
     }
-    if (filter === "withAttachments") return matchesSearch && idea.attachments.length > 0
     
     return matchesSearch
   })
@@ -95,7 +87,6 @@ export default function OdrLabsClient({ initialIdeas }: OdrLabsClientProps) {
                     <SelectItem value="all">All Ideas</SelectItem>
                     <SelectItem value="popular">Most Popular</SelectItem>
                     <SelectItem value="recent">Recently Added</SelectItem>
-                    <SelectItem value="withAttachments">With Attachments</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -129,31 +120,6 @@ export default function OdrLabsClient({ initialIdeas }: OdrLabsClientProps) {
                         <p className="line-clamp-4 text-gray-600">
                           {idea.description}
                         </p>
-                        
-                        {idea.attachments.length > 0 && (
-                          <div className="mt-4">
-                            <div className="flex items-center gap-1 text-sm font-medium text-gray-500">
-                              <Paperclip className="h-4 w-4" />
-                              <span>{idea.attachments.length} attachment{idea.attachments.length > 1 ? 's' : ''}</span>
-                            </div>
-                            <ul className="mt-2 space-y-1">
-                              {idea.attachments.map(attachment => (
-                                <li key={attachment.id} className="text-sm text-gray-600 flex items-center gap-1">
-                                  <span>•</span>
-                                  <a 
-                                    href={attachment.url} 
-                                    target="_blank" 
-                                    rel="noopener noreferrer"
-                                    className="text-sky-600 hover:underline"
-                                    onClick={(e) => e.stopPropagation()}
-                                  >
-                                    {attachment.filename}
-                                  </a>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
                       </CardContent>
                       <CardFooter>
                         <div className="flex w-full items-center justify-between">

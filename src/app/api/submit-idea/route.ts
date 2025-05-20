@@ -1,103 +1,48 @@
-import { NextResponse } from 'next/server';
-import { writeFile, mkdir, readFile } from 'fs/promises';
-import { existsSync } from 'fs';
-import path from 'path';
-import { v4 as uuidv4 } from 'uuid';
+import { NextRequest, NextResponse } from "next/server";
+import { ideaSubmissionSchema } from "../../submit-idea/ideaSchema";
+import { prisma } from "@/lib/prisma";
 
-// Define the path for storing data
-const DATA_DIR = path.join(process.cwd(), 'src', 'app', 'submit-idea', 'data');
-const JSON_FILE_PATH = path.join(process.cwd(), 'src', 'app', 'submit-idea', 'submissions.json');
-
-// Interface for submission data
-interface Submission {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  country: string;
-  description: string;
-  files: string[];
-  submittedAt: string;
-}
-
-export async function POST(request: Request) {
+export async function POST(req: NextRequest) {
   try {
-    // Ensure the data directory exists
-    if (!existsSync(DATA_DIR)) {
-      await mkdir(DATA_DIR, { recursive: true });
-    }
-
-    // Parse the form data
-    const formData = await request.formData();
-    const name = formData.get('name') as string;
-    const email = formData.get('email') as string;
-    const phone = formData.get('phone') as string;
-    const country = formData.get('country') as string;
-    const description = formData.get('description') as string;
-
-    console.log("Unused variable:", phone); // Log unused variable
-    
-    // Generate a unique ID for this submission
-    const submissionId = uuidv4();
-    const uploadedFilePaths: string[] = [];
-    
-    // Process files if present
-    const files = formData.getAll('files');
-    if (files && files.length > 0) {
-      // Create a folder for this submission's files
-      const submissionDir = path.join(DATA_DIR, submissionId);
-      await mkdir(submissionDir, { recursive: true });
-      
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i] as File;
-        if (!file || typeof file === 'string') continue;
-        
-        // Generate a safe filename
-        const fileExtension = file.name.split('.').pop();
-        const safeFileName = `file_${i + 1}_${Date.now()}.${fileExtension}`;
-        const filePath = path.join(submissionDir, safeFileName);
-        
-        // Save the file
-        const buffer = Buffer.from(await file.arrayBuffer());
-        await writeFile(filePath, buffer);
-        
-        // Store the relative path for JSON
-        uploadedFilePaths.push(`data/${submissionId}/${safeFileName}`);
-      }
-    }
-    
-    // Create the submission object
-    const submission: Submission = {
-      id: submissionId,
-      name,
-      email,
-      phone,
-      country,
-      description,
-      files: uploadedFilePaths,
-      submittedAt: new Date().toISOString(),
+    const formData = await req.formData();
+    const data = {
+      name: formData.get("name"),
+      email: formData.get("email"),
+      phone: formData.get("phone"),
+      address: formData.get("address"),
+      role: formData.get("role"),
+      course: formData.get("course"),
+      institution: formData.get("institution"),
+      idea_caption: formData.get("idea_caption"),
+      description: formData.get("description"),
+      consent: String(formData.get("consent")) === "true",
     };
-    
-    // Load existing submissions or create new array
-    let submissions: Submission[] = [];
-    try {
-      if (existsSync(JSON_FILE_PATH)) {
-        const fileContent = await readFile(JSON_FILE_PATH, 'utf8');
-        submissions = JSON.parse(fileContent);
-      }
-    } catch (error) {
-      console.error('Error reading submissions file:', error);
-      // Continue with empty array if file doesn't exist or is corrupted
+
+    // Validate with Zod
+    const parsed = ideaSubmissionSchema.safeParse(data);
+    if (!parsed.success) {
+      return NextResponse.json({ errors: parsed.error.flatten() }, { status: 400 });
     }
-    
-    // Add the new submission and write back to the file
-    submissions.push(submission);
-    await writeFile(JSON_FILE_PATH, JSON.stringify(submissions, null, 2));
-    
-    return NextResponse.json({ success: true, submissionId });
-    
+
+    // Save to DB
+    await prisma.ideaSubmission.create({
+      data: {
+        name: data.name as string,
+        email: data.email as string,
+        phone: data.phone as string,
+        address: data.address as string,
+        role: data.role as string,
+        course: data.course as string,
+        institution: data.institution as string,
+        ideaCaption: data.idea_caption as string,
+        description: data.description as string,
+        consent: !!data.consent,
+      },
+    });
+
+    return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error processing submission:', error);
-    return NextResponse.json({ error: 'Failed to process submission' }, { status: 500 });
+    console.error(error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
