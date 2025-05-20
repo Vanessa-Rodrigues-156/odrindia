@@ -111,7 +111,7 @@ export default function Home() {
         <section className="py-16">
           <div className="container mx-auto px-4">
             <div className="mb-12 text-center">
-              <h2 className="mb-2 text-3xl font-bold tracking-tight text-[#0a1e42] md:text-4xl">What&apos;s New</h2>
+              <h2 className="mb-2 text-3xl font-bold tracking-tight text-[#0a1e42] md:text-4xl">ODR News</h2>
             </div>
 
             <div  className="grid gap-6 justify-center md:grid-cols-2 lg:grid-cols-3">

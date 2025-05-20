@@ -247,13 +247,9 @@ export default function SubmitIdeaClientPage() {
                         required
                       >
                         <option value="" disabled>Select your role</option>
-                        <option value="student">Student</option>
-                        <option value="lawyer">Professional (Lawyer)</option>
-                        <option value="engineer">Professional (Engineer)</option>
-                        <option value="humanities_management">Professional (Humanities/Management)</option>
-                        <option value="entrepreneur">Professional (Entrepreneur)</option>
-                        <option value="enthusiast">Enthusiast to contribute</option>
-                        <option value="retired">Retired Professional</option>
+                        <option value="law">Law Enthusiast</option>
+                        <option value="tech">Tech Enthusiast</option>
+                        <option value="researcher">Researcher</option>
                       </select>
                       {formErrors.role && (
                         <p className="text-xs text-red-600">{formErrors.role[0]}</p>
