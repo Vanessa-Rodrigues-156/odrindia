@@ -24,7 +24,7 @@ export function LetsCollaborate() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-600">
-                    We create comprehensive dispute resolution systems tailored to specific industries, combining technology and human expertise.
+                   Design comprehensive dispute resolution systems tailored to specific industries, integrating advanced technology with human expertise 
                   </p>
                 </CardContent>
               </Card>
@@ -39,7 +39,7 @@ export function LetsCollaborate() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-600">
-                    Our advanced algorithms analyze case patterns to predict outcomes and suggest fair resolutions based on historical data.
+                   Develop predictive outcome platforms and analyze case patterns using advanced algorithms, enabling parties to make informed decisions about their future course of action
                   </p>
                 </CardContent>
               </Card>
@@ -54,7 +54,7 @@ export function LetsCollaborate() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-600">
-                    We develop seamless interfaces between conventional court systems and modern ODR platforms to enhance judicial efficiency.
+                   Develop seamless interfaces between conventional court systems and modern ODR platforms to enhance judicial efficiency.
                   </p>
                 </CardContent>
               </Card>
@@ -69,7 +69,7 @@ export function LetsCollaborate() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-600">
-                    Our intelligent platforms guide parties through structured mediation processes with automated suggestions and assistance.
+                    Design an automated mediation platform enabling efficient dispute resolution through smart suggestions and seamless dialogue.
                   </p>
                 </CardContent>
               </Card>
@@ -84,7 +84,7 @@ export function LetsCollaborate() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-600">
-                    We create specialized arbitration workflows adapted to specific dispute types, industries, and regulatory requirements.
+                   Develop specialized arbitration workflows tailored to specific dispute types, industries, and regulatory requirements
                   </p>
                 </CardContent>
               </Card>
@@ -99,7 +99,7 @@ export function LetsCollaborate() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-600">
-                    Our adaptive platforms create custom resolution journeys based on dispute characteristics and party preferences.
+                    Customized resolution journeys based on the unique characteristics of disputes and the preferences of the parties involved."
                   </p>
                 </CardContent>
               </Card>
@@ -117,7 +117,40 @@ export function LetsCollaborate() {
                     We develop inclusive platforms that support multiple languages to facilitate cross-border and cross-cultural dispute resolution.
                   </p>
                 </CardContent>
+
               </Card>
+               <Card className="border-2 border-transparent transition-all hover:border-[#0a1e42]/10 hover:shadow-lg">
+                <CardHeader className="pb-2">
+                  <div className="mb-2 rounded-full bg-[#0a1e42]/10 p-2 w-fit">
+                    <Globe className="h-6 w-6 text-[#0a1e42]" />
+                  </div>
+                  <CardTitle className="text-[#0a1e42]">ODR Research </CardTitle>
+                  <CardDescription></CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-600">
+                    Conduct ODR research from a multidisciplinary perspective, providing a strong foundation for the development of ODR systems
+                  </p>
+                </CardContent>
+              </Card>
+
+        
+               <Card className="border-2 border-transparent transition-all hover:border-[#0a1e42]/10 hover:shadow-lg">
+                <CardHeader className="pb-2">
+                  <div className="mb-2 rounded-full bg-[#0a1e42]/10 p-2 w-fit">
+                    <Globe className="h-6 w-6 text-[#0a1e42]" />
+                  </div>
+                  <CardTitle className="text-[#0a1e42]">Impact Assessment Studies  </CardTitle>
+                  <CardDescription></CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-600">
+                    Conduct impact assessment studies on existing ODR systems through empirical research involving stakeholders to both improve current platforms and provide valuable insights for the development of future systems
+                  </p>
+                </CardContent>
+              </Card>
+
+              
             </div>
           </div>
         </section>
