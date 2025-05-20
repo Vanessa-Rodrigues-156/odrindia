@@ -124,7 +124,7 @@ export function LetsCollaborate() {
                   <div className="mb-2 rounded-full bg-[#0a1e42]/10 p-2 w-fit">
                     <Globe className="h-6 w-6 text-[#0a1e42]" />
                   </div>
-                  <CardTitle className="text-[#0a1e42]">ODR Research </CardTitle>
+                  <CardTitle className="text-[#0a1e42]">ODRResearch </CardTitle>
                   <CardDescription></CardDescription>
                 </CardHeader>
                 <CardContent>
