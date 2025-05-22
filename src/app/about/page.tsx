@@ -65,8 +65,7 @@ export default function AboutPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-gray-600">
-                    To create a future where justice is not confined to courtrooms but is readily available online to everyone,
-                    anywhere, anytime.
+                    To build a global, inclusive platform that brings together ideators, mentors, academia, and technologists to collaboratively research and design innovative, technology-driven dispute resolution systems that are accessible to all. 
                   </p>
                   <p className="text-gray-600">
                     We envision a World where disputes are resolved swiftly, fairly, and without the traditional barriers of 
