@@ -261,8 +261,7 @@ export default function AboutPage() {
               <div className="text-center">
                 <h2 className="mb-4 text-3xl font-bold tracking-tight text-[#0a1e42] md:text-4xl">Join Our Mission</h2>
                 <p className="mb-8 text-gray-600">
-                  Whether you&apos;re a legal professional, tech enthusiast, or organization seeking to implement ODR, 
-                  we&apos;d love to connect with you.
+                  Whether you're a legal professional, tech enthusiast, student, innovation enthusiast, academic institution, or organization seeking to be part of the ODR community and co-create ODR systems through collaborative efforts, we invite you to connect with us.
                 </p>
                 <div className="flex flex-col justify-center gap-4 sm:flex-row">
                   <Button className="bg-[#0a1e42] hover:bg-[#263e69]">
