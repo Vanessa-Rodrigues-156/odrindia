@@ -236,7 +236,7 @@ export default function AboutPage() {
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {[
                 { icon: <Users className="h-8 w-8" />, title: "Accessibility", description: "Making justice accessible to all" },
-                { icon: <Globe className="h-8 w-8" />, title: "Innovation", description: "Constantly improving our technology and processes" },
+                { icon: <Globe className="h-8 w-8" />, title: "Innovation", description: "Innovating Dispute Resolution Systems through Technology Integration " },
                 { icon: <Award className="h-8 w-8" />, title: "Integrity", description: "Upholding the highest ethical standards" },
                 { icon: <Target className="h-8 w-8" />, title: "Efficiency", description: "Delivering timely and effective solutions" },
                 { icon: <Zap className="h-8 w-8" />, title: "Empathy", description: "Understanding the human aspects of disputes" },
@@ -261,7 +261,7 @@ export default function AboutPage() {
               <div className="text-center">
                 <h2 className="mb-4 text-3xl font-bold tracking-tight text-[#0a1e42] md:text-4xl">Join Our Mission</h2>
                 <p className="mb-8 text-gray-600">
-                  Whether you're a legal professional, tech enthusiast, student, innovation enthusiast, academic institution, or organization seeking to be part of the ODR community and co-create ODR systems through collaborative efforts, we invite you to connect with us.
+                  Whether you're a legal professional &apos tech enthusiast &apos student &apos innovation enthusiast  academic institution &apos or organization seeking to be part of the ODR community and co-create ODR systems through collaborative efforts, we invite you to connect with us.
                 </p>
                 <div className="flex flex-col justify-center gap-4 sm:flex-row">
                   <Button className="bg-[#0a1e42] hover:bg-[#263e69]">
