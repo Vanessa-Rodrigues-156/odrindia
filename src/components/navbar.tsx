@@ -201,7 +201,7 @@ export default function Navbar() {
             </button>
             </Link>
             {/* Signup Button */}
-            <Link href="/signin" className="hidden lg:block">
+            <Link href="/signup" className="hidden lg:block">
             <button className="flex h-8 items-center justify-center rounded-md bg-[#0a1e42] px-4 text-sm font-medium text-white hover:bg-[#29487e]">
               Sign Up
             </button>
