@@ -116,7 +116,7 @@ export default function SubmitIdeaClientPage() {
   return (
     <div className="flex min-h-screen flex-col">
       <main className="flex-1">
-        <section className="bg-[#0a1e42] py-12 text-white md:py-16">
+        <section className="bg-[#0a1e42] py-4 text-white md:py-8">
           <div className="container mx-auto px-4">
             <div className="mx-auto max-w-3xl text-center">
               <div className="mb-4 flex justify-center">

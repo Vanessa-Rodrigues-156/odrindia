@@ -124,12 +124,12 @@ export function LetsCollaborate() {
                   <div className="mb-2 rounded-full bg-[#0a1e42]/10 p-2 w-fit">
                     <Globe className="h-6 w-6 text-[#0a1e42]" />
                   </div>
-                  <CardTitle className="text-[#0a1e42]">ODRResearch </CardTitle>
+                  <CardTitle className="text-[#0a1e42]">ODR Research </CardTitle>
                   <CardDescription></CardDescription>
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-600">
-                    ConductODR research from a multidisciplinary perspective, providing a strong foundation for the development of ODR systems
+                    Conduct ODR research from a multidisciplinary perspective, providing a strong foundation for the development of ODR systems
                   </p>
                 </CardContent>
               </Card>
@@ -140,12 +140,12 @@ export function LetsCollaborate() {
                   <div className="mb-2 rounded-full bg-[#0a1e42]/10 p-2 w-fit">
                     <Globe className="h-6 w-6 text-[#0a1e42]" />
                   </div>
-                  <CardTitle className="text-[#0a1e42]">ImpactAssessment Studies  </CardTitle>
+                  <CardTitle className="text-[#0a1e42]">Impact Assessment Studies  </CardTitle>
                   <CardDescription></CardDescription>
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-600">
-                    Conductimpact assessment studies on existing ODR systems through empirical research involving stakeholders to both improve current platforms and provide valuable insights for the development of future systems
+                    Conduct impact assessment studies on existing ODR systems through empirical research involving stakeholders to both improve current platforms and provide valuable insights for the development of future systems
                   </p>
                 </CardContent>
               </Card>

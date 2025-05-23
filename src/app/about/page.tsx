@@ -47,11 +47,7 @@ export default function AboutPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-gray-600">
-                  To democratize access to justice through innovative online dispute resolution technologies and services, making conflict prevention and resolution more accessible, efficient, and affordable for all regardless of location or economic status.
-                  </p>
-                  <p className="text-gray-600">
-                    We strive to reduce the burden on traditional courts while providing high-quality ADR services 
-                    that meet the unique needs of our diverse population.
+                  To democratize access to justice by delivering innovative online dispute resolution technologies and services—making conflict prevention and resolution more accessible, efficient, and affordable for all, regardless of location or economic status.
                   </p>
                 </CardContent>
               </Card>
@@ -65,11 +61,7 @@ export default function AboutPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-gray-600">
-                    To build a global, inclusive platform that brings together ideators, mentors, academia, and technologists to collaboratively research and design innovative, technology-driven dispute resolution systems that are accessible to all. 
-                  </p>
-                  <p className="text-gray-600">
-                    We envision a World where disputes are resolved swiftly, fairly, and without the traditional barriers of 
-                    cost, distance, and procedural complexity that often deter people from seeking resolution.
+                    To build a global, inclusive platform that brings together ideators, mentors, academia, and technologists to collaboratively research and design innovative, technology-driven dispute resolution systems that are accessible to all.
                   </p>
                 </CardContent>
               </Card>

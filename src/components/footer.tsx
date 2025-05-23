@@ -7,8 +7,8 @@ import { Input } from "@/components/ui/input"
 export default function Footer() {
   return (
     <footer className="bg-[#0a1e42] text-white">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+      <div className="container mx-auto px-4 py-6">
+        <div className="grid gap-10 items-stretch md:grid-cols-2 lg:grid-cols-2">
           <div className="space-y-4">
             <h3 className="text-xl font-bold">ODR</h3>
             <p className="text-gray-300">
@@ -43,7 +43,7 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-4 w-fit">
             <h3 className="text-xl font-bold">Quick Links</h3>
             <ul className="space-y-2">
               <li>
@@ -79,36 +79,9 @@ export default function Footer() {
             </ul>
           </div>
 
-          <div className="space-y-4">
-            <h3 className="text-xl font-bold">Contact Information</h3>
-            <ul className="space-y-3">
-              <li className="flex items-start">
-                <MapPin className="mr-2 h-5 w-5 shrink-0 text-sky-400" />
-                <span className="text-gray-300">New:41 Old:44,M.G.Ramachandran Road,Besant Nagar,Chennai-600090. </span>
-              </li>
-              {/* <li className="flex items-center">
-                <Phone className="mr-2 h-5 w-5 shrink-0 text-sky-400" />
-                <span className="text-gray-300">+30 123 456 7890</span>
-              </li> */}
-              <li className="flex items-center">
-                <Mail className="mr-2 h-5 w-5 shrink-0 text-sky-400" />
-                <span className="text-gray-300">contact@crekodr.com</span>
-              </li>
-            </ul>
-          </div>
+          
 
-          <div className="space-y-4">
-            <h3 className="text-xl font-bold">Newsletter</h3>
-            <p className="text-gray-300">Subscribe to our newsletter for the latest updates on ODR.</p>
-            <form className="flex flex-col space-y-2">
-              <Input
-                type="email"
-                placeholder="Your email address"
-                className="border-gray-700 bg-[#263e69] text-white placeholder:text-gray-400"
-              />
-              <Button className="bg-sky-500 hover:bg-sky-600">Subscribe</Button>
-            </form>
-          </div>
+          
         </div>
 
         <div className="mt-12 border-t border-gray-700 pt-8">

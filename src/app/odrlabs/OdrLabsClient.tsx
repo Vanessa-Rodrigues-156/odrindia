@@ -53,12 +53,13 @@ export default function OdrLabsClient({ initialIdeas }: OdrLabsClientProps) {
       <main className="flex-1">
         <section className="bg-[#0a1e42] py-12 text-white md:py-16">
           <div className="container mx-auto px-4">
-            <div className="mx-auto max-w-3xl text-center">
+            <div className="mx-auto max-w-6xl text-center">
               <h1 className="mb-4 text-3xl font-bold tracking-tight md:text-4xl lg:text-5xl">
-                ODR Labs
+                ODR Lab
               </h1>
+              <p className="font-semibold text-xl text-gray-100">Envision  --  Experiment  --  Engage  --  Execute</p>
               <p className="text-lg text-gray-200">
-                Explore innovative ideas for improving the justice system through technology
+                ODR Lab is a virtual space for dialogue and discussion—a place to brainstorm, share thoughts on common ideas, and collaboratively design and develop those ideas into reality. With cooperative effort and, when needed, guidance from our experienced mentors, turn concepts into actionable solution and Co-create a responsive and inclusive dispute
               </p>
             </div>
           </div>
