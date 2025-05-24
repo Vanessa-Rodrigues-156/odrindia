@@ -219,7 +219,7 @@ const SignUpPage = () => {
 							</div>
 							<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 								<div className="flex flex-col gap-1.5">
-									<Label htmlFor="city" className="text-sm font-medium">Residential City</Label>
+									<Label htmlFor="city" className="text-sm font-medium">City</Label>
 									<Input id="city" name="city" value={form.city} onChange={handleChange} type="text" placeholder="City" required className="h-10" />
 								</div>
 								<div className="flex flex-col gap-1.5">

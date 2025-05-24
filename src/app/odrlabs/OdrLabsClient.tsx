@@ -13,9 +13,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 type Idea = {
   id: string
-  name: string
-  email: string
-  country: string
+  name: string        // From user.name
+  email: string       // From user.email
+  country: string     // Default or from user profile
   description: string
   submittedAt: string
   likes: number

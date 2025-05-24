@@ -1,6 +1,6 @@
 "use client"
-import { LightbulbIcon, CheckCircle2, ArrowRight } from "lucide-react"
-import { useState } from "react"
+import { LightbulbIcon, CheckCircle2, ArrowRight, Loader2 } from "lucide-react"
+import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion" // Added framer-motion import
 
 import { Button } from "@/components/ui/button"
@@ -9,7 +9,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/components/ui/use-toast"
-import { ideaSubmissionSchema } from "./ideaSchema";
+import { ideaSubmissionSchema } from "./ideaSchema"
+import { saveSubmissionRecord } from "@/lib/utils";
 
 // Animation variants
 const fadeInUp = {
@@ -104,18 +105,37 @@ export default function SubmitIdeaClientPage() {
         body: submissionData,
       });
       
+      const responseData = await response.json();
+      
       if (!response.ok) {
-        throw new Error('Failed to submit idea');
+        // Check for validation errors from the server
+        if (response.status === 400 && responseData.errors) {
+          setFormErrors(responseData.errors);
+          toast({
+            title: "Validation Error",
+            description: "Please correct the highlighted fields.",
+            variant: "destructive"
+          });
+          return;
+        }
+        
+        throw new Error(responseData.message || 'Failed to submit idea');
       }
       
+      // Successful submission
       setIsSuccess(true);
+      
+      // If we have an idea ID, save it to localStorage for tracking
+      if (responseData.ideaId) {
+        saveSubmissionRecord('ideas', responseData.ideaId);
+      }
       
       toast({
         title: "Idea submitted successfully!",
         description: "We'll review your submission and get back to you soon.",
       });
       
-      // Reset form after 2 seconds to show success state
+      // Reset form after showing success state
       setTimeout(() => {
         setFormData({
           title: '',
@@ -125,13 +145,13 @@ export default function SubmitIdeaClientPage() {
           consent: false
         });
         setIsSuccess(false);
-      }, 2000);
+      }, 3000); // Increased to 3 seconds to give users more time to see the success message
       
     } catch (error) {
       console.error('Error submitting form:', error);
       toast({
         title: "Submission failed",
-        description: "There was a problem submitting your idea. Please try again.",
+        description: error instanceof Error ? error.message : "There was a problem submitting your idea. Please try again.",
         variant: "destructive"
       });
     } finally {
@@ -222,7 +242,16 @@ export default function SubmitIdeaClientPage() {
                       <CheckCircle2 className="h-10 w-10 text-green-600" />
                     </div>
                     <h3 className="text-2xl font-bold text-[#0a1e42] mb-2">Idea Submitted!</h3>
-                    <p className="text-gray-600">Thank you for sharing your innovative idea. We'll review it and get back to you soon.</p>
+                    <p className="text-gray-600 mb-6">Thank you for sharing your innovative idea. We'll review it and get back to you soon.</p>
+                    
+                    <div className="w-full max-w-sm p-4 bg-blue-50 rounded-lg border border-blue-100">
+                      <h4 className="font-medium text-blue-800 mb-2">What happens next?</h4>
+                      <ol className="text-sm text-blue-700 list-decimal pl-5 space-y-1">
+                        <li>Our team will review your idea within 2-3 business days</li>
+                        <li>You'll receive an email notification when your idea is approved</li>
+                        <li>Your idea will then be available for community discussion</li>
+                      </ol>
+                    </div>
                   </motion.div>
                 ) : (
                   <motion.div
@@ -347,7 +376,14 @@ export default function SubmitIdeaClientPage() {
                               className="w-full bg-[#0a1e42] hover:bg-[#162d5a] transition-all duration-200"
                               disabled={isSubmitting}
                             >
-                              {isSubmitting ? 'Submitting...' : 'Submit Idea'}
+                              {isSubmitting ? (
+                                <>
+                                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                  Submitting...
+                                </>
+                              ) : (
+                                'Submit Idea'
+                              )}
                             </Button>
                           </motion.div>
                         </motion.form>

@@ -10,17 +10,26 @@ export const metadata: Metadata = {
 export default async function OdrLabsPage() {
   // Fetch only approved ideas from the database
   const ideasFromDb = await prisma.idea.findMany({
+    where: {
+      approved: true
+    },
     orderBy: { createdAt: "desc" },
     include: {
       comments: true,
+      user: {
+        select: {
+          name: true,
+          email: true
+        }
+      }
     },
   })
   // Map DB results to match OdrLabsClient expected props
   const ideas = ideasFromDb.map((idea) => ({
     id: idea.id,
-    name: idea.name,
-    email: idea.email,
-    country: idea.country,
+    name: idea.user?.name || "Anonymous",
+    email: idea.user?.email || "anonymous@example.com",
+    country: "India", // Default country if not stored
     description: idea.description,
     submittedAt: idea.createdAt.toISOString(),
     likes: idea.likes,

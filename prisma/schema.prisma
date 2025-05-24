@@ -21,6 +21,11 @@ model User {
   password  String
   role      Role     @default(USER)
   createdAt DateTime @default(now())
+  
+  // User can have multiple ideas and comments
+  ideas       Idea[]
+  submissions IdeaSubmission[]
+  comments    Comment[]
 }
 
 model IdeaSubmission {
@@ -31,39 +36,63 @@ model IdeaSubmission {
   odrExperience String
   consent       Boolean
   approved      Boolean  @default(false)
-  ideaId        String?
   createdAt     DateTime @default(now())
-  // Optionally keep these as nullable if you want to preserve old data:
-  name         String?
-  email        String?
-  phone        String?
-  address      String?
-  role         String?
-  course       String?
-  institution  String?
+  updatedAt     DateTime @updatedAt
+  
+  // Relationship to approved Idea
+  ideaId        String?
+  idea          Idea?    @relation(fields: [ideaId], references: [id])
+  
+  // Relationship to user who submitted the idea
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  
+  // Admin moderation
+  reviewedAt    DateTime?
+  reviewedBy    String?
 }
 
 model Idea {
-  id           String   @id @default(uuid())
-  name         String
-  email        String
-  country      String
-  description  String
-  createdAt    DateTime @default(now())
-  likes        Int      @default(0)
-  comments     Comment[]
+  id                String         @id @default(uuid())
+  title             String
+  caption           String?
+  description       String         @db.Text
+  
+  // Relationship to user who owns the idea
+  userId            String
+  user              User           @relation(fields: [userId], references: [id])
+  
+  // Relationships
+  submission        IdeaSubmission[]
+  comments          Comment[]
+  
+  // Engagement metrics
+  views             Int            @default(0)
+  likes             Int            @default(0)
+  
+  // Timestamps
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  
+  // Status - approved ideas are shown on ODR Labs page
+  approved          Boolean        @default(false)
 }
 
 model Comment {
   id         String   @id @default(uuid())
   content    String
-  author     String
-  authorRole String
   createdAt  DateTime @default(now())
   likes      Int      @default(0)
+  
+  // Relationships
   ideaId     String
   idea       Idea     @relation(fields: [ideaId], references: [id], onDelete: Cascade)
-  parentId   String?  // For threaded/nested comments
+  
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  
+  // For threaded/nested comments
+  parentId   String?
   parent     Comment? @relation("CommentReplies", fields: [parentId], references: [id])
   replies    Comment[] @relation("CommentReplies")
 }

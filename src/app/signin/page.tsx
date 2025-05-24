@@ -34,7 +34,13 @@ const SignInPage = () => {
             if (res.ok) {
                 // Store user info in localStorage (for demo; use proper session in production)
                 localStorage.setItem('currentUser', JSON.stringify(data.user));
-                router.push('/dashboard');
+                
+                // Redirect based on user role
+                if (data.user.role === 'ADMIN') {
+                    router.push('/admin/idea-approval');
+                } else {
+                    router.push('/'); // Redirect to home page for regular users
+                }
             } else {
                 setError(data.error || 'Login failed');
             }
