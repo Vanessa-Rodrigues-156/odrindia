@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+// GET all comments (with user info, like count, and parentId)
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ ideaId: string }> }
 ) {
   const { ideaId } = await params;
-  // Fetch all top-level comments for the idea
+  // Fetch all comments for the idea (including replies)
   const comments = await prisma.comment.findMany({
-    where: { ideaId, parentId: null },
+    where: { ideaId },
     orderBy: { createdAt: "asc" },
     include: {
       user: {
@@ -18,36 +19,27 @@ export async function GET(
           userRole: true,
         }
       },
-      replies: {
-        orderBy: { createdAt: "asc" },
-        include: {
-          user: {
-            select: {
-              id: true,
-              name: true,
-              userRole: true,
-            }
-          },
-          likes: true, // Include likes for replies
-        }
-      },
-      likes: true, // Include likes for main comments
+      likes: true,
     },
   });
-  
-  // Map comments to include like counts
-  const commentsWithLikeCounts = comments.map(comment => ({
-    ...comment,
-    likeCount: comment.likes.length,
-    replies: comment.replies.map(reply => ({
-      ...reply,
-      likeCount: reply.likes.length,
-    }))
+
+  // Map comments to include like counts and user info
+  const mapped = comments.map(comment => ({
+    id: comment.id,
+    content: comment.content,
+    createdAt: comment.createdAt,
+    parentId: comment.parentId, // replies will have non-null parentId
+    likes: comment.likes.length,
+    userId: comment.userId,
+    author: comment.user?.name || "Anonymous",
+    authorRole: comment.user?.userRole || "INNOVATOR",
+    avatar: comment.user?.name ? comment.user.name.split(' ').map(p=>p[0]).join('').toUpperCase().substring(0,2) : "??",
   }));
-  
-  return NextResponse.json(commentsWithLikeCounts);
+
+  return NextResponse.json(mapped);
 }
 
+// POST: Add a comment or reply
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ ideaId: string }> }
@@ -59,18 +51,21 @@ export async function POST(
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
   }
 
+  // If parentId is provided, ensure it's not null for replies
+  const parentId = data.parentId ? data.parentId : null;
+
   // Create the comment or reply
   const comment = await prisma.comment.create({
     data: {
       content: data.content,
       userId: data.userId,
       ideaId,
-      parentId: data.parentId || null,
+      parentId: parentId,
     },
     include: {
       user: {
         select: {
-          id: true, 
+          id: true,
           name: true,
           userRole: true,
         }
@@ -79,10 +74,17 @@ export async function POST(
     },
   });
 
-  // Format response with like count
+  // Format response with like count and user info
   const formattedComment = {
-    ...comment,
-    likeCount: 0, // New comment has 0 likes
+    id: comment.id,
+    content: comment.content,
+    createdAt: comment.createdAt,
+    parentId: comment.parentId,
+    likes: comment.likes.length,
+    userId: comment.userId,
+    author: comment.user?.name || "Anonymous",
+    authorRole: comment.user?.userRole || "INNOVATOR",
+    avatar: comment.user?.name ? comment.user.name.split(' ').map(p=>p[0]).join('').toUpperCase().substring(0,2) : "??",
   };
 
   return NextResponse.json(formattedComment, { status: 201 });

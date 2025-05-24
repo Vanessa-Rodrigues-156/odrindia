@@ -56,40 +56,54 @@ export default async function DiscussionPage({ params }: DiscussionPageProps) {
     },
     orderBy: { createdAt: 'asc' }
   });
-  
-  // Separate top-level comments and build a replies map
-  const topLevelComments = allComments.filter(c => !c.parentId);
-  const repliesMap = new Map();
-  
-  allComments.filter(c => c.parentId).forEach(reply => {
-    if (!repliesMap.has(reply.parentId)) {
-      repliesMap.set(reply.parentId, []);
-    }
-    repliesMap.get(reply.parentId).push({
-      id: reply.id,
-      author: reply.user?.name || "Anonymous",
-      authorEmail: reply.user?.email || "anonymous@example.com",
-      authorCountry: reply.user?.country || "",
-      authorRole: reply.user?.userRole || "INNOVATOR",
-      content: reply.content,
-      createdAt: reply.createdAt.toISOString(),
-      likes: reply.likes?.length || 0,
-      parentId: reply.parentId,
+
+  // Build a map of comments by id
+  type Comment = {
+    id: string;
+    author: string;
+    authorEmail: string;
+    authorCountry: string;
+    authorRole: string;
+    content: string;
+    createdAt: string;
+    likes: number;
+    parentId: string | null;
+    avatar: string;
+    replies: Comment[];
+  };
+  function getInitials(name?: string | null) {
+    if (!name) return "??";
+    return name.split(' ').map(p => p[0]).join('').toUpperCase().substring(0, 2);
+  }
+  const commentMap = new Map<string, Comment>();
+  allComments.forEach(c => {
+    commentMap.set(c.id, {
+      id: c.id,
+      author: c.user?.name || "Anonymous",
+      authorEmail: c.user?.email || "anonymous@example.com",
+      authorCountry: c.user?.country || "",
+      authorRole: c.user?.userRole || "INNOVATOR",
+      content: c.content,
+      createdAt: c.createdAt.toISOString(),
+      likes: c.likes?.length || 0,
+      parentId: c.parentId,
+      avatar: getInitials(c.user?.name),
+      replies: [],
     });
   });
-  
-  // Map top-level comments to expected structure with their replies
-  const comments = topLevelComments.map((c) => ({
-    id: c.id,
-    author: c.user?.name || "Anonymous",
-    authorEmail: c.user?.email || "anonymous@example.com",
-    authorCountry: c.user?.country || "",
-    authorRole: c.user?.userRole || "INNOVATOR", // Default to INNOVATOR role
-    content: c.content,
-    createdAt: c.createdAt.toISOString(),
-    likes: c.likes?.length || 0,
-    parentId: c.parentId,
-    replies: repliesMap.get(c.id) || [],
-  }));
-  return <DiscussionClient idea={mappedIdea} initialComments={comments} />;
+
+  // Attach replies to their parent
+  const topLevelComments: Comment[] = [];
+  commentMap.forEach(comment => {
+    if (comment.parentId) {
+      const parent = commentMap.get(comment.parentId);
+      if (parent) {
+        parent.replies.push(comment);
+      }
+    } else {
+      topLevelComments.push(comment);
+    }
+  });
+
+  return <DiscussionClient idea={mappedIdea} initialComments={topLevelComments} />;
 }

@@ -30,6 +30,7 @@ type Comment = {
   createdAt: string
   likes: number
   parentId: string | null
+  avatar: string // Add avatar field
   replies?: Comment[]
 }
 
@@ -51,7 +52,7 @@ export default function DiscussionClient({ idea, initialComments }: DiscussionCl
   const [commentLikes, setCommentLikes] = useState<Record<string, boolean>>({})
 
   useEffect(() => {
-    // Fetch comments from the API on mount
+    // Always fetch comments from the API on mount and on reload
     fetch(`/api/ideas/${idea.id}/comments`)
       .then(res => res.json())
       .then((data) => setComments(data))
@@ -235,7 +236,7 @@ export default function DiscussionClient({ idea, initialComments }: DiscussionCl
         <div className="flex gap-3">
           <Avatar className="h-8 w-8">
             <AvatarFallback className="bg-[#0a1e42] text-white">
-              {getInitials(comment.author)}
+              {comment.avatar || getInitials(comment.author)}
             </AvatarFallback>
           </Avatar>
           
