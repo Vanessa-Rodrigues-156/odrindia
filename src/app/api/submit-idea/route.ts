@@ -1,41 +1,29 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ideaSubmissionSchema } from "../../submit-idea/ideaSchema";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
     const data = {
-      name: formData.get("name"),
-      email: formData.get("email"),
-      phone: formData.get("phone"),
-      address: formData.get("address"),
-      role: formData.get("role"),
-      course: formData.get("course"),
-      institution: formData.get("institution"),
+      title: formData.get("title"),
       idea_caption: formData.get("idea_caption"),
       description: formData.get("description"),
+      odr_experience: formData.get("odr_experience"),
       consent: String(formData.get("consent")) === "true",
     };
 
-    // Validate with Zod
-    const parsed = ideaSubmissionSchema.safeParse(data);
-    if (!parsed.success) {
-      return NextResponse.json({ errors: parsed.error.flatten() }, { status: 400 });
+    // Basic validation (add Zod if needed)
+    if (!data.title || !data.description || !data.odr_experience || !data.consent) {
+      return NextResponse.json({ error: "All required fields must be filled." }, { status: 400 });
     }
 
-    // Save to DB
+    // Save to DB (update your Prisma model accordingly)
     await prisma.ideaSubmission.create({
       data: {
-        name: data.name as string,
-        email: data.email as string,
-        phone: data.phone as string,
-        address: data.address as string,
-        role: data.role as string,
-        course: data.course as string,
-        institution: data.institution as string,
+        title: data.title as string,
         ideaCaption: data.idea_caption as string,
         description: data.description as string,
+        odrExperience: data.odr_experience as string,
         consent: !!data.consent,
       },
     });

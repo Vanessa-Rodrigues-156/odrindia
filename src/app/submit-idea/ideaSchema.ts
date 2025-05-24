@@ -1,17 +1,10 @@
 import { z } from "zod";
 
 export const ideaSubmissionSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  email: z.string().email("Invalid email address"),
-  phone: z.string().min(7, "Phone number is required"),
-  address: z.string().min(1, "Address is required"),
-  role: z.enum([
-    "student","law","tech","researcher"
-  ], { required_error: "Role is required" }),
-  course: z.string().optional().or(z.literal("")),
-  institution: z.string().optional().or(z.literal("")),
-  idea_caption: z.string().min(1, "Idea caption is required"),
+  title: z.string().min(1, "Title is required").max(250, "Title should be less than 250 characters"),
+  idea_caption: z.string().max(100, "Caption should be less than 100 characters").optional(),
   description: z.string().min(1, "Description is required"),
+  odr_experience: z.string().min(1, "ODR experience is required"),
   consent: z.boolean().refine(val => val === true, { message: "Consent is required" }),
 });
 

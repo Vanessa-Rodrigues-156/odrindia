@@ -24,20 +24,23 @@ model User {
 }
 
 model IdeaSubmission {
-  id           String   @id @default(uuid())
-  name         String
-  email        String
-  phone        String
-  address      String
-  role         String
+  id            String   @id @default(uuid())
+  title         String
+  ideaCaption   String
+  description   String
+  odrExperience String
+  consent       Boolean
+  approved      Boolean  @default(false)
+  ideaId        String?
+  createdAt     DateTime @default(now())
+  // Optionally keep these as nullable if you want to preserve old data:
+  name         String?
+  email        String?
+  phone        String?
+  address      String?
+  role         String?
   course       String?
   institution  String?
-  ideaCaption  String
-  description  String
-  consent      Boolean
-  approved     Boolean  @default(false)
-  ideaId       String?
-  createdAt    DateTime @default(now())
 }
 
 model Idea {
