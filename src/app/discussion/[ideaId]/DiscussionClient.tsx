@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/components/ui/use-toast"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { useAuth } from "@/lib/auth" // Import the auth context
 
 type Idea = {
   id: string
@@ -39,6 +40,7 @@ interface DiscussionClientProps {
 
 export default function DiscussionClient({ idea, initialComments }: DiscussionClientProps) {
   const { toast } = useToast()
+  const { user } = useAuth() // Get the current user from auth context
   const [comments, setComments] = useState<Comment[]>(initialComments)
   const [replyingTo, setReplyingTo] = useState<string | null>(null)
   const [replyContent, setReplyContent] = useState("")
@@ -54,15 +56,44 @@ export default function DiscussionClient({ idea, initialComments }: DiscussionCl
       .then(res => res.json())
       .then((data) => setComments(data))
       .catch(() => toast({ title: "Error", description: "Failed to load comments." }));
-  }, [idea.id, toast]);
+      
+    // Check if the current user has already liked this idea
+    if (user?.id) {
+      fetch(`/api/ideas/${idea.id}/like/check?userId=${user.id}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.hasLiked) {
+            setHasLiked(true);
+          }
+        })
+        .catch(error => console.error("Failed to check like status:", error));
+        
+      // Also check which comments the user has already liked
+      fetch(`/api/ideas/${idea.id}/comments/likes?userId=${user.id}`)
+        .then(res => res.json())
+        .then(data => {
+          const likedCommentsMap: Record<string, boolean> = {};
+          data.likedComments.forEach((commentId: string) => {
+            likedCommentsMap[commentId] = true;
+          });
+          setCommentLikes(likedCommentsMap);
+        })
+        .catch(error => console.error("Failed to check comment likes:", error));
+    }
+  }, [idea.id, user?.id, toast]);
 
   const handleLikeIdea = async () => {
+    if (!user) {
+      toast({ title: "Authentication Required", description: "Please sign in to like ideas." });
+      return;
+    }
+    
     const action = hasLiked ? "unlike" : "like";
     try {
       const res = await fetch(`/api/ideas/${idea.id}/like`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action }),
+        body: JSON.stringify({ userId: user.id, action }),
       });
       if (res.ok) {
         const data = await res.json();
@@ -77,13 +108,18 @@ export default function DiscussionClient({ idea, initialComments }: DiscussionCl
   }
   
   const handleLikeComment = async (commentId: string) => {
+    if (!user) {
+      toast({ title: "Authentication Required", description: "Please sign in to like comments." });
+      return;
+    }
+    
     const isLiked = commentLikes[commentId];
     const action = isLiked ? "unlike" : "like";
     try {
       const res = await fetch(`/api/ideas/${idea.id}/comments/${commentId}/like`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action }),
+        body: JSON.stringify({ userId: user.id, action }),
       });
       if (res.ok) {
         const data = await res.json();
@@ -106,14 +142,19 @@ export default function DiscussionClient({ idea, initialComments }: DiscussionCl
   
   const submitComment = async () => {
     if (!commentContent.trim()) return
+    
+    if (!user) {
+      toast({ title: "Authentication Required", description: "Please sign in to post comments." });
+      return;
+    }
+    
     try {
       const res = await fetch(`/api/ideas/${idea.id}/comments`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           content: commentContent,
-          author: "Current User", // Replace with actual user
-          authorRole: "Community Member",
+          userId: user.id
         }),
       });
       if (res.ok) {
@@ -131,14 +172,19 @@ export default function DiscussionClient({ idea, initialComments }: DiscussionCl
 
   const submitReply = async (parentId: string) => {
     if (!replyContent.trim()) return
+    
+    if (!user) {
+      toast({ title: "Authentication Required", description: "Please sign in to post replies." });
+      return;
+    }
+    
     try {
       const res = await fetch(`/api/ideas/${idea.id}/comments`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           content: replyContent,
-          author: "Current User", // Replace with actual user
-          authorRole: "Community Member",
+          userId: user.id,
           parentId,
         }),
       });
@@ -170,7 +216,8 @@ export default function DiscussionClient({ idea, initialComments }: DiscussionCl
     }))
   }
   
-  const getInitials = (name: string) => {
+  const getInitials = (name?: string | null) => {
+    if (!name) return "??";
     return name
       .split(' ')
       .map(part => part[0])
@@ -211,25 +258,39 @@ export default function DiscussionClient({ idea, initialComments }: DiscussionCl
               <p className="text-gray-700">{comment.content}</p>
               
               <div className="mt-2 flex gap-4">
-                <button 
-                  onClick={() => handleLikeComment(comment.id)}
-                  className={`flex items-center gap-1 text-sm ${
-                    commentLikes[comment.id] ? "text-sky-600 font-medium" : "text-gray-500"
-                  }`}
-                >
-                  <ThumbsUp className="h-4 w-4" />
-                  <span>{comment.likes + (commentLikes[comment.id] ? 1 : 0)}</span>
-                </button>
+                {user ? (
+                  <button 
+                    onClick={() => handleLikeComment(comment.id)}
+                    className={`flex items-center gap-1 text-sm ${
+                      commentLikes[comment.id] ? "text-sky-600 font-medium" : "text-gray-500"
+                    }`}
+                  >
+                    <ThumbsUp className="h-4 w-4" />
+                    <span>{comment.likes + (commentLikes[comment.id] ? 1 : 0)}</span>
+                  </button>
+                ) : (
+                  <div className="flex items-center gap-1 text-sm text-gray-500">
+                    <ThumbsUp className="h-4 w-4" />
+                    <span>{comment.likes}</span>
+                  </div>
+                )}
                 
-                <button 
-                  onClick={() => handleReply(comment.id)}
-                  className={`flex items-center gap-1 text-sm ${
-                    replyingTo === comment.id ? "text-sky-600 font-medium" : "text-gray-500"
-                  }`}
-                >
-                  <MessageSquare className="h-4 w-4" />
-                  <span>Reply</span>
-                </button>
+                {user ? (
+                  <button 
+                    onClick={() => handleReply(comment.id)}
+                    className={`flex items-center gap-1 text-sm ${
+                      replyingTo === comment.id ? "text-sky-600 font-medium" : "text-gray-500"
+                    }`}
+                  >
+                    <MessageSquare className="h-4 w-4" />
+                    <span>Reply</span>
+                  </button>
+                ) : (
+                  <Link href="/signin" className="flex items-center gap-1 text-sm text-gray-500 hover:text-blue-500">
+                    <MessageSquare className="h-4 w-4" />
+                    <span>Sign in to reply</span>
+                  </Link>
+                )}
                 
                 {comment.replies && comment.replies.length > 0 && (
                   <button 
@@ -256,32 +317,44 @@ export default function DiscussionClient({ idea, initialComments }: DiscussionCl
               <div className="mt-3 flex gap-2">
                 <Avatar className="h-8 w-8">
                   <AvatarFallback className="bg-[#0a1e42] text-white">
-                    CU
+                    {user ? getInitials(user.name) : "?"}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1">
-                  <Textarea
-                    placeholder="Write a reply..."
-                    value={replyContent}
-                    onChange={(e) => setReplyContent(e.target.value)}
-                    className="mb-2 h-20 resize-none"
-                  />
-                  <div className="flex justify-end gap-2">
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => setReplyingTo(null)}
-                    >
-                      Cancel
-                    </Button>
-                    <Button 
-                      size="sm" 
-                      className="bg-[#0a1e42] hover:bg-[#263e69]"
-                      onClick={() => submitReply(comment.id)}
-                    >
-                      Reply
-                    </Button>
-                  </div>
+                  {user ? (
+                    <>
+                      <Textarea
+                        placeholder="Write a reply..."
+                        value={replyContent}
+                        onChange={(e) => setReplyContent(e.target.value)}
+                        className="mb-2 h-20 resize-none"
+                      />
+                      <div className="flex justify-end gap-2">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => setReplyingTo(null)}
+                        >
+                          Cancel
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          className="bg-[#0a1e42] hover:bg-[#263e69]"
+                          onClick={() => submitReply(comment.id)}
+                          disabled={!replyContent.trim()}
+                        >
+                          Reply
+                        </Button>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="rounded-lg border border-gray-200 p-3 text-center text-sm">
+                      <p className="text-gray-600">Please sign in to reply.</p>
+                      <Link href="/signin" className="mt-1 inline-block text-xs text-blue-500 hover:text-blue-700">
+                        Sign in
+                      </Link>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -328,15 +401,22 @@ export default function DiscussionClient({ idea, initialComments }: DiscussionCl
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-xl text-[#0a1e42]">Idea Details</CardTitle>
-                    <Button 
-                      variant={hasLiked ? "default" : "outline"}
-                      size="sm"
-                      onClick={handleLikeIdea}
-                      className={hasLiked ? "bg-[#0a1e42] hover:bg-[#263e69]" : ""}
-                    >
-                      <ThumbsUp className="mr-2 h-4 w-4" />
-                      {ideaLikes}
-                    </Button>
+                    {user ? (
+                      <Button 
+                        variant={hasLiked ? "default" : "outline"}
+                        size="sm"
+                        onClick={handleLikeIdea}
+                        className={hasLiked ? "bg-[#0a1e42] hover:bg-[#263e69]" : ""}
+                      >
+                        <ThumbsUp className="mr-2 h-4 w-4" />
+                        {ideaLikes}
+                      </Button>
+                    ) : (
+                      <div className="flex items-center text-sm text-gray-500">
+                        <ThumbsUp className="mr-2 h-4 w-4" />
+                        <span>{ideaLikes}</span>
+                      </div>
+                    )}
                   </div>
                 </CardHeader>
                 <CardContent>
@@ -351,24 +431,40 @@ export default function DiscussionClient({ idea, initialComments }: DiscussionCl
                 
                 <div className="mb-6 flex gap-3">
                   <Avatar className="h-10 w-10">
-                    <AvatarFallback className="bg-[#0a1e42] text-white">CU</AvatarFallback>
+                    <AvatarFallback className="bg-[#0a1e42] text-white">
+                      {user ? getInitials(user.name) : "?"}
+                    </AvatarFallback>
                   </Avatar>
                   <div className="flex-1">
-                    <Textarea
-                      placeholder="Share your thoughts on this idea..."
-                      value={commentContent}
-                      onChange={(e) => setCommentContent(e.target.value)}
-                      className="mb-2 resize-none"
-                    />
-                    <div className="flex justify-end">
-                      <Button 
-                        onClick={submitComment}
-                        className="bg-[#0a1e42] hover:bg-[#263e69]"
-                        disabled={!commentContent.trim()}
-                      >
-                        Post Comment
-                      </Button>
-                    </div>
+                    {user ? (
+                      <>
+                        <div className="mb-1 text-sm text-gray-500">
+                          Commenting as <span className="font-medium text-gray-700">{user.name}</span>
+                        </div>
+                        <Textarea
+                          placeholder="Share your thoughts on this idea..."
+                          value={commentContent}
+                          onChange={(e) => setCommentContent(e.target.value)}
+                          className="mb-2 resize-none"
+                        />
+                        <div className="flex justify-end">
+                          <Button 
+                            onClick={submitComment}
+                            className="bg-[#0a1e42] hover:bg-[#263e69]"
+                            disabled={!commentContent.trim()}
+                          >
+                            Post Comment
+                          </Button>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="rounded-lg border border-gray-200 p-4 text-center">
+                        <p className="text-gray-600">Please sign in to join the discussion.</p>
+                        <Link href="/signin" className="mt-2 inline-block text-sm text-blue-500 hover:text-blue-700">
+                          Sign in
+                        </Link>
+                      </div>
+                    )}
                   </div>
                 </div>
                 

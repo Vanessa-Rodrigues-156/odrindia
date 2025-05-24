@@ -23,15 +23,21 @@ export async function POST(req: NextRequest) {
     }
 
     // For NextAuth credentials, return user info (without password)
-    return NextResponse.json({
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        createdAt: user.createdAt,
-      }
-    }, { status: 200 });
+    const userWithoutPassword = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      userRole: user.userRole,
+      contactNumber: user.contactNumber,
+      city: user.city,
+      country: user.country,
+      institution: user.institution,
+      highestEducation: user.highestEducation,
+      odrLabUsage: user.odrLabUsage,
+      createdAt: user.createdAt,
+    };
+    
+    return NextResponse.json({ user: userWithoutPassword }, { status: 200 });
   } catch (error) {
     console.error("Login error:", error);
     return NextResponse.json({ error: "Internal server error." }, { status: 500 });

@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Menu } from "lucide-react"
+import { useAuth } from "@/lib/auth"
 
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
@@ -52,44 +53,18 @@ const navItems = [
 	},
 ]
 
-// Type definition for user
-interface User {
-	id: string
-	name: string
-	email: string
-	role: string
-}
-
 export default function Navbar() {
 	const [isOpen, setIsOpen] = useState(false)
 	const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
 	const dropdownRefs = useRef<{ [key: string]: HTMLDivElement | null }>({})
 	const [languageDropdown, setLanguageDropdown] = useState(false)
 	const [profileDropdown, setProfileDropdown] = useState(false)
-	const [currentUser, setCurrentUser] = useState<User | null>(null)
-
-	// Check if user is logged in on component mount
-	useEffect(() => {
-		const userJson = localStorage.getItem("currentUser")
-		if (userJson) {
-			try {
-				const user = JSON.parse(userJson)
-				setCurrentUser(user)
-			} catch (error) {
-				console.error("Failed to parse user data from localStorage", error)
-				// Clear invalid data
-				localStorage.removeItem("currentUser")
-			}
-		}
-	}, [])
+	const { user: currentUser, logout } = useAuth()
 
 	// Handle user logout
 	const handleLogout = () => {
-		localStorage.removeItem("currentUser")
-		setCurrentUser(null)
+		logout()
 		setProfileDropdown(false)
-		// Redirect to home page if necessary
-		window.location.href = "/"
 	}
 
 	// Close dropdown when clicking outside
@@ -319,7 +294,7 @@ export default function Navbar() {
 										Your Profile
 									</Link>
 
-									{currentUser.role === "ADMIN" && (
+									{currentUser.userRole === "ADMIN" && (
 										<Link
 											href="/admin/idea-approval"
 											onClick={() => setProfileDropdown(false)}
@@ -453,7 +428,7 @@ export default function Navbar() {
 													</button>
 												</Link>
 
-												{currentUser.role === "ADMIN" && (
+												{currentUser.userRole === "ADMIN" && (
 													<Link
 														href="/admin/idea-approval"
 														onClick={() => setIsOpen(false)}

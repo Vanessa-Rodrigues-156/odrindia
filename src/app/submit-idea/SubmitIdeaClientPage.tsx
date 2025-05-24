@@ -1,7 +1,9 @@
 "use client"
 import { LightbulbIcon, CheckCircle2, ArrowRight, Loader2 } from "lucide-react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion" // Added framer-motion import
+import { useAuth } from "@/lib/auth"
+import { useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -34,6 +36,8 @@ const staggerContainer = {
 
 export default function SubmitIdeaClientPage() {
   const { toast } = useToast();
+  const router = useRouter();
+  const { user, loading } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [formData, setFormData] = useState({
@@ -44,6 +48,8 @@ export default function SubmitIdeaClientPage() {
     consent: false
   });
   const [formErrors, setFormErrors] = useState<Record<string, string[]>>({});
+  
+  // Page is now protected by PageGuard component
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -93,7 +99,20 @@ export default function SubmitIdeaClientPage() {
     setIsSubmitting(true);
     
     try {
+      // Make sure user is logged in
+      if (!user || !user.id) {
+        toast({
+          title: "Authentication Required",
+          description: "Please sign in to submit an idea.",
+          variant: "destructive"
+        });
+        return;
+      }
+
       const submissionData = new FormData();
+      
+      // Add the user ID from authentication
+      submissionData.append("userId", user.id);
       
       // Append form data
       Object.entries(formData).forEach(([key, value]) => {

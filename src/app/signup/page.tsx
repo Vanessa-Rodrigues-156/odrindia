@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion'; // Added AnimatePresence
+import { useAuth } from '@/lib/auth';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -97,6 +98,7 @@ const [loading, setLoading] = useState(false);
 const [step, setStep] = useState(0);
 const [form, setForm] = useState(initialForm);
 const router = useRouter();
+const { login } = useAuth();
 
 const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
 const target = e.target;
@@ -172,50 +174,75 @@ setStep((s) => s - 1);
 };
 
 const handleSignUp = async (event: React.FormEvent) => {
-event.preventDefault();
-setError(null);
-setSuccess(null);
-setLoading(true);
+  event.preventDefault();
+  setError(null);
+  setSuccess(null);
+  setLoading(true);
 
-try {
-const res = await fetch('/api/auth/signup', {
-method: 'POST',
-headers: {
-'Content-Type': 'application/json',
-},
-body: JSON.stringify({
-name: form.name,
-email: form.email,
-password: form.password,
-mobile: form.mobile,
-city: form.city,
-country: form.country,
-userType: form.userType,
-details: {
-...form,
-// Remove password fields from details
-password: undefined,
-confirmPassword: undefined,
-},
-}),
-});
+  // Construct ODR Lab usage string based on user type
+  let odrLabUsageDescription = '';
+  
+  switch(form.userType) {
+    case 'student':
+      odrLabUsageDescription = `As a student of ${form.courseName} (${form.courseStatus}) at ${form.studentInstitute}. ${form.odrLabPurpose || ''}`;
+      break;
+    case 'faculty':
+      odrLabUsageDescription = `As a ${form.facultyRole} at ${form.facultyInstitute}, specializing in ${form.facultyExpertise}, teaching ${form.facultyCourse}. ${form.odrLabPurpose || ''}`;
+      break;
+    case 'tech':
+      odrLabUsageDescription = `As a ${form.techRole} at ${form.techOrg}. ${form.odrLabPurpose || ''}`;
+      break;
+    case 'law':
+      odrLabUsageDescription = `As a legal professional at ${form.lawFirm}. ${form.odrLabPurpose || ''}`;
+      break;
+    case 'other':
+      odrLabUsageDescription = `As a ${form.otherRole} at ${form.otherWorkplace}. ${form.odrLabPurpose || ''}`;
+      break;
+    default:
+      odrLabUsageDescription = form.odrLabPurpose || '';
+  }
 
-const data = await res.json();
+  try {
+    const res = await fetch('/api/auth/signup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: form.name,
+        email: form.email,
+        password: form.password,
+        contactNumber: form.mobile,
+        city: form.city,
+        country: form.country,
+        userRole: form.userType === 'student' ? 'INNOVATOR' : 
+                form.userType === 'faculty' ? 'MENTOR' : 
+                form.userType === 'law' ? 'MENTOR' : 
+                form.userType === 'tech' ? 'INNOVATOR' : 'OTHER',
+        institution: form.studentInstitute || form.facultyInstitute || form.techOrg || form.lawFirm || form.otherWorkplace || undefined,
+        highestEducation: form.highestEducation || undefined,
+        odrLabUsage: odrLabUsageDescription,
+      }),
+    });
 
-if (res.ok) {
-setSuccess('Registration successful! You can now sign in.');
-setTimeout(() => {
-router.push('/signin');
-}, 3000);
-} else {
-setError(data.error || 'Registration failed');
-}
-} catch (err) {
-console.error(err);
-setError('Something went wrong. Please try again.');
-} finally {
-setLoading(false);
-}
+    const data = await res.json();
+
+    if (res.ok) {
+      setSuccess('Registration successful!');
+      // Auto login the user after successful registration
+      login(data.user);
+      setTimeout(() => {
+        router.push('/');
+      }, 3000);
+    } else {
+      setError(data.error || 'Registration failed');
+    }
+  } catch (err) {
+    console.error(err);
+    setError('Something went wrong. Please try again.');
+  } finally {
+    setLoading(false);
+  }
 };
 
 const renderStep = () => {
@@ -418,14 +445,221 @@ id="odrLabPurpose"
 name="odrLabPurpose"
 value={form.odrLabPurpose}
 onChange={handleChange}
-placeholder="Why do you want to join the ODR Lab?"
+placeholder="Why do you want to join the ODR Lab? How will you use it?"
 rows={4}
 />
 </div>
 </motion.div>
 </motion.div>
 )}
-{/* Similar sections for other user types... */}
+
+{form.userType === 'faculty' && (
+<motion.div initial="hidden" animate="visible" variants={staggerContainer}>
+<motion.div className="space-y-4" variants={fadeInUp}>
+<div>
+<Label htmlFor="facultyInstitute">Institution</Label>
+<Input
+id="facultyInstitute"
+name="facultyInstitute"
+value={form.facultyInstitute}
+onChange={handleChange}
+placeholder="Your institution name"
+required
+/>
+</div>
+<div>
+<Label htmlFor="facultyRole">Role</Label>
+<Input
+id="facultyRole"
+name="facultyRole"
+value={form.facultyRole}
+onChange={handleChange}
+placeholder="Your role (e.g., Professor, Associate Professor)"
+required
+/>
+</div>
+<div>
+<Label htmlFor="facultyExpertise">Area of Expertise</Label>
+<Input
+id="facultyExpertise"
+name="facultyExpertise"
+value={form.facultyExpertise}
+onChange={handleChange}
+placeholder="Your area of expertise"
+required
+/>
+</div>
+<div>
+<Label htmlFor="facultyCourse">Course you teach</Label>
+<Input
+id="facultyCourse"
+name="facultyCourse"
+value={form.facultyCourse}
+onChange={handleChange}
+placeholder="Course you teach"
+required
+/>
+</div>
+<div>
+<Label htmlFor="facultyMentor">Are you willing to mentor students?</Label>
+<select
+id="facultyMentor"
+name="facultyMentor"
+className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#0a1e42]"
+value={form.facultyMentor}
+onChange={handleChange}
+required
+>
+<option value="">Select</option>
+<option value="yes">Yes</option>
+<option value="no">No</option>
+</select>
+</div>
+<div>
+<Label htmlFor="odrLabPurpose">How do you plan to use ODR Lab?</Label>
+<Textarea
+id="odrLabPurpose"
+name="odrLabPurpose"
+value={form.odrLabPurpose}
+onChange={handleChange}
+placeholder="How will you use ODR Lab in your teaching or research?"
+rows={4}
+/>
+</div>
+</motion.div>
+</motion.div>
+)}
+
+{form.userType === 'tech' && (
+<motion.div initial="hidden" animate="visible" variants={staggerContainer}>
+<motion.div className="space-y-4" variants={fadeInUp}>
+<div>
+<Label htmlFor="techOrg">Organization</Label>
+<Input
+id="techOrg"
+name="techOrg"
+value={form.techOrg}
+onChange={handleChange}
+placeholder="Your organization"
+required
+/>
+</div>
+<div>
+<Label htmlFor="techRole">Role</Label>
+<Input
+id="techRole"
+name="techRole"
+value={form.techRole}
+onChange={handleChange}
+placeholder="Your role in the organization"
+required
+/>
+</div>
+<div>
+<Label htmlFor="odrLabPurpose">How do you plan to use ODR Lab?</Label>
+<Textarea
+id="odrLabPurpose"
+name="odrLabPurpose"
+value={form.odrLabPurpose}
+onChange={handleChange}
+placeholder="How will you use ODR Lab in your technical work?"
+rows={4}
+/>
+</div>
+</motion.div>
+</motion.div>
+)}
+
+{form.userType === 'law' && (
+<motion.div initial="hidden" animate="visible" variants={staggerContainer}>
+<motion.div className="space-y-4" variants={fadeInUp}>
+<div>
+<Label htmlFor="lawFirm">Law Firm/Organization</Label>
+<Input
+id="lawFirm"
+name="lawFirm"
+value={form.lawFirm}
+onChange={handleChange}
+placeholder="Your law firm or organization"
+required
+/>
+</div>
+<div>
+<Label htmlFor="highestEducation">Legal Education</Label>
+<Input
+id="highestEducation"
+name="highestEducation"
+value={form.highestEducation}
+onChange={handleChange}
+placeholder="Your legal education (e.g., LLB, JD)"
+required
+/>
+</div>
+<div>
+<Label htmlFor="odrLabPurpose">How do you plan to use ODR Lab?</Label>
+<Textarea
+id="odrLabPurpose"
+name="odrLabPurpose"
+value={form.odrLabPurpose}
+onChange={handleChange}
+placeholder="How will you use ODR Lab in your legal practice?"
+rows={4}
+/>
+</div>
+</motion.div>
+</motion.div>
+)}
+
+{form.userType === 'other' && (
+<motion.div initial="hidden" animate="visible" variants={staggerContainer}>
+<motion.div className="space-y-4" variants={fadeInUp}>
+<div>
+<Label htmlFor="otherRole">Your Role</Label>
+<Input
+id="otherRole"
+name="otherRole"
+value={form.otherRole}
+onChange={handleChange}
+placeholder="Your current role"
+required
+/>
+</div>
+<div>
+<Label htmlFor="otherWorkplace">Workplace/Institution</Label>
+<Input
+id="otherWorkplace"
+name="otherWorkplace"
+value={form.otherWorkplace}
+onChange={handleChange}
+placeholder="Your workplace or institution"
+required
+/>
+</div>
+<div>
+<Label htmlFor="highestEducation">Highest Education</Label>
+<Input
+id="highestEducation"
+name="highestEducation"
+value={form.highestEducation}
+onChange={handleChange}
+placeholder="Your highest education"
+required
+/>
+</div>
+<div>
+<Label htmlFor="odrLabPurpose">How do you plan to use ODR Lab?</Label>
+<Textarea
+id="odrLabPurpose"
+name="odrLabPurpose"
+value={form.odrLabPurpose}
+onChange={handleChange}
+placeholder="How will you use ODR Lab?"
+rows={4}
+/>
+</div>
+</motion.div>
+</motion.div>
+)}
 </motion.div>
 );
 case 3:
@@ -441,25 +675,103 @@ className="space-y-6"
 <motion.div className="space-y-4" variants={fadeInUp}>
 <h3 className="text-lg font-medium">Review Your Information</h3>
 <div className="bg-gray-50 p-4 rounded border space-y-3">
-<div>
-<span className="font-medium">Name:</span> {form.name}
-</div>
-<div>
-<span className="font-medium">Email:</span> {form.email}
-</div>
-<div>
-<span className="font-medium">Mobile:</span> {form.mobile}
-</div>
-<div>
-<span className="font-medium">Location:</span> {form.city}, {form.country}
-</div>
-<div>
-<span className="font-medium">User Type:</span> {form.userType}
-</div>
-{/* Additional fields based on user type */}
+  <div className="grid gap-3">
+    <h4 className="font-medium text-[#0a1e42] border-b pb-1">Personal Information</h4>
+    <div>
+      <span className="font-medium">Name:</span> {form.name}
+    </div>
+    <div>
+      <span className="font-medium">Email:</span> {form.email}
+    </div>
+    <div>
+      <span className="font-medium">Mobile:</span> {form.mobile}
+    </div>
+    <div>
+      <span className="font-medium">Location:</span> {form.city}, {form.country}
+    </div>
+    <div>
+      <span className="font-medium">User Type:</span> {form.userType}
+    </div>
+    
+    <h4 className="font-medium text-[#0a1e42] border-b pb-1 mt-3">Professional Information</h4>
+    {form.userType === 'student' && (
+      <>
+        <div>
+          <span className="font-medium">Highest Education:</span> {form.highestEducation}
+        </div>
+        <div>
+          <span className="font-medium">Institution:</span> {form.studentInstitute}
+        </div>
+        <div>
+          <span className="font-medium">Course Status:</span> {form.courseStatus}
+        </div>
+        <div>
+          <span className="font-medium">Course Name:</span> {form.courseName}
+        </div>
+      </>
+    )}
+    {form.userType === 'faculty' && (
+      <>
+        <div>
+          <span className="font-medium">Institution:</span> {form.facultyInstitute}
+        </div>
+        <div>
+          <span className="font-medium">Role:</span> {form.facultyRole}
+        </div>
+        <div>
+          <span className="font-medium">Area of Expertise:</span> {form.facultyExpertise}
+        </div>
+        <div>
+          <span className="font-medium">Course:</span> {form.facultyCourse}
+        </div>
+        <div>
+          <span className="font-medium">Willing to Mentor:</span> {form.facultyMentor}
+        </div>
+      </>
+    )}
+    {form.userType === 'tech' && (
+      <>
+        <div>
+          <span className="font-medium">Organization:</span> {form.techOrg}
+        </div>
+        <div>
+          <span className="font-medium">Role:</span> {form.techRole}
+        </div>
+      </>
+    )}
+    {form.userType === 'law' && (
+      <>
+        <div>
+          <span className="font-medium">Law Firm/Organization:</span> {form.lawFirm}
+        </div>
+        <div>
+          <span className="font-medium">Legal Education:</span> {form.highestEducation}
+        </div>
+      </>
+    )}
+    {form.userType === 'other' && (
+      <>
+        <div>
+          <span className="font-medium">Role:</span> {form.otherRole}
+        </div>
+        <div>
+          <span className="font-medium">Workplace/Institution:</span> {form.otherWorkplace}
+        </div>
+        <div>
+          <span className="font-medium">Highest Education:</span> {form.highestEducation}
+        </div>
+      </>
+    )}
+    
+    <h4 className="font-medium text-[#0a1e42] border-b pb-1 mt-3">ODR Lab Usage</h4>
+    <div>
+      <span className="font-medium">Purpose for joining ODR Lab:</span>
+      <p className="mt-1 text-sm text-gray-700">{form.odrLabPurpose || "Not specified"}</p>
+    </div>
+  </div>
 </div>
 <p className="text-sm text-gray-500">
-Please review your information above before submitting. Click &quot;Submit&quot; to complete your registration.
+  Please review your information above before submitting. Click &quot;Submit&quot; to complete your registration.
 </p>
 </motion.div>
 </motion.div>

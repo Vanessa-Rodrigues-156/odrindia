@@ -5,18 +5,47 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ ideaId: string }> }
 ) {
-  const { ideaId } =await params;
+  const { ideaId } = await params;
   // Fetch all top-level comments for the idea
   const comments = await prisma.comment.findMany({
     where: { ideaId, parentId: null },
     orderBy: { createdAt: "asc" },
     include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+          userRole: true,
+        }
+      },
       replies: {
         orderBy: { createdAt: "asc" },
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              userRole: true,
+            }
+          },
+          likes: true, // Include likes for replies
+        }
       },
+      likes: true, // Include likes for main comments
     },
   });
-  return NextResponse.json(comments);
+  
+  // Map comments to include like counts
+  const commentsWithLikeCounts = comments.map(comment => ({
+    ...comment,
+    likeCount: comment.likes.length,
+    replies: comment.replies.map(reply => ({
+      ...reply,
+      likeCount: reply.likes.length,
+    }))
+  }));
+  
+  return NextResponse.json(commentsWithLikeCounts);
 }
 
 export async function POST(
@@ -39,9 +68,22 @@ export async function POST(
       parentId: data.parentId || null,
     },
     include: {
-      replies: true,
+      user: {
+        select: {
+          id: true, 
+          name: true,
+          userRole: true,
+        }
+      },
+      likes: true,
     },
   });
 
-  return NextResponse.json(comment, { status: 201 });
+  // Format response with like count
+  const formattedComment = {
+    ...comment,
+    likeCount: 0, // New comment has 0 likes
+  };
+
+  return NextResponse.json(formattedComment, { status: 201 });
 }

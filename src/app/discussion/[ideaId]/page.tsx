@@ -30,12 +30,8 @@ export default async function DiscussionPage({ params }: DiscussionPageProps) {
   const idea = await prisma.idea.findUnique({
     where: { id: ideaId },
     include: {
-      comments: {
-        include: {
-          user: true,
-        },
-      },
-      user: true,
+      owner: true,
+      likes: true,
     },
   });
   if (!idea) {
@@ -44,25 +40,56 @@ export default async function DiscussionPage({ params }: DiscussionPageProps) {
   // Map DB idea to expected props for DiscussionClient
   const mappedIdea = {
     id: idea.id,
-    name: idea.user?.name || "Anonymous",
-    email: idea.user?.email || "anonymous@example.com",
-    country: idea.user?.country || "",
+    name: idea.owner?.name || "Anonymous",
+    email: idea.owner?.email || "anonymous@example.com",
+    country: idea.owner?.country || "",
     description: idea.description,
     submittedAt: idea.createdAt.toISOString(),
-    likes: idea.likes,
+    likes: idea.likes?.length || 0,
   };
-  // Map comments to expected structure, including user details and required authorRole
-  const comments = idea.comments.map((c) => ({
+  // Get all comments for this idea
+  const allComments = await prisma.comment.findMany({
+    where: { ideaId: idea.id },
+    include: {
+      user: true,
+      likes: true,
+    },
+    orderBy: { createdAt: 'asc' }
+  });
+  
+  // Separate top-level comments and build a replies map
+  const topLevelComments = allComments.filter(c => !c.parentId);
+  const repliesMap = new Map();
+  
+  allComments.filter(c => c.parentId).forEach(reply => {
+    if (!repliesMap.has(reply.parentId)) {
+      repliesMap.set(reply.parentId, []);
+    }
+    repliesMap.get(reply.parentId).push({
+      id: reply.id,
+      author: reply.user?.name || "Anonymous",
+      authorEmail: reply.user?.email || "anonymous@example.com",
+      authorCountry: reply.user?.country || "",
+      authorRole: reply.user?.userRole || "INNOVATOR",
+      content: reply.content,
+      createdAt: reply.createdAt.toISOString(),
+      likes: reply.likes?.length || 0,
+      parentId: reply.parentId,
+    });
+  });
+  
+  // Map top-level comments to expected structure with their replies
+  const comments = topLevelComments.map((c) => ({
     id: c.id,
     author: c.user?.name || "Anonymous",
     authorEmail: c.user?.email || "anonymous@example.com",
     authorCountry: c.user?.country || "",
-    authorRole: "", // or a default value if needed
+    authorRole: c.user?.userRole || "INNOVATOR", // Default to INNOVATOR role
     content: c.content,
     createdAt: c.createdAt.toISOString(),
-    likes: c.likes,
+    likes: c.likes?.length || 0,
     parentId: c.parentId,
-    replies: [],
+    replies: repliesMap.get(c.id) || [],
   }));
   return <DiscussionClient idea={mappedIdea} initialComments={comments} />;
 }

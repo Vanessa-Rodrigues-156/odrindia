@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion'; // Added framer-motion import
+import { useAuth } from '@/lib/auth';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -33,6 +34,7 @@ const SignInPage = () => {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+    const { login } = useAuth();
 
     const handleSignIn = async (event: React.FormEvent) => {
         event.preventDefault();
@@ -53,11 +55,11 @@ const SignInPage = () => {
             const data = await res.json();
 
             if (res.ok) {
-                // Store user info in localStorage (for demo; use proper session in production)
-                localStorage.setItem('currentUser', JSON.stringify(data.user));
+                // Use the auth context to handle user login
+                login(data.user);
                 
                 // Redirect based on user role
-                if (data.user.role === 'ADMIN') {
+                if (data.user.userRole === 'ADMIN') {
                     router.push('/admin/idea-approval');
                 } else {
                     router.push('/'); // Redirect to home page for regular users

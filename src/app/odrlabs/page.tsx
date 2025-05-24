@@ -14,36 +14,32 @@ export default async function OdrLabsPage() {
       approved: true
     },
     orderBy: { createdAt: "desc" },
-    include:{
-      user: {
+    include: {
+      owner: {
         select: {
           id: true,
           name: true,
           email: true,
-          country: true, // Assuming country is stored in the user model
-          userType: true, // Optional, if you want to display user type
-          institution: true, // Optional, if you want to display institution
+          country: true,
+          institution: true,
         }
       },
-      comments: {
-        select: {
-          id: true,
-          content: true,
-          createdAt: true,
-          userId: true,
-        }
-      }
+      comments: true,
+      likes: true
     }
   })
+  
   // Map DB results to match OdrLabsClient expected props
   const ideas = ideasFromDb.map((idea) => ({
     id: idea.id,
-    name: idea.user?.name || "Anonymous",
-    email: idea.user?.email || "anonymous@example.com",
-    country: "India", // Default country if not stored
+    name: idea.owner.name,
+    email: idea.owner.email,
+    country: idea.owner.country || "India", // Default to India if no country specified
+    title: idea.title,
+    caption: idea.caption || "",
     description: idea.description,
     submittedAt: idea.createdAt.toISOString(),
-    likes: idea.likes,
+    likes: idea.likes.length,
     commentCount: idea.comments.length,
   }))
   return <OdrLabsClient initialIdeas={ideas} />

@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-
 export async function POST(
   request: NextRequest,
-
   { params }: { params: Promise<{ ideaId: string; commentId: string }> }
 ) {
   // Now `ideaId` and `commentId` are directly available from the `params` object.
@@ -18,9 +16,15 @@ export async function POST(
   );
 
   try {
-    const data: { action: string } = await request.json();
+    const data = await request.json();
     const action = data.action; // 'like' or 'unlike'
+    const userId = data.userId; // User who is liking/unliking
+    
+    if (!userId) {
+      return NextResponse.json({ error: "User ID is required" }, { status: 400 });
+    }
 
+    // Verify comment exists
     const comment = await prisma.comment.findUnique({
       where: { id: commentId },
     });
@@ -32,23 +36,41 @@ export async function POST(
       );
     }
 
-    let newLikes = comment.likes;
-    if (action === "like") {
-      newLikes = comment.likes + 1;
-    } else if (action === "unlike" && comment.likes > 0) {
-      newLikes = comment.likes - 1;
-    } else if (action === "unlike" && comment.likes <= 0) {
-      newLikes = 0; // Prevent likes from going below 0
+    // Check if user has already liked this comment
+    const existingLike = await prisma.like.findFirst({
+      where: {
+        userId: userId,
+        commentId: commentId
+      }
+    });
+
+    if (action === "like" && !existingLike) {
+      // Create a new like
+      await prisma.like.create({
+        data: {
+          userId: userId,
+          commentId: commentId
+        }
+      });
+    } else if (action === "unlike" && existingLike) {
+      // Remove the like
+      await prisma.like.delete({
+        where: {
+          id: existingLike.id
+        }
+      });
     }
 
-    const updatedComment = await prisma.comment.update({
-      where: { id: commentId },
-      data: { likes: newLikes },
+    // Get the updated like count
+    const likeCount = await prisma.like.count({
+      where: {
+        commentId: commentId
+      }
     });
 
     return NextResponse.json({
       success: true,
-      likes: updatedComment.likes,
+      likes: likeCount,
       message: `Comment ${action === "like" ? "liked" : "unliked"} successfully`,
     });
   } catch (error) {

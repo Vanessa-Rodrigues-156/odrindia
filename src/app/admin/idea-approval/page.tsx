@@ -1,5 +1,6 @@
-"use client";
-import { useEffect, useState, useCallback } from "react";
+'use client';
+import AdminGuard from "@/components/guards/AdminGuard";
+import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -37,7 +38,15 @@ interface IdeaSubmission {
   user: User;
 }
 
-export default function AdminIdeaApprovalPage() {
+export default function AdminPage() {
+  return (
+    <AdminGuard>
+      <AdminIdeaApprovalContent />
+    </AdminGuard>
+  );
+}
+
+function AdminIdeaApprovalContent() {
   const { toast } = useToast();
   const [submissions, setSubmissions] = useState<IdeaSubmission[]>([]);
   const [filteredSubmissions, setFilteredSubmissions] = useState<IdeaSubmission[]>([]);
@@ -131,7 +140,7 @@ export default function AdminIdeaApprovalPage() {
       const res = await fetch("/api/admin/approve-idea", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ submissionId: id }),
+        body: JSON.stringify({ ideaId: id }),
       });
       
       if (!res.ok) {

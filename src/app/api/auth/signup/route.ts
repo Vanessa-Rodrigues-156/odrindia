@@ -4,7 +4,18 @@ import bcrypt from "bcryptjs";
 
 export async function POST(req: NextRequest) {
   try {
-    const { name, email, password, role, country, userType, studentInstitute } = await req.json();
+    const { 
+      name, 
+      email, 
+      password, 
+      userRole, 
+      contactNumber,
+      city,
+      country, 
+      institution,
+      highestEducation,
+      odrLabUsage
+    } = await req.json();
 
     if (!name || !email || !password) {
       return NextResponse.json({ error: "Name, email, and password are required." }, { status: 400 });
@@ -19,25 +30,31 @@ export async function POST(req: NextRequest) {
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create the user
+    // Create the user with new schema fields
     const user = await prisma.user.create({
       data: {
         name,
         email,
         password: hashedPassword,
-        role: role || "USER",
+        userRole: userRole || "INNOVATOR",
+        contactNumber: contactNumber || null,
+        city: city || null,
         country: country || null,
-        userType: userType || null,
-        institution: userType === 'student' ? studentInstitute || null : null,
+        institution: institution || null,
+        highestEducation: highestEducation || null,
+        odrLabUsage: odrLabUsage || null
       },
       select: {
         id: true,
         name: true,
         email: true,
-        role: true,
+        userRole: true,
+        contactNumber: true,
+        city: true,
         country: true,
-        userType: true,
         institution: true,
+        highestEducation: true,
+        odrLabUsage: true,
         createdAt: true,
       },
     });

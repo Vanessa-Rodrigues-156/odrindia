@@ -5,24 +5,20 @@ import { z } from "zod";
 
 export async function POST(req: NextRequest) {
   try {
-    // Get user ID from auth token/cookie/session
-    const authHeader = req.headers.get('authorization');
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    // Get the form data first
+    const formData = await req.formData();
+    
+    // Extract userId from the form data
+    const userId = formData.get("userId") as string;
+    
+    if (!userId) {
       return NextResponse.json({ 
         success: false, 
-        message: "Authentication required" 
+        message: "User ID is required. Please log in to submit ideas." 
       }, { status: 401 });
     }
     
-    // Extract token and verify (this is a simplified example)
-    // In a real app, you would verify the JWT token here
-    // For example: const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    
-    // For demonstration, let's assume we extracted the userId from the token
-    // In a real app, this would come from JWT verification
-    const userId = "user-id-from-token"; // Replace with actual JWT verification
-    
-    const formData = await req.formData();
+    // Process the rest of the form data
     const data = {
       title: formData.get("title") as string | null,
       idea_caption: formData.get("idea_caption") as string | null || "",
@@ -45,22 +41,22 @@ export async function POST(req: NextRequest) {
       throw validationError;
     }
 
-    // Save to DB with user association
-    const newIdea = await prisma.ideaSubmission.create({
+    // In the new schema, we directly create an Idea entry that starts as unapproved
+    // Admin approval will change the approved flag later
+    const newIdea = await prisma.idea.create({
       data: {
         title: data.title as string,
-        ideaCaption: data.idea_caption as string,
+        caption: data.idea_caption as string,
         description: data.description as string,
-        odrExperience: data.odr_experience as string,
-        consent: data.consent,
-        userId: userId, // Associate with the current user
+        priorOdrExperience: data.odr_experience as string,
         approved: false,
+        ownerId: userId, // Associate with the current user as owner
       },
     });
 
     return NextResponse.json({ 
       success: true,
-      message: "Idea submitted successfully",
+      message: "Idea submitted successfully and awaiting approval",
       ideaId: newIdea.id
     });
   } catch (error) {

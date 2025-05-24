@@ -1,7 +1,7 @@
 
 import type { Metadata } from "next"
 import SubmitIdeaClientPage from "./SubmitIdeaClientPage"
-
+import PageGuard from "@/components/guards/PageGuard"
 
 export const metadata: Metadata = {
   title: "Got an idea for a better, tech-enabled justice system?",
@@ -9,5 +9,9 @@ export const metadata: Metadata = {
 }
 
 export default function SubmitIdeaPage() {
-  return <SubmitIdeaClientPage />
+  return (
+    <PageGuard requireAuth={true}>
+      <SubmitIdeaClientPage />
+    </PageGuard>
+  )
 }

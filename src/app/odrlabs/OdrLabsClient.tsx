@@ -13,9 +13,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 type Idea = {
   id: string
-  name: string        // From user.name
-  email: string       // From user.email
-  country: string     // Default or from user profile
+  name: string        // From owner.name
+  email: string       // From owner.email
+  country: string     // From owner.country or default
+  title: string       // Added title field from the database
+  caption: string     // Added caption field from the database
   description: string
   submittedAt: string
   likes: number
@@ -33,11 +35,13 @@ export default function OdrLabsClient({ initialIdeas }: OdrLabsClientProps) {
   
   // Filter and search ideas
   const filteredIdeas = ideas.filter(idea => {
-    const matchesSearch = idea.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         idea.name.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesSearch = idea.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         idea.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         idea.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (idea.caption && idea.caption.toLowerCase().includes(searchTerm.toLowerCase()))
     
     if (filter === "all") return matchesSearch
-    if (filter === "popular") return matchesSearch && idea.likes > 30
+    if (filter === "popular") return matchesSearch && idea.likes > 5
     if (filter === "recent") {
       const ideaDate = new Date(idea.submittedAt)
       const oneWeekAgo = new Date()
@@ -114,8 +118,13 @@ export default function OdrLabsClient({ initialIdeas }: OdrLabsClientProps) {
                           {idea.country} • {format(new Date(idea.submittedAt), "MMM d, yyyy")}
                         </div>
                         <CardTitle className="line-clamp-2 text-xl text-[#0a1e42]">
-                          {idea.description.split('.')[0]}
+                          {idea.title}
                         </CardTitle>
+                        {idea.caption && (
+                          <p className="text-sm text-gray-600 italic mt-1">
+                            {idea.caption}
+                          </p>
+                        )}
                       </CardHeader>
                       <CardContent>
                         <p className="line-clamp-4 text-gray-600">
