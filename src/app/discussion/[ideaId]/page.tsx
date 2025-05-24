@@ -29,7 +29,14 @@ export default async function DiscussionPage({ params }: DiscussionPageProps) {
   const { ideaId } = await params;
   const idea = await prisma.idea.findUnique({
     where: { id: ideaId },
-    include: { comments: true },
+    include: {
+      comments: {
+        include: {
+          user: true,
+        },
+      },
+      user: true,
+    },
   });
   if (!idea) {
     notFound();
@@ -37,18 +44,20 @@ export default async function DiscussionPage({ params }: DiscussionPageProps) {
   // Map DB idea to expected props for DiscussionClient
   const mappedIdea = {
     id: idea.id,
-    name: idea.name,
-    email: idea.email,
-    country: idea.country,
+    name: idea.user?.name || "Anonymous",
+    email: idea.user?.email || "anonymous@example.com",
+    country: idea.user?.country || "",
     description: idea.description,
     submittedAt: idea.createdAt.toISOString(),
     likes: idea.likes,
   };
-  // Map comments to expected structure (flat for now)
+  // Map comments to expected structure, including user details and required authorRole
   const comments = idea.comments.map((c) => ({
     id: c.id,
-    author: c.author,
-    authorRole: c.authorRole,
+    author: c.user?.name || "Anonymous",
+    authorEmail: c.user?.email || "anonymous@example.com",
+    authorCountry: c.user?.country || "",
+    authorRole: "", // or a default value if needed
     content: c.content,
     createdAt: c.createdAt.toISOString(),
     likes: c.likes,

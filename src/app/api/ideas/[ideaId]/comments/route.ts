@@ -5,7 +5,7 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ ideaId: string }> }
 ) {
-  const { ideaId } = await params;
+  const { ideaId } =await params;
   // Fetch all top-level comments for the idea
   const comments = await prisma.comment.findMany({
     where: { ideaId, parentId: null },
@@ -24,9 +24,9 @@ export async function POST(
   { params }: { params: Promise<{ ideaId: string }> }
 ) {
   const { ideaId } = await params;
-  const data: { content: string; author: string; authorRole?: string; parentId?: string } = await request.json();
+  const data: { content: string; userId: string; parentId?: string } = await request.json();
 
-  if (!data.content || !data.author) {
+  if (!data.content || !data.userId) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
   }
 
@@ -34,8 +34,7 @@ export async function POST(
   const comment = await prisma.comment.create({
     data: {
       content: data.content,
-      author: data.author,
-      authorRole: data.authorRole || "Community Member",
+      userId: data.userId,
       ideaId,
       parentId: data.parentId || null,
     },

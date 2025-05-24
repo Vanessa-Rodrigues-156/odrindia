@@ -15,7 +15,6 @@ export async function POST(req: NextRequest) {
     }
     
     // Extract token and verify (this is a simplified example)
-    const token = authHeader.split(' ')[1];
     // In a real app, you would verify the JWT token here
     // For example: const decoded = jwt.verify(token, process.env.JWT_SECRET);
     
@@ -34,7 +33,7 @@ export async function POST(req: NextRequest) {
 
     // Use Zod schema for validation
     try {
-      const validatedData = ideaSubmissionSchema.parse(data);
+      ideaSubmissionSchema.parse(data);
     } catch (validationError) {
       if (validationError instanceof z.ZodError) {
         const errors = validationError.flatten();

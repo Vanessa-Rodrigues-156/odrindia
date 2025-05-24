@@ -21,6 +21,9 @@ model User {
   password  String
   role      Role     @default(USER)
   createdAt DateTime @default(now())
+  country   String?
+  userType  String?
+  institution String?
   
   // User can have multiple ideas and comments
   ideas       Idea[]

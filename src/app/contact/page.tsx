@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { ArrowRight, Building, Check, HelpCircle, Mail, MapPin, Phone } from "lucide-react"
+import { motion } from "framer-motion" // Added framer-motion import
 
 import { Button } from "@/components/ui/button"
 import {
@@ -22,6 +23,25 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
+// Animation variants
+const fadeInUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: { duration: 0.5 }
+  }
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
 
 export default function ContactPage() {
   const [formStatus, setFormStatus] = useState<"idle" | "submitting" | "submitted">("idle")
@@ -41,8 +61,8 @@ export default function ContactPage() {
 
       <main className="flex-1">
         {/* Hero Section */}
-        <section
-          className="relative bg-[#0a1e42] py-20 text-white"
+        <motion.section
+          className="relative bg-[#0a1e42] py-20 text-white overflow-hidden"
           style={{
             backgroundImage: "url('/contact-hero.jpg')",
             backgroundSize: "cover",
@@ -50,265 +70,340 @@ export default function ContactPage() {
             backgroundBlendMode: "overlay",
             backgroundColor: "rgba(10, 30, 66, 0.85)",
           }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
         >
-          <div className="container mx-auto px-4">
-            <div className="text-center">
-              <h1 className="text-4xl font-bold leading-tight tracking-tighter md:text-5xl lg:text-6xl">
-                Contact <span className="text-sky-400">Us</span>
-              </h1>
-              <p className="mx-auto mt-4 max-w-[800px] text-lg text-gray-200 md:text-xl">
-                We&apos;re here to help with any questions about our online dispute resolution services.
-              </p>
-            </div>
+          {/* Animated background elements */}
+          <motion.div 
+            className="absolute top-20 left-10 w-60 h-60 rounded-full bg-blue-300/10"
+            animate={{ 
+              scale: [1, 1.2, 1],
+              opacity: [0.2, 0.4, 0.2]
+            }}
+            transition={{ duration: 8, repeat: Infinity }}
+          />
+          <motion.div 
+            className="absolute bottom-10 right-10 w-80 h-80 rounded-full bg-sky-200/10"
+            animate={{ 
+              scale: [1, 1.1, 1],
+              opacity: [0.1, 0.3, 0.1]
+            }}
+            transition={{ duration: 6, repeat: Infinity }}
+          />
+          
+          <div className="container mx-auto px-4 relative z-10">
+            <motion.div 
+              className="max-w-2xl mx-auto text-center"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <motion.h1 
+                className="text-4xl md:text-5xl font-bold mb-4"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                Get in Touch
+              </motion.h1>
+              <motion.p 
+                className="text-lg opacity-90 mb-8"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.9 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+              >
+                Have questions about ODR India? Reach out to our team and we&apos;ll get back to you shortly.
+              </motion.p>
+            </motion.div>
           </div>
-        </section>
+        </motion.section>
 
-        {/* Contact Info Cards */}
+        {/* Contact Info & Form Section */}
         <section className="py-16">
           <div className="container mx-auto px-4">
-            <div className="grid gap-6 md:grid-cols-3">
-              <Card className="border-2 border-transparent transition-all hover:border-[#0a1e42]/10 hover:shadow-lg">
-                <CardContent className="flex flex-col items-center p-6 text-center">
-                  <div className="mb-4 rounded-full bg-[#0a1e42]/10 p-4">
-                    <Phone className="h-6 w-6 text-[#0a1e42]" />
-                  </div>
-                  <h3 className="mb-2 text-xl font-semibold text-[#0a1e42]">Call Us</h3>
-                  <p className="mb-4 text-gray-600">Our team is here to help</p>
-                  <p className="font-medium text-[#0a1e42]">+91 123 456 7890</p>
-                  <p className="text-gray-500">Mon-Fri: 9am to 6pm</p>
-                </CardContent>
-              </Card>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+              {/* Contact Information */}
+              <motion.div 
+                className="space-y-8"
+                initial="hidden"
+                animate="visible"
+                variants={staggerContainer}
+              >
+                <motion.h2 
+                  className="text-3xl font-bold text-[#0a1e42] mb-6"
+                  variants={fadeInUp}
+                >
+                  Contact Information
+                </motion.h2>
 
-              <Card className="border-2 border-transparent transition-all hover:border-[#0a1e42]/10 hover:shadow-lg">
-                <CardContent className="flex flex-col items-center p-6 text-center">
-                  <div className="mb-4 rounded-full bg-[#0a1e42]/10 p-4">
-                    <Mail className="h-6 w-6 text-[#0a1e42]" />
-                  </div>
-                  <h3 className="mb-2 text-xl font-semibold text-[#0a1e42]">Email Us</h3>
-                  <p className="mb-4 text-gray-600">We&apos;ll respond promptly</p>
-                  <p className="font-medium text-[#0a1e42]">info@odrindia.com</p>
-                  <p className="text-gray-500">24/7 support</p>
-                </CardContent>
-              </Card>
-
-              <Card className="border-2 border-transparent transition-all hover:border-[#0a1e42]/10 hover:shadow-lg">
-                <CardContent className="flex flex-col items-center p-6 text-center">
-                  <div className="mb-4 rounded-full bg-[#0a1e42]/10 p-4">
-                    <MapPin className="h-6 w-6 text-[#0a1e42]" />
-                  </div>
-                  <h3 className="mb-2 text-xl font-semibold text-[#0a1e42]">Visit Us</h3>
-                  <p className="mb-4 text-gray-600">Our main office location</p>
-                  <p className="font-medium text-[#0a1e42]">123 Tech Park</p>
-                  <p className="text-gray-500">Bangalore, Karnataka, India</p>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </section>
-
-        {/* Contact Form and Map */}
-        <section className="bg-gray-50 py-16">
-          <div className="container mx-auto px-4">
-            <div className="mb-12 text-center">
-              <h2 className="mb-2 text-3xl font-bold tracking-tight text-[#0a1e42] md:text-4xl">Get in Touch</h2>
-              <p className="mx-auto max-w-[700px] text-gray-600">
-                Fill out the form below and we&apos;ll get back to you as soon as possible
-              </p>
-            </div>
-
-            <div className="grid gap-8 md:grid-cols-5 lg:gap-12">
-              <Card className="md:col-span-3 border-none shadow-md">
-                <CardContent className="p-6">
-                  {formStatus === "submitted" ? (
-                    <div className="flex flex-col items-center justify-center py-8 text-center">
-                      <div className="mb-4 rounded-full bg-green-100 p-3">
-                        <Check className="h-8 w-8 text-green-600" />
+                <motion.div 
+                  className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                  variants={fadeInUp}
+                >
+                  <Card>
+                    <CardContent className="p-6 flex items-start gap-4">
+                      <div className="bg-blue-50 p-2 rounded-full">
+                        <Mail className="h-6 w-6 text-[#0a1e42]" />
                       </div>
-                      <h3 className="mb-2 text-xl font-semibold text-[#0a1e42]">Message Sent!</h3>
-                      <p className="mb-6 text-gray-600">
-                        Thank you for reaching out. We&apos;ll be in touch with you shortly.
-                      </p>
-                      <Button 
-                        onClick={() => setFormStatus("idle")}
-                        variant="outline" 
-                        className="border-[#0a1e42] text-[#0a1e42] hover:bg-[#0a1e42] hover:text-white"
+                      <div>
+                        <h3 className="font-medium text-gray-900 mb-1">Email</h3>
+                        <p className="text-gray-600">info@odrindia.org</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card>
+                    <CardContent className="p-6 flex items-start gap-4">
+                      <div className="bg-blue-50 p-2 rounded-full">
+                        <Phone className="h-6 w-6 text-[#0a1e42]" />
+                      </div>
+                      <div>
+                        <h3 className="font-medium text-gray-900 mb-1">Phone</h3>
+                        <p className="text-gray-600">+91 98765 43210</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+
+                <motion.div variants={fadeInUp}>
+                  <Card>
+                    <CardContent className="p-6 flex items-start gap-4">
+                      <div className="bg-blue-50 p-2 rounded-full">
+                        <MapPin className="h-6 w-6 text-[#0a1e42]" />
+                      </div>
+                      <div>
+                        <h3 className="font-medium text-gray-900 mb-1">Address</h3>
+                        <p className="text-gray-600">
+                          ODR India Foundation<br />
+                          123, Tech Park<br />
+                          Bandra Kurla Complex<br />
+                          Mumbai, Maharashtra 400051<br />
+                          India
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+
+                <motion.div variants={fadeInUp}>
+                  <Card>
+                    <CardContent className="p-6 flex items-start gap-4">
+                      <div className="bg-blue-50 p-2 rounded-full">
+                        <Building className="h-6 w-6 text-[#0a1e42]" />
+                      </div>
+                      <div>
+                        <h3 className="font-medium text-gray-900 mb-1">Working Hours</h3>
+                        <p className="text-gray-600">
+                          Monday - Friday: 9:00 AM - 6:00 PM<br />
+                          Saturday: 10:00 AM - 2:00 PM<br />
+                          Sunday: Closed
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              </motion.div>
+
+              {/* Contact Form */}
+              <motion.div 
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+              >
+                <motion.h2 
+                  className="text-3xl font-bold text-[#0a1e42] mb-6"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.6, delay: 0.4 }}
+                >
+                  Send Us a Message
+                </motion.h2>
+
+                <Card>
+                  <CardContent className="p-6 pt-6">
+                    {formStatus === "submitted" ? (
+                      <motion.div 
+                        className="text-center py-8"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.4 }}
                       >
-                        Send Another Message
-                      </Button>
-                    </div>
-                  ) : (
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                      <div className="grid gap-4 md:grid-cols-2">
-                        <div className="space-y-2">
+                        <motion.div 
+                          className="w-16 h-16 bg-green-100 rounded-full mx-auto flex items-center justify-center mb-4"
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{ type: "spring", stiffness: 200, damping: 15 }}
+                        >
+                          <Check className="h-8 w-8 text-green-600" />
+                        </motion.div>
+                        <h3 className="text-xl font-bold text-gray-900 mb-2">Message Sent!</h3>
+                        <p className="text-gray-600 mb-6">
+                          Thank you for contacting us. We&apos;ll get back to you as soon as possible.
+                        </p>
+                        <Button 
+                          onClick={() => setFormStatus("idle")} 
+                          variant="outline"
+                        >
+                          Send Another Message
+                        </Button>
+                      </motion.div>
+                    ) : (
+                      <motion.form 
+                        onSubmit={handleSubmit} 
+                        className="space-y-4"
+                        initial="hidden"
+                        animate="visible"
+                        variants={staggerContainer}
+                      >
+                        <motion.div variants={fadeInUp}>
                           <Label htmlFor="name">Full Name</Label>
-                          <Input id="name" placeholder="John Doe" required />
-                        </div>
-                        <div className="space-y-2">
+                          <Input id="name" placeholder="Your name" className="mt-1" />
+                        </motion.div>
+                        <motion.div variants={fadeInUp}>
                           <Label htmlFor="email">Email</Label>
-                          <Input id="email" type="email" placeholder="john@example.com" required />
-                        </div>
-                      </div>
-                      
-                      <div className="grid gap-4 md:grid-cols-2">
-                        <div className="space-y-2">
-                          <Label htmlFor="phone">Phone Number</Label>
-                          <Input id="phone" placeholder="+91 123 456 7890" />
-                        </div>
-                        <div className="space-y-2">
+                          <Input id="email" type="email" placeholder="Your email address" className="mt-1" />
+                        </motion.div>
+                        <motion.div variants={fadeInUp}>
                           <Label htmlFor="subject">Subject</Label>
                           <Select>
-                            <SelectTrigger id="subject">
+                            <SelectTrigger>
                               <SelectValue placeholder="Select a subject" />
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="general">General Inquiry</SelectItem>
                               <SelectItem value="support">Technical Support</SelectItem>
                               <SelectItem value="partnership">Partnership Opportunity</SelectItem>
-                              <SelectItem value="feedback">Feedback</SelectItem>
                               <SelectItem value="other">Other</SelectItem>
                             </SelectContent>
                           </Select>
-                        </div>
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="message">Message</Label>
-                        <Textarea id="message" placeholder="How can we help you?" rows={5} required />
-                      </div>
-                      
-                      <Button 
-                        type="submit" 
-                        className="w-full bg-[#0a1e42] hover:bg-[#263e69]"
-                        disabled={formStatus === "submitting"}
-                      >
-                        {formStatus === "submitting" ? "Sending..." : "Send Message"}
-                        <ArrowRight className="ml-2 h-4 w-4" />
-                      </Button>
-                    </form>
-                  )}
-                </CardContent>
-              </Card>
-              
-              <div className="md:col-span-2">
-                <Card className="h-full border-none shadow-md">
-                  <CardContent className="p-0">
-                    <div className="aspect-square h-full w-full rounded-md overflow-hidden">
-                      <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d248849.84916296526!2d77.6309395!3d12.9539974!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae1670c9b44e6d%3A0xf8dfc3e8517e4fe0!2sBengaluru%2C%20Karnataka!5e0!3m2!1sen!2sin!4v1658134263999!5m2!1sen!2sin" 
-                        style={{ border: 0, height: "100%", width: "100%" }} 
-                        allowFullScreen={true}
-                        loading="lazy"
-                        referrerPolicy="no-referrer-when-downgrade"
-                        title="ODR India Location"
-                      ></iframe>
-                    </div>
+                        </motion.div>
+                        <motion.div variants={fadeInUp}>
+                          <Label htmlFor="message">Message</Label>
+                          <Textarea 
+                            id="message" 
+                            placeholder="Your message" 
+                            className="mt-1 min-h-[150px]" 
+                          />
+                        </motion.div>
+                        <motion.div variants={fadeInUp}>
+                          <Button 
+                            type="submit"
+                            className="w-full bg-[#0a1e42] hover:bg-[#162d5a]"
+                            disabled={formStatus === "submitting"}
+                          >
+                            {formStatus === "submitting" ? (
+                              <motion.span
+                                className="inline-flex items-center"
+                                initial={{ opacity: 0.8 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ duration: 0.3, repeat: Infinity, repeatType: "reverse" }}
+                              >
+                                Sending...
+                              </motion.span>
+                            ) : (
+                              <>
+                                Send Message <ArrowRight className="ml-2 h-4 w-4" />
+                              </>
+                            )}
+                          </Button>
+                        </motion.div>
+                      </motion.form>
+                    )}
                   </CardContent>
                 </Card>
-              </div>
+              </motion.div>
             </div>
           </div>
         </section>
 
-        {/* Offices */}
-        <section className="py-16">
+        {/* FAQ Section */}
+        <section className="py-16 bg-gray-50">
           <div className="container mx-auto px-4">
-            <div className="mb-12 text-center">
-              <h2 className="mb-2 text-3xl font-bold tracking-tight text-[#0a1e42] md:text-4xl">Our Offices</h2>
-              <p className="mx-auto max-w-[700px] text-gray-600">
-                Visit us at our locations across India
-              </p>
-            </div>
+            <motion.div 
+              className="max-w-4xl mx-auto"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+            >
+              <motion.div 
+                className="text-center mb-12"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                viewport={{ once: true }}
+              >
+                <motion.div 
+                  className="inline-block p-3 bg-blue-50 rounded-full mb-4"
+                  initial={{ scale: 0.8 }}
+                  whileInView={{ scale: 1 }}
+                  transition={{ duration: 0.5 }}
+                  viewport={{ once: true }}
+                >
+                  <HelpCircle className="h-6 w-6 text-[#0a1e42]" />
+                </motion.div>
+                <h2 className="text-3xl font-bold text-[#0a1e42] mb-3">
+                  Frequently Asked Questions
+                </h2>
+                <p className="text-gray-600">
+                  Find quick answers to common questions about ODR India.
+                </p>
+              </motion.div>
 
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {[
-                { city: "Mumbai", address: "Bandra Kurla Complex", phone: "+91 22 1234 5678" },
-                { city: "New Delhi", address: "Connaught Place", phone: "+91 11 1234 5678" },
-                { city: "Bangalore", address: "Tech Park, Whitefield", phone: "+91 80 1234 5678" },
-              ].map((office, i) => (
-                <Card key={i} className="border-2 border-transparent transition-all hover:border-[#0a1e42]/10 hover:shadow-lg">
-                  <CardContent className="p-6">
-                    <div className="mb-4 flex items-start">
-                      <Building className="mr-2 h-5 w-5 text-[#0a1e42]" />
-                      <div>
-                        <h3 className="font-semibold text-[#0a1e42]">{office.city}</h3>
-                        <p className="text-gray-600">{office.address}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center">
-                      <Phone className="mr-2 h-5 w-5 text-[#0a1e42]" />
-                      <p className="text-gray-600">{office.phone}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* FAQs */}
-        <section className="bg-gray-50 py-16">
-          <div className="container mx-auto px-4">
-            <div className="mb-12 text-center">
-              <h2 className="mb-2 text-3xl font-bold tracking-tight text-[#0a1e42] md:text-4xl">
-                Frequently Asked Questions
-              </h2>
-              <p className="mx-auto max-w-[700px] text-gray-600">
-                Find quick answers to common questions about our services
-              </p>
-            </div>
-
-            <div className="mx-auto max-w-3xl">
-              <Accordion type="single" collapsible className="w-full">
-                {[
-                  {
-                    question: "What is Online Dispute Resolution (ODR)?",
-                    answer: "Online Dispute Resolution (ODR) is the use of technology to help parties resolve disputes without the need for physical presence. It includes negotiation, mediation, and arbitration processes conducted through secure online platforms."
-                  },
-                  {
-                    question: "How secure is your ODR platform?",
-                    answer: "Our ODR platform employs bank-level encryption and security protocols to ensure all communications and documents remain confidential and secure. We comply with global data protection standards and regularly update our security measures."
-                  },
-                  {
-                    question: "What types of disputes can be resolved through your platform?",
-                    answer: "Our platform can handle a wide range of disputes including consumer complaints, business-to-business conflicts, employment issues, family disputes, and more. We have specialized processes for different categories of disputes."
-                  },
-                  {
-                    question: "How much does it cost to use your ODR services?",
-                    answer: "Our pricing varies based on the type of service and complexity of the dispute. We offer transparent fee structures with options for both pay-per-use and subscription models for businesses. Contact us for a customized quote."
-                  },
-                  {
-                    question: "How long does the ODR process typically take?",
-                    answer: "The duration varies depending on the complexity of the dispute and the cooperation of parties involved. Simple matters can be resolved in days, while more complex disputes might take a few weeks. Our system is designed to be significantly faster than traditional court proceedings."
-                  }
-                ].map((faq, i) => (
-                  <AccordionItem key={i} value={`item-${i}`}>
-                    <AccordionTrigger className="text-left text-[#0a1e42] hover:text-[#0a1e42]/80">
-                      <div className="flex items-center">
-                        <HelpCircle className="mr-2 h-5 w-5" />
-                        {faq.question}
-                      </div>
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                viewport={{ once: true }}
+              >
+                <Accordion type="single" collapsible className="w-full">
+                  <AccordionItem value="item-1">
+                    <AccordionTrigger className="text-left font-medium">
+                      What is Online Dispute Resolution (ODR)?
                     </AccordionTrigger>
-                    <AccordionContent className="text-gray-600">
-                      {faq.answer}
+                    <AccordionContent>
+                      Online Dispute Resolution (ODR) is the use of technology to facilitate the resolution of disputes between parties. It integrates traditional Alternative Dispute Resolution (ADR) methods with modern digital tools, making the process more accessible, efficient, and affordable.
                     </AccordionContent>
                   </AccordionItem>
-                ))}
-              </Accordion>
-              
-              <div className="mt-8 text-center">
-                <p className="mb-4 text-gray-600">
-                  Still have questions? Contact our support team directly.
-                </p>
-                <Button className="bg-[#0a1e42] hover:bg-[#263e69]">
-                  <Mail className="mr-2 h-4 w-4" />
-                  Email Support
-                </Button>
-              </div>
-            </div>
+                  <AccordionItem value="item-2">
+                    <AccordionTrigger className="text-left font-medium">
+                      How can I get involved with ODR India?
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      You can get involved with ODR India by joining our community, participating in workshops and conferences, contributing to research, or partnering with us on projects. Please contact us through this form or send an email to info@odrindia.org to explore collaboration opportunities.
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="item-3">
+                    <AccordionTrigger className="text-left font-medium">
+                      What services does ODR India provide?
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      ODR India provides a range of services including ODR platform development, training for mediators and arbitrators in online tools, research on ODR best practices, policy advocacy, and educational resources on effective dispute resolution techniques in the digital environment.
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="item-4">
+                    <AccordionTrigger className="text-left font-medium">
+                      Is ODR legally binding in India?
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      The legal status of ODR outcomes depends on the method used. Arbitration awards from ODR processes are generally enforceable under the Arbitration and Conciliation Act. Mediation settlements can be made binding through proper documentation. The Indian judiciary has been increasingly supportive of ODR initiatives to reduce court backlogs.
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="item-5">
+                    <AccordionTrigger className="text-left font-medium">
+                      How secure is the ODR process?
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      Security is a top priority in ODR. Our recommended platforms use encryption, secure authentication, and data protection measures compliant with privacy regulations. We advocate for platforms that maintain confidentiality throughout the dispute resolution process and implement secure document handling procedures.
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              </motion.div>
+            </motion.div>
           </div>
         </section>
       </main>
-      
     </div>
   )
 }

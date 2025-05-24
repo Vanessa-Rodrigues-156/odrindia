@@ -1,6 +1,6 @@
 "use client"
 import { LightbulbIcon, CheckCircle2, ArrowRight, Loader2 } from "lucide-react"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion" // Added framer-motion import
 
 import { Button } from "@/components/ui/button"
@@ -242,13 +242,13 @@ export default function SubmitIdeaClientPage() {
                       <CheckCircle2 className="h-10 w-10 text-green-600" />
                     </div>
                     <h3 className="text-2xl font-bold text-[#0a1e42] mb-2">Idea Submitted!</h3>
-                    <p className="text-gray-600 mb-6">Thank you for sharing your innovative idea. We'll review it and get back to you soon.</p>
+                    <p className="text-gray-600 mb-6">Thank you for sharing your innovative idea. We&apos;ll review it and get back to you soon.</p>
                     
                     <div className="w-full max-w-sm p-4 bg-blue-50 rounded-lg border border-blue-100">
                       <h4 className="font-medium text-blue-800 mb-2">What happens next?</h4>
                       <ol className="text-sm text-blue-700 list-decimal pl-5 space-y-1">
                         <li>Our team will review your idea within 2-3 business days</li>
-                        <li>You'll receive an email notification when your idea is approved</li>
+                        <li>You&apos;ll receive an email notification when your idea is approved</li>
                         <li>Your idea will then be available for community discussion</li>
                       </ol>
                     </div>

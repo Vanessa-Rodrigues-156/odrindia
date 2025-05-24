@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 
 export async function POST(req: NextRequest) {
   try {
-    const { name, email, password, role } = await req.json();
+    const { name, email, password, role, country, userType, studentInstitute } = await req.json();
 
     if (!name || !email || !password) {
       return NextResponse.json({ error: "Name, email, and password are required." }, { status: 400 });
@@ -26,12 +26,18 @@ export async function POST(req: NextRequest) {
         email,
         password: hashedPassword,
         role: role || "USER",
+        country: country || null,
+        userType: userType || null,
+        institution: userType === 'student' ? studentInstitute || null : null,
       },
       select: {
         id: true,
         name: true,
         email: true,
         role: true,
+        country: true,
+        userType: true,
+        institution: true,
         createdAt: true,
       },
     });

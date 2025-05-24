@@ -1,14 +1,14 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { 
-  CheckCircle2, Search, Filter, AlertCircle, Calendar, User, MapPin, 
-  BookOpen, Clock, ArrowUpDown, Eye, X, ChevronRight, ChevronDown
+  CheckCircle2, Search, AlertCircle, Calendar, User, MapPin, 
+  BookOpen, Clock, ArrowUpDown, Eye
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { format, formatDistanceToNow } from "date-fns";
@@ -18,6 +18,9 @@ interface User {
   id: string;
   name: string;
   email: string;
+  country?: string | null;
+  userType?: string | null;
+  institution?: string | null;
 }
 
 interface IdeaSubmission {
@@ -47,11 +50,8 @@ export default function AdminIdeaApprovalPage() {
   const [selectedSubmission, setSelectedSubmission] = useState<IdeaSubmission | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
-  useEffect(() => {
-    fetchSubmissions();
-  }, []);
-  
-  const fetchSubmissions = async () => {
+  // Define fetchSubmissions with useCallback before useEffect
+  const fetchSubmissions = useCallback(async () => {
     setLoading(true);
     try {
       const res = await fetch("/api/admin/approve-idea");
@@ -69,8 +69,12 @@ export default function AdminIdeaApprovalPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast]);
 
+  useEffect(() => {
+    fetchSubmissions();
+  }, [fetchSubmissions]);
+  
   useEffect(() => {
     // Filter and sort submissions
     let result = [...submissions];
@@ -134,8 +138,6 @@ export default function AdminIdeaApprovalPage() {
         const errorData = await res.json();
         throw new Error(errorData.error || "Failed to approve idea");
       }
-      
-      const data = await res.json();
       
       // Update local state
       setSubmissions((subs) => subs.filter((s) => s.id !== id));
@@ -299,16 +301,16 @@ export default function AdminIdeaApprovalPage() {
                                   <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-mail"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
                                   <span>{submission.user?.email || "No email"}</span>
                                 </div>
-                                {submission.address && (
+                                {submission.user?.country && (
                                   <div className="flex items-center gap-1 text-gray-500">
                                     <MapPin className="h-3 w-3" />
-                                    <span>{submission.address}</span>
+                                    <span>{submission.user.country}</span>
                                   </div>
                                 )}
-                                {submission.institution && (
+                                {submission.user?.userType === 'student' && submission.user?.institution && (
                                   <div className="flex items-center gap-1 text-gray-500">
                                     <BookOpen className="h-3 w-3" />
-                                    <span>{submission.institution}</span>
+                                    <span>{submission.user.institution}</span>
                                   </div>
                                 )}
                               </div>
@@ -439,34 +441,28 @@ export default function AdminIdeaApprovalPage() {
                     <h3 className="mb-2 font-medium text-[#0a1e42]">Contact Information</h3>
                     <div className="rounded-md bg-gray-50 p-4 text-sm">
                       <dl className="space-y-2">
-                        {selectedSubmission.name && (
+                        {selectedSubmission.user?.name && (
                           <div className="flex items-start gap-2">
                             <dt className="font-medium text-gray-500">Name:</dt>
-                            <dd>{selectedSubmission.name}</dd>
+                            <dd>{selectedSubmission.user?.name}</dd>
                           </div>
                         )}
-                        {selectedSubmission.email && (
+                        {selectedSubmission.user?.email && (
                           <div className="flex items-start gap-2">
                             <dt className="font-medium text-gray-500">Email:</dt>
-                            <dd>{selectedSubmission.email}</dd>
+                            <dd>{selectedSubmission.user?.email}</dd>
                           </div>
                         )}
-                        {selectedSubmission.phone && (
+                        {selectedSubmission.user?.country && (
                           <div className="flex items-start gap-2">
-                            <dt className="font-medium text-gray-500">Phone:</dt>
-                            <dd>{selectedSubmission.phone}</dd>
+                            <dt className="font-medium text-gray-500">Country:</dt>
+                            <dd>{selectedSubmission.user.country}</dd>
                           </div>
                         )}
-                        {selectedSubmission.address && (
-                          <div className="flex items-start gap-2">
-                            <dt className="font-medium text-gray-500">Address:</dt>
-                            <dd>{selectedSubmission.address}</dd>
-                          </div>
-                        )}
-                        {selectedSubmission.institution && (
+                        {selectedSubmission.user?.userType === 'student' && selectedSubmission.user?.institution && (
                           <div className="flex items-start gap-2">
                             <dt className="font-medium text-gray-500">Institution:</dt>
-                            <dd>{selectedSubmission.institution}</dd>
+                            <dd>{selectedSubmission.user.institution}</dd>
                           </div>
                         )}
                       </dl>

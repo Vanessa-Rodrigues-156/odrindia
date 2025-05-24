@@ -14,15 +14,26 @@ export default async function OdrLabsPage() {
       approved: true
     },
     orderBy: { createdAt: "desc" },
-    include: {
-      comments: true,
+    include:{
       user: {
         select: {
+          id: true,
           name: true,
-          email: true
+          email: true,
+          country: true, // Assuming country is stored in the user model
+          userType: true, // Optional, if you want to display user type
+          institution: true, // Optional, if you want to display institution
+        }
+      },
+      comments: {
+        select: {
+          id: true,
+          content: true,
+          createdAt: true,
+          userId: true,
         }
       }
-    },
+    }
   })
   // Map DB results to match OdrLabsClient expected props
   const ideas = ideasFromDb.map((idea) => ({
