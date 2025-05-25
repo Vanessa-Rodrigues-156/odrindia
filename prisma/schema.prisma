@@ -16,118 +16,120 @@ enum UserRole {
 }
 
 model User {
-  id                String       @id @default(uuid())
-  name              String
-  email             String       @unique
-  password          String
-  contactNumber     String?
-  city              String?
-  country           String?
-  userRole          UserRole     @default(INNOVATOR)
-  institution       String?
-  highestEducation  String?
-  odrLabUsage       String?      // How are you gonna use ODRLab?
-  createdAt         DateTime     @default(now())
-  
+  id               String   @id @default(uuid())
+  name             String
+  email            String   @unique
+  password         String
+  contactNumber    String?
+  city             String?
+  country          String?
+  userRole         UserRole @default(INNOVATOR)
+  institution      String?
+  highestEducation String?
+  odrLabUsage      String? // How are you gonna use ODRLab?
+  createdAt        DateTime @default(now())
+
   // Relationships
-  ownedIdeas        Idea[]       @relation("IdeaOwner")
+  ownedIdeas         Idea[]             @relation("IdeaOwner")
   collaboratingIdeas IdeaCollaborator[]
-  mentoringIdeas    IdeaMentor[]
-  comments          Comment[]
-  likes             Like[]
+  mentoringIdeas     IdeaMentor[]
+  comments           Comment[]
+  likes              Like[]
 }
 
 model Idea {
-  id                String         @id @default(uuid())
-  title             String
-  caption           String?
-  description       String         @db.Text
-  priorOdrExperience String?       @db.Text
-  
+  id                 String  @id @default(uuid())
+  title              String
+  caption            String?
+  description        String  @db.Text
+  priorOdrExperience String? @db.Text
+
   // Status
-  approved          Boolean        @default(false)
-  reviewedAt        DateTime?
-  reviewedBy        String?
-  
+  approved   Boolean   @default(false)
+  reviewedAt DateTime?
+  reviewedBy String?
+
+  // Workplace data (for todo lists, notes, calendar events, etc.)
+  workplaceData Json?
+
   // Timestamps
-  createdAt         DateTime       @default(now())
-  updatedAt         DateTime       @updatedAt
-  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   // Owner relationship
-  ownerId           String
-  owner             User           @relation("IdeaOwner", fields: [ownerId], references: [id])
-  
+  ownerId String
+  owner   User   @relation("IdeaOwner", fields: [ownerId], references: [id])
+
   // Many-to-Many relationships 
-  collaborators     IdeaCollaborator[]
-  mentors           IdeaMentor[]
-  
+  collaborators IdeaCollaborator[]
+  mentors       IdeaMentor[]
+
   // Engagement metrics
-  views             Int            @default(0)
-  
+  views Int @default(0)
+
   // Related content
-  comments          Comment[]
-  likes             Like[]
+  comments Comment[]
+  likes    Like[]
 }
 
 // Junction table for idea collaborators (many-to-many)
 model IdeaCollaborator {
-  user              User     @relation(fields: [userId], references: [id])
-  userId            String
-  idea              Idea     @relation(fields: [ideaId], references: [id], onDelete: Cascade)
-  ideaId            String
-  joinedAt          DateTime @default(now())
-  
+  user     User     @relation(fields: [userId], references: [id])
+  userId   String
+  idea     Idea     @relation(fields: [ideaId], references: [id], onDelete: Cascade)
+  ideaId   String
+  joinedAt DateTime @default(now())
+
   @@id([userId, ideaId])
 }
 
 // Junction table for idea mentors (many-to-many)
 model IdeaMentor {
-  user              User     @relation(fields: [userId], references: [id])
-  userId            String
-  idea              Idea     @relation(fields: [ideaId], references: [id], onDelete: Cascade)
-  ideaId            String
-  assignedAt        DateTime @default(now())
-  
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  idea       Idea     @relation(fields: [ideaId], references: [id], onDelete: Cascade)
+  ideaId     String
+  assignedAt DateTime @default(now())
+
   @@id([userId, ideaId])
 }
 
 model Comment {
-  id                String    @id @default(uuid())
-  content           String
-  createdAt         DateTime  @default(now())
-  
+  id        String   @id @default(uuid())
+  content   String
+  createdAt DateTime @default(now())
+
   // Relations
-  ideaId            String
-  idea              Idea      @relation(fields: [ideaId], references: [id], onDelete: Cascade)
-  userId            String
-  user              User      @relation(fields: [userId], references: [id])
-  
+  ideaId String
+  idea   Idea   @relation(fields: [ideaId], references: [id], onDelete: Cascade)
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
   // For threaded/nested comments
-  parentId          String?
-  parent            Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
-  replies           Comment[] @relation("CommentReplies")
-  
+  parentId String?
+  parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  replies  Comment[] @relation("CommentReplies")
+
   // Likes for this comment are tracked in the Like model
-  likes             Like[]    @relation("CommentLikes")
+  likes Like[] @relation("CommentLikes")
 }
 
 // Separate model for tracking likes
 model Like {
-  id                String    @id @default(uuid())
-  createdAt         DateTime  @default(now())
-  
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
   // User who liked
-  userId            String
-  user              User      @relation(fields: [userId], references: [id])
-  
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
   // What was liked (either an Idea or a Comment, but not both)
-  ideaId            String?
-  idea              Idea?     @relation(fields: [ideaId], references: [id], onDelete: Cascade)
-  
-  commentId         String?
-  comment           Comment?  @relation("CommentLikes", fields: [commentId], references: [id], onDelete: Cascade)
-  
+  ideaId String?
+  idea   Idea?   @relation(fields: [ideaId], references: [id], onDelete: Cascade)
+
+  commentId String?
+  comment   Comment? @relation("CommentLikes", fields: [commentId], references: [id], onDelete: Cascade)
+
   @@unique([userId, ideaId])
   @@unique([userId, commentId])
 }
-

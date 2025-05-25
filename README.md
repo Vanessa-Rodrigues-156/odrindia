@@ -71,6 +71,42 @@ ODR India is a full-stack web platform for co-creating Online Dispute Resolution
 - `public/` – Static assets (images, logos)
 - `tailwind.config.ts` – Tailwind CSS configuration
 
+## Video Conferencing Integration
+
+This project integrates Jitsi Meet for video conferencing to enable collaborative meetings for each idea workspace. Each idea has a dedicated meeting room where participants can discuss, share screens, and collaborate in real-time.
+
+### Jitsi Meet Setup
+
+1. The integration uses `@jitsi/react-sdk` to embed Jitsi Meet into the application
+2. Install with: `npm install @jitsi/react-sdk`
+3. Each idea has a unique room based on its ID (`odrindia-idea-{ideaId}`)
+
+### Workplace Features
+
+The workspace for each idea includes:
+- Video conferencing (Jitsi Meet)
+- Shared note-taking
+- Calendar for scheduling events
+- Todo list for tracking tasks
+
+### Database Migration
+
+To add the required database fields for the workplace functionality:
+
+1. The schema needs a `workplaceData` JSONB field in the `Idea` table
+2. Apply this using the migration file at: `/prisma/migrations/20250525120000_add_workplace_data/migration.sql`
+3. Run migration: `npx prisma migrate resolve --applied 20250525120000_add_workplace_data`
+4. If manual migration is needed, run this SQL directly on your database:
+   ```sql
+   ALTER TABLE "Idea" ADD COLUMN IF NOT EXISTS "workplaceData" JSONB;
+   ```
+
+The `workplaceData` field stores:
+- Meeting configuration
+- Shared notes
+- Calendar events
+- Todo items
+
 ## Contributing
 
 We welcome contributions from legal professionals, technologists, students, and anyone passionate about ODR.  

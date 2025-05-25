@@ -10,6 +10,8 @@
     "prisma:push": "prisma db push"
   },
   "dependencies": {
+    "@headlessui/react": "^2.2.4",
+    "@jitsi/react-sdk": "^1.4.4",
     "@neondatabase/serverless": "^1.0.0",
     "@prisma/adapter-neon": "^6.8.1",
     "@prisma/client": "^6.8.1",

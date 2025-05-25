@@ -423,6 +423,13 @@ export default function DiscussionClient({ idea, initialComments }: DiscussionCl
                 <CardContent>
                   <div className="prose max-w-none">
                     <p>{idea.description}</p>
+                    <div className="mt-6">
+                      <Link href={`/discussion/${idea.id}/workplace`}>
+                        <Button className="bg-[#0a1e42] hover:bg-[#263e69]">
+                          Join Idea Workplace Meeting
+                        </Button>
+                      </Link>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
