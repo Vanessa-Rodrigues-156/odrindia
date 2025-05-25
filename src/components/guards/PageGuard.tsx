@@ -1,71 +1,173 @@
 'use client';
 
-import { ReactNode, useEffect } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/lib/auth';
+import { AlertCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface PageGuardProps {
   children: ReactNode;
   requiredRole?: 'ADMIN' | 'MENTOR' | 'INNOVATOR' | 'OTHER';
   requireAuth?: boolean;
   redirectTo?: string;
+  allowedRoles?: ('ADMIN' | 'MENTOR' | 'INNOVATOR' | 'OTHER')[];
+  checkPermission?: (user: any) => boolean | Promise<boolean>;
 }
 
 export default function PageGuard({ 
   children, 
   requiredRole, 
   requireAuth = true,
-  redirectTo = '/signin'
+  redirectTo,
+  allowedRoles,
+  checkPermission
 }: PageGuardProps) {
-  const { user, loading } = useAuth();
+  const { user, loading, refreshUser } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
+  const [permissionChecked, setPermissionChecked] = useState(false);
+  const [hasPermission, setHasPermission] = useState(false);
+  const [isCheckingPermission, setIsCheckingPermission] = useState(false);
 
   useEffect(() => {
-    // Only redirect after auth state has loaded
-    if (!loading) {
-      // Check if user authentication is required
-      if (requireAuth && !user) {
+    const checkAuth = async () => {
+      try {
+        // Wait for auth to load
+        if (loading) return;
+        
+        setIsCheckingPermission(true);
+
+        // Check if authentication is required
+        if (requireAuth && !user) {
+          // Capture current path for redirect after login
+          const currentPath = window.location.pathname;
+          const loginRedirect = redirectTo || `/signin?redirect=${encodeURIComponent(currentPath)}`;
+          
+          toast({
+            title: 'Authentication Required',
+            description: 'Please sign in to continue',
+            variant: 'destructive',
+          });
+          
+          router.push(loginRedirect);
+          setPermissionChecked(true);
+          setHasPermission(false);
+          return;
+        }
+
+        // Check for specific role requirement
+        if (user && requiredRole && user.userRole !== requiredRole) {
+          toast({
+            title: 'Access Denied',
+            description: "You don't have permission to access this page",
+            variant: 'destructive',
+          });
+          
+          router.push('/');
+          setPermissionChecked(true);
+          setHasPermission(false);
+          return;
+        }
+
+        // Check for allowed roles (multiple roles)
+        if (user && allowedRoles && allowedRoles.length > 0) {
+          if (!allowedRoles.includes(user.userRole)) {
+            toast({
+              title: 'Access Denied',
+              description: "You don't have permission to access this page",
+              variant: 'destructive',
+            });
+            
+            router.push('/');
+            setPermissionChecked(true);
+            setHasPermission(false);
+            return;
+          }
+        }
+
+        // Custom permission check if provided
+        if (user && checkPermission) {
+          const result = await Promise.resolve(checkPermission(user));
+          if (!result) {
+            toast({
+              title: 'Access Denied',
+              description: "You don't have permission to access this resource",
+              variant: 'destructive',
+            });
+            
+            router.push('/');
+            setPermissionChecked(true);
+            setHasPermission(false);
+            return;
+          }
+        }
+
+        // All permission checks passed
+        setPermissionChecked(true);
+        setHasPermission(true);
+      } catch (error) {
+        console.error("Permission check error:", error);
+        setPermissionChecked(true);
+        setHasPermission(false);
         toast({
-          title: 'Authentication Required',
-          description: 'Please sign in to continue',
+          title: 'Error',
+          description: "Failed to verify permissions",
           variant: 'destructive',
         });
-        router.push(redirectTo);
-        return;
+      } finally {
+        setIsCheckingPermission(false);
       }
+    };
 
-      // If specific role is required, check user role
-      if (user && requiredRole && user.userRole !== requiredRole) {
-        toast({
-          title: 'Access Denied',
-          description: "You don't have permission to access this page",
-          variant: 'destructive',
-        });
-        router.push('/');
-        return;
-      }
-    }
-  }, [user, loading, router, requireAuth, requiredRole, redirectTo, toast]);
+    checkAuth();
+  }, [user, loading, router, requireAuth, requiredRole, redirectTo, toast, allowedRoles, checkPermission]);
 
-  // Show loading state while authentication is being checked
-  if (loading) {
+  // Loading state
+  if (loading || isCheckingPermission) {
     return (
       <div className="flex h-[60vh] w-full items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="h-12 w-12 animate-spin rounded-full border-4 border-gray-200 border-t-[#0a1e42]"></div>
-          <p className="text-lg text-gray-600">Checking permissions...</p>
+          <p className="text-lg text-gray-600">Verifying access...</p>
         </div>
       </div>
     );
   }
 
-  // Don't render children until permissions are verified
-  if ((requireAuth && !user) || (requiredRole && user?.userRole !== requiredRole)) {
-    return null;
+  // Permission denied
+  if (permissionChecked && !hasPermission) {
+    return (
+      <div className="flex h-[60vh] w-full flex-col items-center justify-center">
+        <div className="rounded-lg border bg-white p-8 text-center shadow-sm">
+          <div className="mb-4 flex justify-center">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
+              <AlertCircle className="h-6 w-6 text-red-500" />
+            </div>
+          </div>
+          <h2 className="mb-2 text-xl font-bold text-[#0a1e42]">Access Denied</h2>
+          <p className="mb-4 text-gray-600">You don't have permission to access this page.</p>
+          <div className="flex justify-center gap-2">
+            <Button variant="outline" onClick={() => router.push('/')}>
+              Go to Homepage
+            </Button>
+            <Button onClick={() => {
+              refreshUser().then(() => setPermissionChecked(false));
+            }}>
+              Retry
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   // Render children if all checks pass
-  return <>{children}</>;
+  if (permissionChecked && hasPermission) {
+    return <>{children}</>;
+  }
+
+  // Don't render anything while checks are still in progress
+  return null;
 }

@@ -53,18 +53,36 @@ export function MeetingLogs({ ideaId }: MeetingLogsProps) {
     try {
       setLoading(true);
       const response = await fetch(`/api/meetings/idea/${ideaId}`, {
+        credentials: 'include', // This ensures cookies are sent with the request
         headers: {
-          'x-auth-user': user ? encodeURIComponent(JSON.stringify(user)) : '',
+          'Content-Type': 'application/json',
         },
       });
+      
       if (!response.ok) {
-        throw new Error("Failed to fetch meetings");
+        if (response.status === 401) {
+          throw new Error("Authentication required. Please sign in again.");
+        } else {
+          throw new Error("Failed to fetch meetings");
+        }
       }
+      
       const data = await response.json();
       setMeetings(data);
     } catch (err) {
       console.error("Error fetching meetings:", err);
-      setError("Failed to load meetings. Please try again later.");
+      // Provide more specific error messages based on the error type
+      if (err instanceof Error) {
+        if (err.message.includes('Authentication required')) {
+          setError("Authentication required. Please sign in again.");
+        } else if (err.message.includes('getaddrinfo EAI_AGAIN')) {
+          setError("Database connection error. The server may be temporarily unavailable. Please try again later.");
+        } else {
+          setError(err.message);
+        }
+      } else {
+        setError("Failed to load meetings. Please try again later.");
+      }
     } finally {
       setLoading(false);
     }
@@ -76,26 +94,63 @@ export function MeetingLogs({ ideaId }: MeetingLogsProps) {
       return;
     }
     
+    // First, clear any previous errors
+    setError("");
+    
+    // Show loading state
+    const loadingMessage = "Creating meeting...";
+    setError(loadingMessage);
+    
     try {
-      // Combine date and time for the startTime
+      // Validate the date and time
       const startTime = new Date(`${newMeetingDate}T${newMeetingTime}`);
+      if (isNaN(startTime.getTime())) {
+        setError("Invalid date or time format");
+        return;
+      }
       
-      const response = await fetch("/api/meetings/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          'x-auth-user': user ? encodeURIComponent(JSON.stringify(user)) : '',
-        },
-        body: JSON.stringify({
-          title: newMeetingTitle,
-          ideaId,
-          startTime: startTime.toISOString(),
-          jitsiRoomName: `idea-${ideaId}`
-        }),
-      });
+      // Check that the start time is in the future
+      if (startTime < new Date()) {
+        setError("Meeting time must be in the future");
+        return;
+      }
       
-      if (!response.ok) {
-        throw new Error("Failed to create meeting");
+      // Attempt to create the meeting with retry logic
+      let retries = 2;
+      let response: Response | undefined;
+      
+      while (retries >= 0) {
+        try {
+          response = await fetch("/api/meetings/create", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: 'include', // Include cookies for authentication
+            body: JSON.stringify({
+              title: newMeetingTitle,
+              ideaId,
+              startTime: startTime.toISOString(),
+              jitsiRoomName: `idea-${ideaId}`
+            }),
+          });
+          
+          // If successful, break out of retry loop
+          break;
+        } catch (err) {
+          if (retries === 0) {
+            throw err;
+          }
+          // Wait before retrying
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          retries--;
+        }
+      }
+      
+      if (!response || !response.ok) {
+        const errorData = await response?.json();
+        console.error("Server error:", errorData);
+        throw new Error(errorData.error || "Failed to create meeting");
       }
       
       // Reset form and fetch updated meetings
@@ -106,7 +161,14 @@ export function MeetingLogs({ ideaId }: MeetingLogsProps) {
       fetchMeetings();
     } catch (err) {
       console.error("Error creating meeting:", err);
-      setError("Failed to create meeting. Please try again.");
+      // Provide a more specific error message about database connection issues
+      if (err instanceof Error && err.message.includes('getaddrinfo EAI_AGAIN')) {
+        setError("Database connection error. The server may be temporarily unavailable. Please try again later.");
+      } else if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Failed to create meeting. Please try again later.");
+      }
     }
   };
   
@@ -209,8 +271,8 @@ export function MeetingLogs({ ideaId }: MeetingLogsProps) {
                   <Link href={`/discussion/${ideaId}/meetings/${meeting.id}`}>
                     <Button variant="outline" size="sm" className="text-xs px-2">
                       <FileEdit className="h-3 w-3 mr-1" /> View Details
-                    </Button>
-                  </Link>
+                    </Button>  
+                    </Link>
                   {meeting.status === "SCHEDULED" && (
                     <Link href={`/discussion/${ideaId}/meetings/${meeting.id}`}>
                       <Button variant="default" size="sm" className="text-xs px-2 bg-[#0a1e42] hover:bg-[#0a1e42]/90">

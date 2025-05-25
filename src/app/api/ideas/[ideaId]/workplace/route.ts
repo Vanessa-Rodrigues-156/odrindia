@@ -5,17 +5,17 @@ import { prisma } from "@/lib/prisma";
 // Get workplace data for an idea
 export async function GET(
   request: NextRequest,
-  { params }: { params: { ideaId: string } }
+  { params }: { params: Promise<{ ideaId: string }> }
 ) {
   try {
-    const ideaId = params.ideaId;
+    const {ideaId} = await params;
     
     // Get idea details
     const idea = await prisma.idea.findUnique({
       where: { id: ideaId },
       select: {
         id: true,
-        title: true, // changed from name to title
+        title: true, 
         description: true,
         workplaceData: true
       }
@@ -36,10 +36,10 @@ export async function GET(
 // Update workplace data for an idea
 export async function POST(
   request: NextRequest,
-  { params }: { params: { ideaId: string } }
+  { params }: { params: Promise<{ ideaId: string }> }
 ) {
   try {
-    const ideaId = params.ideaId;
+    const { ideaId } = await params;
     const { workplaceData } = await request.json();
     
     // Update idea with workplace data

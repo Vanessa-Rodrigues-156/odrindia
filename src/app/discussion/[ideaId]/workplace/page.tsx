@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useState } from "react"
-import { ArrowLeft, Video, Calendar, CheckSquare, StickyNote, Maximize, Minimize, Settings, FileText } from "lucide-react"
+import { ArrowLeft, Video, Calendar, CheckSquare, StickyNote, Maximize, Minimize, Settings, FileText, AlertCircle } from "lucide-react"
 import { useAuth } from "@/lib/auth"
 import { useRouter, useParams } from "next/navigation"
 import { useEffect } from "react"
@@ -15,31 +15,107 @@ import { MeetingNotes } from "@/components/workplace/MeetingNotes"
 import { NoteTaking } from "@/components/workplace/NoteTaking"
 
 export default function WorkplacePage() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const router = useRouter();
   const params = useParams();
   const ideaId = params.ideaId as string;
   const [fullscreenMode, setFullscreenMode] = useState("");
-  const [ideaDetails, setIdeaDetails] = useState<{ name: string; description: string } | null>(null);
+  const [ideaDetails, setIdeaDetails] = useState<{ name: string; description: string; ownerId: string } | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
+  // Fetch idea details and check access permissions
   useEffect(() => {
+    if (loading) return;
+    
     if (!user) {
-      router.push("/signin");
-    } else {
-      // Fetch idea details from API
-      fetch(`/api/ideas/${ideaId}`)
-        .then(res => res.json())
-        .then(data => setIdeaDetails(data))
-        .catch(error => console.error("Failed to fetch idea details:", error));
+      const currentPath = window.location.pathname;
+      router.push(`/signin?redirect=${encodeURIComponent(currentPath)}`);
+      return;
     }
-  }, [user, router, ideaId]);
+    
+    // Fetch idea details from API
+    setIsLoading(true);
+    setError(null);
+    
+    fetch(`/api/ideas/${ideaId}`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include', // Important for cookies
+    })
+      .then(res => {
+        if (!res.ok) {
+          if (res.status === 403) {
+            throw new Error("You don't have permission to access this workspace");
+          } else if (res.status === 404) {
+            throw new Error("Idea not found");
+          }
+          throw new Error("Failed to fetch idea details");
+        }
+        return res.json();
+      })
+      .then(data => {
+        setIdeaDetails(data);
+        setIsLoading(false);
+      })
+      .catch(error => {
+        console.error("Failed to fetch idea details:", error);
+        setError(error.message || "Failed to load workspace");
+        setIsLoading(false);
+      });
+  }, [user, loading, router, ideaId]);
 
+  // Show loading state
+  if (loading || isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#f8f9fa]">
+        <div className="rounded-lg border bg-white p-8 text-center shadow-sm">
+          <div className="mb-4 flex justify-center">
+            <div className="h-12 w-12 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
+          </div>
+          <h2 className="mb-2 text-xl font-bold text-[#0a1e42]">Loading Workplace</h2>
+          <p className="text-gray-600">Please wait while we prepare your workspace...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Handle authentication redirect (middleware should handle this but adding as backup)
   if (!user) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="rounded-lg border p-8 text-center">
+      <div className="flex min-h-screen items-center justify-center bg-[#f8f9fa]">
+        <div className="rounded-lg border p-8 text-center shadow-sm">
           <h2 className="mb-2 text-xl font-bold text-[#0a1e42]">Authentication Required</h2>
           <p className="mb-4 text-gray-600">Please sign in to access the workplace.</p>
+          <Button onClick={() => router.push(`/signin?redirect=/discussion/${ideaId}/workplace`)}>
+            Sign In
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // Handle errors
+  if (error) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#f8f9fa]">
+        <div className="rounded-lg border bg-white p-8 text-center shadow-sm">
+          <div className="mb-4 flex justify-center">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
+              <AlertCircle className="h-6 w-6 text-red-500" />
+            </div>
+          </div>
+          <h2 className="mb-2 text-xl font-bold text-[#0a1e42]">Error</h2>
+          <p className="mb-4 text-gray-600">{error}</p>
+          <div className="flex justify-center gap-3">
+            <Button variant="outline" onClick={() => router.push(`/discussion/${ideaId}`)}>
+              Back to Discussion
+            </Button>
+            <Button onClick={() => window.location.reload()}>
+              Try Again
+            </Button>
+          </div>
         </div>
       </div>
     );

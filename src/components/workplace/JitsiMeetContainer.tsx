@@ -1,168 +1,326 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import dynamic from "next/dynamic"
-import { Video, Users, Mic, MicOff, VideoOff } from "lucide-react"
+import { Video, Users, Mic, MicOff, VideoOff, AlertCircle, PhoneOff } from "lucide-react"
 import { useAuth } from "@/lib/auth"
+import { Button } from "@/components/ui/button"
+
+// Constants for better maintainability
+const JITSI_SERVER = process.env.NEXT_PUBLIC_JITSI_SERVER || "meet.jit.si"; 
+const ROOM_PREFIX = "odrlab-";
+
+// Types for better type safety
+interface IJitsiMeetAPI {
+  executeCommand: (command: string, ...args: any[]) => void;
+  addListener: (event: string, listener: (data: any) => void) => void;
+  removeListener: (event: string, listener: (data: any) => void) => void;
+  addEventListener: (event: string, fn: () => void) => void;
+  removeEventListener: (event: string, fn: () => void) => void;
+  dispose: () => void;
+  getNumberOfParticipants: () => number;
+}
+
+interface JitsiParticipant {
+  id: string;
+  displayName?: string;
+}
 
 // Dynamically import JitsiMeeting to avoid SSR issues
-const JitsiMeeting = dynamic(() => import("@jitsi/react-sdk").then(mod => mod.JitsiMeeting), { ssr: false })
+const JitsiMeeting = dynamic(
+  () => import("@jitsi/react-sdk").then(mod => mod.JitsiMeeting),
+  { ssr: false }
+);
 
 interface JitsiMeetContainerProps {
-  roomName: string
-  userName: string
-  userEmail?: string
+  roomName: string;
+  userName: string;
+  userEmail?: string;
 }
 
 export function JitsiMeetContainer({ roomName, userName, userEmail }: JitsiMeetContainerProps) {
-  const { user } = useAuth()
-  const [mounted, setMounted] = useState(false)
-  const [participantCount, setParticipantCount] = useState(1)
-  const [isMuted, setIsMuted] = useState(true)
-  const [isVideoOff, setIsVideoOff] = useState(false)
-  const [jitsiApi, setJitsiApi] = useState<any>(null)
+  const { user } = useAuth();
+  const [mounted, setMounted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [connectionAttempts, setConnectionAttempts] = useState(0);
+  const [participantCount, setParticipantCount] = useState(1);
+  const [isMuted, setIsMuted] = useState(true);
+  const [isVideoOff, setIsVideoOff] = useState(false);
+  const [jitsiApi, setJitsiApi] = useState<IJitsiMeetAPI | null>(null);
+  const apiRef = useRef<IJitsiMeetAPI | null>(null);
+  const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const cleanupEventListeners = useRef<(() => void) | null>(null);
 
-  useEffect(() => {
-    setMounted(true)
-    
-    // Record meeting end when component unmounts
-    return () => {
-      if (jitsiApi) {
-        // Update meeting status when component unmounts
-        fetch(`/api/meetings/update-status`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-auth-user': user ? encodeURIComponent(JSON.stringify(user)) : '',
-          },
-          body: JSON.stringify({
-            roomName: roomName,
-            status: 'COMPLETED',
-            endTime: new Date().toISOString(),
-          }),
-        }).catch(err => console.error("Failed to update meeting status on unmount:", err));
+  // Safely post data to API with error handling
+  const safeAPICall = async (endpoint: string, data: any) => {
+    try {
+      if (!user) return;
+      
+      const response = await fetch(`/api/meetings/${endpoint}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include', // Include cookies for authentication
+        body: JSON.stringify(data),
+      });
+      
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
       }
+      
+      return await response.json();
+    } catch (err) {
+      console.error(`Failed with API endpoint ${endpoint}:`, err);
+      // Don't set UI error for backend issues that don't affect the user experience
     }
-  }, [roomName, jitsiApi])
+  };
+
+  // Component lifecycle management
+  useEffect(() => {
+    setMounted(true);
+    
+    // Cleanup function: record meeting end when component unmounts
+    return () => {
+      // Clear any pending retry attempts
+      if (retryTimeoutRef.current) {
+        clearTimeout(retryTimeoutRef.current);
+      }
+      
+      // Remove any event listeners
+      if (cleanupEventListeners.current) {
+        cleanupEventListeners.current();
+      }
+      
+      // Update meeting status when component unmounts
+      if (apiRef.current) {
+        safeAPICall('update-status', {
+          roomName: roomName,
+          status: 'COMPLETED',
+          endTime: new Date().toISOString(),
+        });
+        
+        // Dispose of the Jitsi API to clean up resources
+        try {
+          apiRef.current.dispose();
+        } catch (err) {
+          console.warn("Error disposing Jitsi API:", err);
+        }
+      }
+    };
+  }, [roomName,user]);
 
   const handleJitsiIFrameRef = (parentNode: HTMLDivElement) => {
-    // Store the container reference instead
-    // The API object will be provided through the onApiReady callback
-    if (parentNode) {
-      // Responsive height based on screen size
-      const setResponsiveHeight = () => {
-        const height = window.innerWidth < 768 ? "300px" : "450px";
-        parentNode.style.height = height;
-        parentNode.style.width = "100%";
-      };
-
-      // Set initial height
-      setResponsiveHeight();
-
-      // Add resize listener
-      window.addEventListener("resize", setResponsiveHeight);
-
-      // Return cleanup function
-      return () => {
-        window.removeEventListener("resize", setResponsiveHeight);
-      };
-    }
-  }
-
-  const handleApiReady = (apiObj: any) => {
-    // Store JitsiMeeting API reference
-    setJitsiApi(apiObj);
+    if (!parentNode) return;
     
-    // Add event listeners
-    apiObj.addEventListener('participantJoined', (participant: any) => {
-      const count = apiObj.getNumberOfParticipants();
+    // Responsive height based on screen size
+    const setResponsiveHeight = () => {
+      // More dynamic height calculation based on available space
+      const viewportHeight = window.innerHeight;
+      const elementPosition = parentNode.getBoundingClientRect().top;
+      const availableHeight = viewportHeight - elementPosition - 50; // 50px buffer
+      
+      // Set minimum and maximum heights
+      const height = Math.max(
+        Math.min(availableHeight, 600), // Max height 600px
+        300 // Min height 300px
+      );
+      
+      parentNode.style.height = `${height}px`;
+      parentNode.style.width = "100%";
+    };
+
+    // Set initial height
+    setResponsiveHeight();
+
+    // Add resize listener
+    window.addEventListener("resize", setResponsiveHeight);
+
+    // Return cleanup function
+    return () => {
+      window.removeEventListener("resize", setResponsiveHeight);
+    };
+  };
+
+  const handleApiReady = (api: IJitsiMeetAPI) => {
+    // Store API references
+    setJitsiApi(api);
+    apiRef.current = api;
+    setConnectionAttempts(0); // Reset connection attempts on successful connection
+    setError(null);
+    
+    // Set up event listeners with proper cleanup
+    const eventListeners: {event: string, listener: (data: any) => void}[] = [];
+    
+    const addListener = (event: string, listener: (data: any) => void) => {
+      api.addListener(event, listener);
+      eventListeners.push({event, listener});
+    };
+    
+    // Participant joined event
+    addListener('participantJoined', (participant: JitsiParticipant) => {
+      const count = api.getNumberOfParticipants();
       setParticipantCount(count);
       
       // Record participant joined in database
-      fetch(`/api/meetings/participant-joined`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-auth-user': user ? encodeURIComponent(JSON.stringify(user)) : '',
-        },
-        body: JSON.stringify({
-          roomName: roomName,
-          participantId: participant.id,
-          displayName: participant.displayName,
-          joinTime: new Date().toISOString(),
-        }),
-      }).catch(err => console.error("Failed to record participant join:", err));
+      safeAPICall('participant-joined', {
+        roomName: roomName,
+        participantId: participant.id,
+        displayName: participant.displayName,
+        joinTime: new Date().toISOString(),
+      });
     });
 
-    apiObj.addEventListener('participantLeft', (participant: any) => {
-      const count = apiObj.getNumberOfParticipants();
+    // Participant left event
+    addListener('participantLeft', (participant: JitsiParticipant) => {
+      const count = api.getNumberOfParticipants();
       setParticipantCount(count);
       
       // Record participant left in database
-      fetch(`/api/meetings/participant-left`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-auth-user': user ? encodeURIComponent(JSON.stringify(user)) : '',
-        },
-        body: JSON.stringify({
-          roomName: roomName,
-          participantId: participant.id,
-          leaveTime: new Date().toISOString(),
-        }),
-      }).catch(err => console.error("Failed to record participant leave:", err));
+      safeAPICall('participant-left', {
+        roomName: roomName,
+        participantId: participant.id,
+        leaveTime: new Date().toISOString(),
+      });
     });
 
-    apiObj.addEventListener('audioMuteStatusChanged', (data: any) => {
+    // Audio mute status changed
+    addListener('audioMuteStatusChanged', (data: {muted: boolean}) => {
       setIsMuted(data.muted);
     });
 
-    apiObj.addEventListener('videoMuteStatusChanged', (data: any) => {
+    // Video mute status changed
+    addListener('videoMuteStatusChanged', (data: {muted: boolean}) => {
       setIsVideoOff(data.muted);
     });
     
+    // Connection quality concerns
+    addListener('connectionEstablished', () => {
+      console.log('Jitsi connection established');
+    });
+    
+    addListener('connectionFailed', () => {
+      setError('Connection to meeting server failed. Please check your internet connection.');
+      retryConnection();
+    });
+    
+    // Set up cleanup function for all event listeners
+    cleanupEventListeners.current = () => {
+      eventListeners.forEach(({event, listener}) => {
+        try {
+          api.removeListener(event, listener);
+        } catch (err) {
+          console.warn(`Error removing listener for ${event}:`, err);
+        }
+      });
+    };
+    
     // Record meeting start in database
-    fetch(`/api/meetings/update-status`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-auth-user': user ? encodeURIComponent(JSON.stringify(user)) : '',
-      },
-      body: JSON.stringify({
-        roomName: roomName,
-        status: 'IN_PROGRESS',
-        startTime: new Date().toISOString(),
-      }),
-    }).catch(err => console.error("Failed to update meeting status:", err));
+    safeAPICall('update-status', {
+      roomName: roomName,
+      status: 'IN_PROGRESS',
+      startTime: new Date().toISOString(),
+    });
+  };
+
+  const retryConnection = () => {
+    const maxRetries = 3;
+    
+    if (connectionAttempts < maxRetries) {
+      setConnectionAttempts(prev => prev + 1);
+      
+      // Exponential backoff: 2, 4, 8 seconds
+      const delay = Math.pow(2, connectionAttempts + 1) * 1000;
+      
+      retryTimeoutRef.current = setTimeout(() => {
+        setMounted(false);
+        setTimeout(() => setMounted(true), 100);
+      }, delay);
+    } else {
+      setError('Unable to connect to the meeting room after multiple attempts. Please try refreshing the page.');
+    }
   };
 
   const toggleAudio = () => {
     if (jitsiApi) {
       jitsiApi.executeCommand('toggleAudio');
-      // Do not setIsMuted here; rely on Jitsi event to update state
     }
   };
 
   const toggleVideo = () => {
     if (jitsiApi) {
       jitsiApi.executeCommand('toggleVideo');
-      // Do not setIsVideoOff here; rely on Jitsi event to update state
+    }
+  };
+  
+  const endMeeting = async () => {
+    if (window.confirm('Are you sure you want to end the meeting for all participants?')) {
+      try {
+        // Record meeting end in database
+        await safeAPICall('end-meeting', {
+          roomName: roomName,
+          endTime: new Date().toISOString(),
+        });
+        
+        // Clean up Jitsi API
+        if (jitsiApi) {
+          jitsiApi.executeCommand('hangup');
+          jitsiApi.dispose();
+        }
+        
+        // Redirect to the idea workplace page
+        window.location.href = window.location.href.split('/meetings/')[0] ;
+      } catch (err) {
+        console.error('Failed to end meeting:', err);
+        alert('Failed to end the meeting. Please try again.');
+      }
     }
   };
 
+  // Loading state
   if (!mounted) {
     return (
       <div className="aspect-video w-full rounded-lg border bg-gray-50 flex items-center justify-center">
         <div className="flex flex-col items-center gap-2 p-4 text-center">
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-100 flex items-center justify-center">
-            <Video className="h-5 w-5 sm:h-6 sm:w-6 text-blue-500 animate-pulse" />
+          <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
+            <Video className="h-6 w-6 text-blue-500 animate-pulse" />
           </div>
-          <div className="text-gray-500 text-xs sm:text-sm">Initializing meeting room...</div>
+          <div className="text-gray-500 text-sm">
+            Initializing meeting room{connectionAttempts > 0 ? ` (Attempt ${connectionAttempts + 1})` : ''}...
+          </div>
         </div>
       </div>
-    )
+    );
   }
 
+  // Error state
+  if (error) {
+    return (
+      <div className="aspect-video w-full rounded-lg border bg-gray-50 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4 p-6 text-center max-w-md">
+          <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
+            <AlertCircle className="h-6 w-6 text-red-500" />
+          </div>
+          <div>
+            <div className="text-red-500 font-medium mb-2">Meeting Connection Error</div>
+            <p className="text-gray-600 text-sm mb-4">{error}</p>
+            <Button 
+              onClick={() => {
+                setError(null);
+                setConnectionAttempts(0);
+                setMounted(false);
+                setTimeout(() => setMounted(true), 100);
+              }}
+            >
+              Try Again
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Full Jitsi Meeting UI
   return (
     <div className="rounded-lg overflow-hidden border shadow-sm">
       <div className="bg-[#0a1e42] text-white px-2 sm:px-4 py-1 sm:py-2 flex flex-wrap sm:flex-nowrap items-center justify-between gap-1 sm:gap-0">
@@ -197,13 +355,22 @@ export function JitsiMeetContainer({ roomName, userName, userEmail }: JitsiMeetC
               <Video className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
             )}
           </button>
+          <button
+            className="p-1 sm:p-1.5 rounded bg-red-600 hover:bg-red-700 text-[10px] sm:text-xs text-white flex items-center gap-1"
+            onClick={endMeeting}
+            aria-label="End meeting"
+          >
+            <PhoneOff className="h-3 w-3 sm:h-4 sm:w-4" />
+            <span className="hidden sm:inline">End Meeting</span>
+          </button>
           <div className="text-[10px] sm:text-xs bg-green-500/70 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full">Live</div>
         </div>
       </div>
       <JitsiMeeting
-        domain="meet.jit.si"
-        roomName={`odrindia-${roomName}`}
+        domain={JITSI_SERVER}
+        roomName={`${ROOM_PREFIX}${roomName}`}
         configOverwrite={{
+          // Core functionality
           startWithAudioMuted: true,
           startWithVideoMuted: false,
           prejoinPageEnabled: true,
@@ -211,32 +378,80 @@ export function JitsiMeetContainer({ roomName, userName, userEmail }: JitsiMeetC
           enableNoisyMicDetection: true,
           enableClosePage: false,
           disableDeepLinking: true,
+          
+          // Security settings
+          startAudioOnly: false,
+          startScreenSharing: false,
+          enableWelcomePage: false,
+          
+          // Production optimizations
+          disableAudioLevels: true, // Improves performance
+          resolution: 720, // Recommended for production
+          constraints: {
+            video: {
+              height: {
+                ideal: 720,
+                max: 720,
+                min: 240
+              }
+            }
+          },
+          
+          // Connection optimizations
+          p2p: {
+            enabled: true,
+            preferH264: true,
+            disableH264: false,
+            stunServers: [
+              { urls: 'stun:stun.l.google.com:19302' },
+              { urls: 'stun:stun1.l.google.com:19302' }
+            ]
+          },
+          
+          // UI configuration
           toolbarButtons: [
             'microphone', 'camera', 'desktop', 'fullscreen',
             'chat', 'raisehand', 'tileview', 'settings',
-            'videoquality', 'filmstrip', 'invite',
+            'videoquality', 'filmstrip', 'invite', 'stats',
           ],
+          
+          // Branding
+          hiddenDomain: 'meet.jitsi',
+          
+          // Performance
+          enableLayerSuspension: true, // Saves bandwidth
+          disableSimulcast: false,
         }}
         interfaceConfigOverwrite={{
+          // Branding
           SHOW_JITSI_WATERMARK: false,
           SHOW_WATERMARK_FOR_GUESTS: false,
           SHOW_BRAND_WATERMARK: false,
+          DEFAULT_BACKGROUND: '#040720',
           DEFAULT_REMOTE_DISPLAY_NAME: "Participant",
+          
+          // UI elements
           TOOLBAR_BUTTONS: [
             'microphone', 'camera', 'desktop', 'fullscreen', 'fodeviceselection',
             'hangup', 'chat', 'raisehand', 'tileview', 'settings', 'videoquality',
-            'filmstrip', 'invite', 'shortcuts',
+            'filmstrip', 'invite', 'shortcuts', 'mute-everyone', 
           ],
           TOOLBAR_ALWAYS_VISIBLE: false,
+          
+          // Notifications
           DISABLE_JOIN_LEAVE_NOTIFICATIONS: true,
+          DISABLE_VIDEO_BACKGROUND: true,
+          
+          // Mobile optimizations
+          MOBILE_APP_PROMO: false,
         }}
         userInfo={{
-          displayName: userName,
-          email: userEmail || '',
+          displayName: userName || 'Participant',
+          email: userEmail || 'user@example.com',
         }}
         onApiReady={handleApiReady}
         getIFrameRef={handleJitsiIFrameRef}
       />
     </div>
-  )
+  );
 }

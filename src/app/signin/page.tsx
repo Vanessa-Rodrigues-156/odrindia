@@ -46,30 +46,55 @@ const SignInPage = () => {
         const password = formData.get('password') as string;
 
         try {
+            // First attempt the login to get the user and set cookies
             const res = await fetch('/api/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password }),
+                credentials: 'include', // Critical for storing cookies
             });
 
-            const data = await res.json();
+            if (!res.ok) {
+                const data = await res.json();
+                setError(data.error || 'Login failed');
+                return;
+            }
 
-            if (res.ok) {
-                // Use the auth context to handle user login
-                login(data.user);
+            const data = await res.json();
+            
+            // Use the auth context to handle user login
+            try {
+                await login(data.user);
                 
-                // Redirect based on user role
-                if (data.user.userRole === 'ADMIN') {
+                // Verify session is established
+                const sessionRes = await fetch('/api/auth/session', {
+                    method: 'GET',
+                    credentials: 'include',
+                });
+                
+                if (!sessionRes.ok) {
+                    setError('Failed to establish session. Please try again.');
+                    return;
+                }
+                
+                // Get redirect URL from query params or use default based on role
+                const urlParams = new URLSearchParams(window.location.search);
+                const redirectPath = urlParams.get('redirect');
+                
+                if (redirectPath) {
+                    router.push(redirectPath); // Go to the originally requested page
+                } else if (data.user.userRole === 'ADMIN') {
                     router.push('/admin/idea-approval');
                 } else {
                     router.push('/'); // Redirect to home page for regular users
                 }
-            } else {
-                setError(data.error || 'Login failed');
+            } catch (loginErr) {
+                console.error('Login context error:', loginErr);
+                setError('Failed to complete sign in. Please try again.');
             }
         } catch (err) {
-            console.log(err);
-            setError('Something went wrong. Please try again.');
+            console.error('Sign in error:', err);
+            setError('Something went wrong with the server. Please try again later.');
         } finally {
             setLoading(false);
         }

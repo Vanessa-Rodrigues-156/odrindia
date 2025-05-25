@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getJwtUser } from "@/lib/auth";
+import { getJwtUser } from "@/lib/auth-server";
 
 // POST /api/meetings/[meetingId]/notes
 // Add a note to a meeting

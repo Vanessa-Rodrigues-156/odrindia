@@ -1,6 +1,5 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   reactStrictMode: true,
   
   // Security headers
@@ -33,12 +32,10 @@ const nextConfig: NextConfig = {
             key: 'Permissions-Policy',
             value: 'camera=(self), microphone=(self), geolocation=(), interest-cohort=()',
           },
-          // Content Security Policy - customize as needed for your app
+          // Content Security Policy - customize for production
           {
             key: 'Content-Security-Policy',
-            value: process.env.NODE_ENV === 'production' 
-              ? `default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.jitsi.net https://meet.jit.si; connect-src 'self' https://*.jitsi.net https://meet.jit.si wss://*.jitsi.net wss://meet.jit.si; style-src 'self' 'unsafe-inline' https://*.jitsi.net https://meet.jit.si; img-src 'self' data: blob: https://*.jitsi.net https://meet.jit.si; media-src 'self' blob: https://*.jitsi.net https://meet.jit.si; frame-src 'self' https://*.jitsi.net https://meet.jit.si;` 
-              : '',
+            value: `default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.jitsi.net https://meet.jit.si; connect-src 'self' https://*.jitsi.net https://meet.jit.si wss://*.jitsi.net wss://meet.jit.si; style-src 'self' 'unsafe-inline' https://*.jitsi.net https://meet.jit.si; img-src 'self' data: blob: https://*.jitsi.net https://meet.jit.si; media-src 'self' blob: https://*.jitsi.net https://meet.jit.si; frame-src 'self' https://*.jitsi.net https://meet.jit.si;`,
           },
         ],
       },
@@ -47,7 +44,7 @@ const nextConfig: NextConfig = {
   
   // Enable image optimization
   images: {
-   // domains: ['meet.jit.si'],
+    //domains: ['meet.jit.si'],
     remotePatterns: [
       {
         protocol: 'https',
@@ -59,10 +56,10 @@ const nextConfig: NextConfig = {
   },
   
   // Production optimizations
-  swcMinify: true, // Faster minification
+  swcMinify: true,
   
-  // Output configuration
-  output: process.env.STANDALONE === 'true' ? 'standalone' : undefined,
+  // Output configuration for containerized deployments
+  output: 'standalone',
 };
 
 export default nextConfig;

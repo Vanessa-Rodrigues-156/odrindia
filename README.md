@@ -12,6 +12,8 @@ ODR India is a full-stack web platform for co-creating Online Dispute Resolution
 - **Mentor & Ideator Registration:** Join as a mentor or ideator to contribute or seek guidance.
 - **Chatbot Legal Assistant:** Get instant answers to legal and ODR-related queries.
 - **Discussion Forums:** Engage in detailed discussions on submitted ideas.
+- **Virtual Meeting Integration:** Conduct real-time meetings with Jitsi Meet integration for seamless collaboration.
+- **Collaborative Note-Taking:** Take and share notes during meetings to document discussions and decisions.
 - **File Attachments:** Share research, proposals, and supporting documents.
 - **Multilingual & Inclusive:** Designed to support diverse users and cross-border collaboration.
 - **Secure Authentication:** User registration and login with role-based access.
@@ -106,6 +108,14 @@ The `workplaceData` field stores:
 - Shared notes
 - Calendar events
 - Todo items
+
+## Documentation
+
+- [Database Troubleshooting Guide](./docs/DATABASE_TROUBLESHOOTING.md) - Solutions for common database issues
+- [Meeting Logs Guide](./docs/MEETING_LOGS.md) - How to use the meeting logs functionality
+- [Production Deployment Guide](./docs/PRODUCTION_DEPLOYMENT.md) - Instructions for deploying to production
+- [Jitsi Integration Guide](./docs/JITSI_INTEGRATION.md) - Details on the Jitsi Meet integration
+- [Authentication Testing](./docs/AUTHENTICATION_TESTING.md) - Guide for testing the authentication flow
 
 ## Contributing
 

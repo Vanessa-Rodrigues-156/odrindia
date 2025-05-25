@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getJwtUser } from "@/lib/auth";
+import { getJwtUser } from "@/lib/auth-server";
 
 // GET /api/meetings/idea/[ideaId]
 // Get all meetings for a specific idea
 export async function GET(
   request: NextRequest,
-  { params }: { params: { ideaId: string } }
+  { params }:{ params: Promise< { ideaId: string } >}
 ) {
   try {
     const user = await getJwtUser(request);
@@ -14,7 +14,7 @@ export async function GET(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     
-    const ideaId = params.ideaId;
+    const { ideaId } = await params;
     
     // Check if the user has access to the idea
     const idea = await prisma.idea.findUnique({

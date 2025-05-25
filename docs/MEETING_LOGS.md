@@ -9,6 +9,7 @@ This module provides functionality to store and manage meeting logs and notes fo
 - **Participant Tracking**: Record who joined and left the meeting, and when
 - **Meeting Notes**: Collaborative note-taking during or after meetings
 - **Meeting Summaries**: Add post-meeting summaries for reference
+- **Meeting Control**: End meeting functionality for organizers and presenters
 - **Authentication**: All features secured with proper authentication
 
 ## Database Schema
@@ -48,6 +49,7 @@ Stores notes taken during meetings:
 - `GET /api/meetings/[meetingId]`: Get meeting details
 - `POST /api/meetings/create`: Create a new meeting
 - `POST /api/meetings/update-status`: Update meeting status
+- `POST /api/meetings/end-meeting`: End a meeting for all participants
 - `GET /api/meetings/idea/[ideaId]`: Get all meetings for an idea
 
 ### Participants
@@ -73,11 +75,15 @@ Displays list of meetings for an idea and allows scheduling new meetings
 Displays and manages notes for a specific meeting
 
 ### JitsiMeetContainer
-Handles video conferencing and automatically tracks meeting activity
+Handles video conferencing and automatically tracks meeting activity:
+- Controls for audio and video (mute/unmute)
+- End meeting button for organizers and presenters
+- Automatic participant tracking
+- Connection status monitoring
 
 ## Authentication
 
-All API endpoints are protected and require authentication. The system uses a custom header `x-auth-user` to pass authentication information from client to server.
+All API endpoints are protected and require authentication. The system uses cookie-based authentication with the `odrindia_session` cookie. Requests must include `credentials: 'include'` to ensure cookies are sent with each request.
 
 ## How to Use
 
@@ -85,7 +91,8 @@ All API endpoints are protected and require authentication. The system uses a cu
 2. Schedule a new meeting with title, date and time
 3. Join a meeting when it's time
 4. Take notes during the meeting
-5. Add a summary after the meeting ends
+5. End the meeting by clicking the "End Meeting" button (requires presenter/organizer privileges)
+6. Add a summary after the meeting ends
 
 ## Development
 

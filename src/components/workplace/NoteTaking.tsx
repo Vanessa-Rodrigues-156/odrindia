@@ -32,7 +32,9 @@ export function NoteTaking({ ideaId }: NoteTakingProps) {
   // Load notes when component mounts
   useEffect(() => {
     if (ideaId) {
-      fetch(`/api/ideas/${ideaId}/workplace`)
+      fetch(`/api/ideas/${ideaId}/workplace`, {
+        credentials: 'include', // Include cookies for authentication
+      })
         .then(res => res.json())
         .then(data => {
           if (data.workplaceData && data.workplaceData.notes) {
@@ -78,6 +80,7 @@ export function NoteTaking({ ideaId }: NoteTakingProps) {
           headers: {
             'Content-Type': 'application/json',
           },
+          credentials: 'include', // Include cookies for authentication
           body: JSON.stringify({
             workplaceData: {
               notes: updatedNotes,
@@ -119,6 +122,7 @@ export function NoteTaking({ ideaId }: NoteTakingProps) {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include', // Include cookies for authentication
         body: JSON.stringify({
           workplaceData: {
             notes: remainingNotes,

@@ -91,8 +91,8 @@ export default function MeetingDetailPage() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          'x-auth-user': user ? encodeURIComponent(JSON.stringify(user)) : '',
         },
+        credentials: 'include', // Include cookies for authentication
         body: JSON.stringify({
           summary: summaryText
         }),
@@ -117,8 +117,9 @@ export default function MeetingDetailPage() {
     try {
       setLoading(true)
       const response = await fetch(`/api/meetings/${meetingId}`, {
+        credentials: 'include', // Include cookies for authentication
         headers: {
-          'x-auth-user': user ? encodeURIComponent(JSON.stringify(user)) : '',
+          'Content-Type': 'application/json',
         },
       })
       
@@ -152,8 +153,8 @@ export default function MeetingDetailPage() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          'x-auth-user': user ? encodeURIComponent(JSON.stringify(user)) : '',
         },
+        credentials: 'include', // Include cookies for authentication
         body: JSON.stringify({
           roomName: meeting?.jitsiRoomName,
           status: status,

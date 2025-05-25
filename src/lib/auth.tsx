@@ -1,30 +1,17 @@
-'use client';
-
+"use client"
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-import { NextRequest } from 'next/server';
+import { User } from './auth-server';
 
-// Define our User type based on the database schema
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  userRole: 'INNOVATOR' | 'MENTOR' | 'ADMIN' | 'OTHER';
-  contactNumber?: string;
-  city?: string;
-  country?: string;
-  institution?: string;
-  highestEducation?: string;
-  odrLabUsage?: string;
-  createdAt: string;
-}
+// We import User type from auth-server.ts
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  login: (userData: User) => void;
-  logout: () => void;
-  updateUser: (userData: Partial<User>) => void;
+  login: (userData: User) => Promise<boolean>;
+  logout: () => Promise<void>;
+  updateUser: (userData: Partial<User>) => Promise<void>;
+  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -34,48 +21,185 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  // Load user from localStorage on initial render
+  // Load user data on initial render and set up refresh interval
   useEffect(() => {
-    const loadUser = () => {
+    const loadUser = async () => {
       try {
-        const storedUser = localStorage.getItem('currentUser');
-        if (storedUser) {
-          const userData = JSON.parse(storedUser);
-          setUser(userData);
+        setLoading(true);
+        // Get user data from the server to ensure we have the latest version
+        const response = await fetch('/api/auth/session', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include', // Important for cookies
+        });
+
+        if (response.ok) {
+          const userData = await response.json();
+          if (userData?.user) {
+            setUser(userData.user);
+          } else {
+            setUser(null);
+          }
+        } else {
+          // Handle error or expired session
+          setUser(null);
+          
+          // Clear any client-side stored user data for backward compatibility
+          if (typeof localStorage !== 'undefined') {
+            localStorage.removeItem('currentUser');
+          }
         }
       } catch (error) {
-        console.error('Error loading user from localStorage:', error);
-        // Clear invalid data
-        localStorage.removeItem('currentUser');
+        console.error('Error loading user session:', error);
+        setUser(null);
       } finally {
         setLoading(false);
       }
     };
 
     loadUser();
+    
+    // Set up a refresh interval (every 10 minutes)
+    const refreshInterval = setInterval(loadUser, 10 * 60 * 1000);
+    
+    return () => {
+      clearInterval(refreshInterval);
+    };
   }, []);
 
-  const login = (userData: User) => {
-    setUser(userData);
-    localStorage.setItem('currentUser', JSON.stringify(userData));
+  // Login user (create session)
+  const login = async (userData: User) => {
+    try {
+      // We receive the user data after successful server-side authentication
+      // No need to send it back to the server here
+      
+      // Update local state with user data
+      setUser(userData);
+      
+      // For backward compatibility - also store in localStorage
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('currentUser', JSON.stringify(userData));
+      }
+      
+      // Verify session is active by making a session check
+      const sessionResponse = await fetch('/api/auth/session', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include', // Important for cookies
+      });
+      
+      if (!sessionResponse.ok) {
+        throw new Error('Session validation failed');
+      }
+      
+      return true;
+    } catch (error) {
+      console.error('Login error:', error);
+      throw error;
+    }
   };
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('currentUser');
-    router.push('/signin');
+  // Logout user (destroy session)
+  const logout = async () => {
+    try {
+      // Call the logout endpoint to clear server-side session
+      await fetch('/api/auth/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      // Clear local state regardless of server response
+      setUser(null);
+      
+      // For backward compatibility
+      if (typeof localStorage !== 'undefined') {
+        localStorage.removeItem('currentUser');
+      }
+      
+      // Redirect to signin page
+      router.push('/signin');
+    }
   };
 
-  const updateUser = (userData: Partial<User>) => {
-    if (user) {
+  // Update user data
+  const updateUser = async (userData: Partial<User>) => {
+    if (!user) return;
+    
+    try {
       const updatedUser = { ...user, ...userData };
+      
+      // Call API to update user data
+      const response = await fetch(`/api/auth/update-user`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userData: updatedUser }),
+        credentials: 'include',
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to update user data');
+      }
+      
+      // Update local state
       setUser(updatedUser);
-      localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+      
+      // For backward compatibility
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+      }
+    } catch (error) {
+      console.error('Update user error:', error);
+      throw error;
+    }
+  };
+  
+  // Force refresh user data from server
+  const refreshUser = async () => {
+    try {
+      const response = await fetch('/api/auth/session', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      });
+      
+      if (response.ok) {
+        const userData = await response.json();
+        if (userData?.user) {
+          setUser(userData.user);
+          
+          // For backward compatibility
+          if (typeof localStorage !== 'undefined') {
+            localStorage.setItem('currentUser', JSON.stringify(userData.user));
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error refreshing user data:', error);
     }
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, updateUser }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      loading, 
+      login, 
+      logout, 
+      updateUser,
+      refreshUser
+    }}>
       {children}
     </AuthContext.Provider>
   );
@@ -97,12 +221,20 @@ export const withAuth = (Component: React.ComponentType<any>) => {
 
     useEffect(() => {
       if (!loading && !user) {
-        router.push('/signin');
+        const currentPath = window.location.pathname;
+        router.push(`/signin?redirect=${encodeURIComponent(currentPath)}`);
       }
     }, [loading, user, router]);
 
     if (loading) {
-      return <div className="flex justify-center items-center h-screen">Loading...</div>;
+      return (
+        <div className="flex justify-center items-center h-screen">
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-12 h-12 rounded-full border-4 border-blue-500 border-t-transparent animate-spin"></div>
+            <p className="text-gray-600">Loading...</p>
+          </div>
+        </div>
+      );
     }
 
     if (!user) {
@@ -122,7 +254,8 @@ export const withAdminAuth = (Component: React.ComponentType<any>) => {
     useEffect(() => {
       if (!loading) {
         if (!user) {
-          router.push('/signin');
+          const currentPath = window.location.pathname;
+          router.push(`/signin?redirect=${encodeURIComponent(currentPath)}`);
         } else if (user.userRole !== 'ADMIN') {
           router.push('/'); // Redirect non-admins to home page
         }
@@ -130,7 +263,14 @@ export const withAdminAuth = (Component: React.ComponentType<any>) => {
     }, [loading, user, router]);
 
     if (loading) {
-      return <div className="flex justify-center items-center h-screen">Loading...</div>;
+      return (
+        <div className="flex justify-center items-center h-screen">
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-12 h-12 rounded-full border-4 border-blue-500 border-t-transparent animate-spin"></div>
+            <p className="text-gray-600">Loading admin panel...</p>
+          </div>
+        </div>
+      );
     }
 
     if (!user || user.userRole !== 'ADMIN') {
@@ -141,35 +281,4 @@ export const withAdminAuth = (Component: React.ComponentType<any>) => {
   };
 };
 
-// Function to get the user from JWT in API routes
-export async function getJwtUser(request: NextRequest): Promise<User | null> {
-  try {
-    // In a real JWT system, you would verify the JWT token from cookies/headers
-    // For now, we'll extract the user data from a custom header for API routes
-    const authHeader = request.headers.get('x-auth-user');
-    
-    if (!authHeader) {
-      // No authentication header found
-      // For development purposes, if we're in development mode, return a mock admin user
-      if (process.env.NODE_ENV === 'development') {
-        // This is only for development! Remove in production
-        console.warn('Using mock user for development. Remove in production.');
-        return {
-          id: 'dev-user-id',
-          name: 'Development User',
-          email: 'dev@example.com',
-          userRole: 'ADMIN',
-          createdAt: new Date().toISOString()
-        };
-      }
-      return null;
-    }
-    
-    // Parse the user data
-    const userData = JSON.parse(decodeURIComponent(authHeader));
-    return userData as User;
-  } catch (error) {
-    console.error('Error parsing JWT user:', error);
-    return null;
-  }
-}
+// Server-side authentication functionality moved to auth-server.ts

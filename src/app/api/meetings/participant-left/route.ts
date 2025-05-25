@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getJwtUser } from "@/lib/auth";
+import { getJwtUser } from "@/lib/auth-server";
 
 // POST /api/meetings/participant-left
 // Record a participant leaving a meeting

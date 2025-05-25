@@ -44,8 +44,9 @@ export function MeetingNotes({ meetingId }: MeetingNotesProps) {
     try {
       setLoading(true);
       const response = await fetch(`/api/meetings/${meetingId}/notes`, {
+        credentials: 'include', // Include cookies for authentication
         headers: {
-          'x-auth-user': user ? encodeURIComponent(JSON.stringify(user)) : '',
+          'Content-Type': 'application/json',
         },
       });
       if (!response.ok) {
@@ -71,8 +72,8 @@ export function MeetingNotes({ meetingId }: MeetingNotesProps) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          'x-auth-user': user ? encodeURIComponent(JSON.stringify(user)) : '',
         },
+        credentials: 'include', // Include cookies for authentication
         body: JSON.stringify({
           content: newNoteContent,
         }),
