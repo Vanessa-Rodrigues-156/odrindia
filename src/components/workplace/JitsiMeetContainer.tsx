@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import dynamic from "next/dynamic"
 import { Video, Users, Mic, MicOff, VideoOff } from "lucide-react"
+import { useAuth } from "@/lib/auth"
 
 // Dynamically import JitsiMeeting to avoid SSR issues
 const JitsiMeeting = dynamic(() => import("@jitsi/react-sdk").then(mod => mod.JitsiMeeting), { ssr: false })
@@ -14,6 +15,7 @@ interface JitsiMeetContainerProps {
 }
 
 export function JitsiMeetContainer({ roomName, userName, userEmail }: JitsiMeetContainerProps) {
+  const { user } = useAuth()
   const [mounted, setMounted] = useState(false)
   const [participantCount, setParticipantCount] = useState(1)
   const [isMuted, setIsMuted] = useState(true)
@@ -22,7 +24,26 @@ export function JitsiMeetContainer({ roomName, userName, userEmail }: JitsiMeetC
 
   useEffect(() => {
     setMounted(true)
-  }, [])
+    
+    // Record meeting end when component unmounts
+    return () => {
+      if (jitsiApi) {
+        // Update meeting status when component unmounts
+        fetch(`/api/meetings/update-status`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-auth-user': user ? encodeURIComponent(JSON.stringify(user)) : '',
+          },
+          body: JSON.stringify({
+            roomName: roomName,
+            status: 'COMPLETED',
+            endTime: new Date().toISOString(),
+          }),
+        }).catch(err => console.error("Failed to update meeting status on unmount:", err));
+      }
+    }
+  }, [roomName, jitsiApi])
 
   const handleJitsiIFrameRef = (parentNode: HTMLDivElement) => {
     // Store the container reference instead
@@ -53,14 +74,43 @@ export function JitsiMeetContainer({ roomName, userName, userEmail }: JitsiMeetC
     setJitsiApi(apiObj);
     
     // Add event listeners
-    apiObj.addEventListener('participantJoined', () => {
+    apiObj.addEventListener('participantJoined', (participant: any) => {
       const count = apiObj.getNumberOfParticipants();
       setParticipantCount(count);
+      
+      // Record participant joined in database
+      fetch(`/api/meetings/participant-joined`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-user': user ? encodeURIComponent(JSON.stringify(user)) : '',
+        },
+        body: JSON.stringify({
+          roomName: roomName,
+          participantId: participant.id,
+          displayName: participant.displayName,
+          joinTime: new Date().toISOString(),
+        }),
+      }).catch(err => console.error("Failed to record participant join:", err));
     });
 
-    apiObj.addEventListener('participantLeft', () => {
+    apiObj.addEventListener('participantLeft', (participant: any) => {
       const count = apiObj.getNumberOfParticipants();
       setParticipantCount(count);
+      
+      // Record participant left in database
+      fetch(`/api/meetings/participant-left`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-user': user ? encodeURIComponent(JSON.stringify(user)) : '',
+        },
+        body: JSON.stringify({
+          roomName: roomName,
+          participantId: participant.id,
+          leaveTime: new Date().toISOString(),
+        }),
+      }).catch(err => console.error("Failed to record participant leave:", err));
     });
 
     apiObj.addEventListener('audioMuteStatusChanged', (data: any) => {
@@ -70,6 +120,20 @@ export function JitsiMeetContainer({ roomName, userName, userEmail }: JitsiMeetC
     apiObj.addEventListener('videoMuteStatusChanged', (data: any) => {
       setIsVideoOff(data.muted);
     });
+    
+    // Record meeting start in database
+    fetch(`/api/meetings/update-status`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-auth-user': user ? encodeURIComponent(JSON.stringify(user)) : '',
+      },
+      body: JSON.stringify({
+        roomName: roomName,
+        status: 'IN_PROGRESS',
+        startTime: new Date().toISOString(),
+      }),
+    }).catch(err => console.error("Failed to update meeting status:", err));
   };
 
   const toggleAudio = () => {

@@ -2,13 +2,15 @@
 
 import Link from "next/link"
 import { useState } from "react"
-import { ArrowLeft, Video, Calendar, CheckSquare, StickyNote, Maximize, Minimize, Settings } from "lucide-react"
+import { ArrowLeft, Video, Calendar, CheckSquare, StickyNote, Maximize, Minimize, Settings, FileText } from "lucide-react"
 import { useAuth } from "@/lib/auth"
 import { useRouter, useParams } from "next/navigation"
 import { useEffect } from "react"
 
 import { Button } from "@/components/ui/button"
 import { JitsiMeetContainer } from "@/components/workplace/JitsiMeetContainer"
+import { MeetingLogs } from "@/components/workplace/MeetingLogs"
+import { MeetingNotes } from "@/components/workplace/MeetingNotes"
 
 import { NoteTaking } from "@/components/workplace/NoteTaking"
 
@@ -98,6 +100,18 @@ export default function WorkplacePage() {
               <NoteTaking ideaId={ideaId} />
             </div>
           )}
+          
+          {fullscreenMode === "meetinglogs" && (
+            <div className="flex-1">
+              <div className="bg-white rounded-lg shadow p-4 h-full">
+                <h3 className="text-xl font-semibold text-[#0a1e42] mb-4 flex items-center">
+                  <FileText className="h-5 w-5 mr-2" />
+                  Meeting Logs
+                </h3>
+                <MeetingLogs ideaId={ideaId} />
+              </div>
+            </div>
+          )}
         </div>
       ) : (
         <main className="flex-1 container mx-auto px-4 py-8">
@@ -166,6 +180,23 @@ export default function WorkplacePage() {
                     <Maximize className="h-4 w-4" />
                   </Button>
                 </div>
+              </div>
+              
+              <div className="bg-white rounded-lg shadow-sm p-4">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-[#0a1e42] flex items-center">
+                    <FileText className="h-5 w-5 mr-2" />
+                    Meeting Logs
+                  </h3>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={() => toggleFullscreen("meetinglogs")}
+                  >
+                    <Maximize className="h-4 w-4" />
+                  </Button>
+                </div>
+                <MeetingLogs ideaId={ideaId} />
               </div>
               
               <div className="bg-white rounded-lg shadow-sm p-4 h-[400px]">

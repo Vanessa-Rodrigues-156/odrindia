@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
     const skip = (page - 1) * limit;
     
     // Build the where clause
-    let where = {
+    const where = {
       approved: true, // By default, only show approved ideas
     } as any;
     

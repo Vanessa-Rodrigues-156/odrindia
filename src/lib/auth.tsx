@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
+import { NextRequest } from 'next/server';
 
 // Define our User type based on the database schema
 interface User {
@@ -139,3 +140,36 @@ export const withAdminAuth = (Component: React.ComponentType<any>) => {
     return <Component {...props} />;
   };
 };
+
+// Function to get the user from JWT in API routes
+export async function getJwtUser(request: NextRequest): Promise<User | null> {
+  try {
+    // In a real JWT system, you would verify the JWT token from cookies/headers
+    // For now, we'll extract the user data from a custom header for API routes
+    const authHeader = request.headers.get('x-auth-user');
+    
+    if (!authHeader) {
+      // No authentication header found
+      // For development purposes, if we're in development mode, return a mock admin user
+      if (process.env.NODE_ENV === 'development') {
+        // This is only for development! Remove in production
+        console.warn('Using mock user for development. Remove in production.');
+        return {
+          id: 'dev-user-id',
+          name: 'Development User',
+          email: 'dev@example.com',
+          userRole: 'ADMIN',
+          createdAt: new Date().toISOString()
+        };
+      }
+      return null;
+    }
+    
+    // Parse the user data
+    const userData = JSON.parse(decodeURIComponent(authHeader));
+    return userData as User;
+  } catch (error) {
+    console.error('Error parsing JWT user:', error);
+    return null;
+  }
+}

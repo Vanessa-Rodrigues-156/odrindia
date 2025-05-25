@@ -7,7 +7,9 @@
     "build": "npx prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
-    "prisma:push": "prisma db push"
+    "prisma:push": "prisma db push",
+    "prisma:deploy": "prisma migrate deploy",
+    "db:migrate": "prisma migrate dev"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.4",
