@@ -138,18 +138,19 @@ export function NoteTaking({ ideaId }: NoteTakingProps) {
 
   return (
     <Card className="h-full flex flex-col">
-      <CardHeader>
+      <CardHeader className="pb-3 md:pb-4">
         <CardTitle className="flex items-center text-[#0a1e42]">
           <StickyNoteIcon className="mr-2 h-5 w-5" /> 
           Notes
         </CardTitle>
       </CardHeader>
-      <CardContent className="flex-1 flex flex-col">
-        <div className="flex items-center justify-between mb-2">
+      <CardContent className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
           <Button 
             variant="outline" 
             size="sm" 
             onClick={createNewNote}
+            className="text-xs sm:text-sm"
           >
             New Note
           </Button>
@@ -157,7 +158,7 @@ export function NoteTaking({ ideaId }: NoteTakingProps) {
             <Button 
               variant="default" 
               size="sm" 
-              className="bg-[#0a1e42] hover:bg-[#263e69]"
+              className="bg-[#0a1e42] hover:bg-[#263e69] text-xs sm:text-sm"
               onClick={saveActiveNote}
               disabled={isSaving}
             >
@@ -165,20 +166,22 @@ export function NoteTaking({ ideaId }: NoteTakingProps) {
                 <>Saving...</>
               ) : (
                 <>
-                  <Save className="h-4 w-4 mr-1" /> Save
+                  <Save className="h-3 w-3 sm:h-4 sm:w-4 mr-1" /> Save
                 </>
               )}
             </Button>
           )}
         </div>
         
-        <div className="flex gap-4 flex-1">
-          <div className="w-1/3 overflow-y-auto border rounded-md">
+        {/* Layout that switches from vertical (mobile) to horizontal (desktop) */}
+        <div className="flex flex-col md:flex-row gap-4 flex-1 overflow-hidden">
+          {/* Note list - full width on mobile, 1/3 on desktop */}
+          <div className="md:w-1/3 w-full overflow-y-auto border rounded-md h-[200px] md:h-auto">
             {notes.length > 0 ? (
               notes.map(note => (
                 <div 
                   key={note.id} 
-                  className={`p-2 border-b cursor-pointer flex items-center justify-between ${activeNoteId === note.id ? 'bg-blue-50' : ''}`}
+                  className={`p-2 border-b cursor-pointer flex items-center justify-between ${activeNoteId === note.id ? 'bg-blue-50' : 'hover:bg-gray-50'}`}
                   onClick={() => selectNote(note.id)}
                 >
                   <div className="truncate flex-1">
@@ -193,6 +196,7 @@ export function NoteTaking({ ideaId }: NoteTakingProps) {
                   <Button 
                     variant="ghost" 
                     size="sm"
+                    className="h-8 w-8 p-0" 
                     onClick={(e) => {
                       e.stopPropagation()
                       deleteNote(note.id)
@@ -203,18 +207,19 @@ export function NoteTaking({ ideaId }: NoteTakingProps) {
                 </div>
               ))
             ) : (
-              <div className="p-4 text-center text-gray-500">
+              <div className="p-4 text-center text-gray-500 text-sm">
                 No notes yet. Create one to get started!
               </div>
             )}
           </div>
           
-          <div className="w-2/3">
+          {/* Note content - full width on mobile, 2/3 on desktop */}
+          <div className="md:w-2/3 w-full flex-1 flex flex-col">
             <Textarea
               placeholder="Start typing your note here..."
               value={activeNoteContent}
               onChange={(e) => setActiveNoteContent(e.target.value)}
-              className="h-full min-h-[200px]"
+              className="flex-1 min-h-[200px] md:min-h-0 text-sm resize-none"
               disabled={activeNoteId === null}
             />
           </div>

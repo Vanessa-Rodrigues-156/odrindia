@@ -9,9 +9,8 @@ import { useEffect } from "react"
 
 import { Button } from "@/components/ui/button"
 import { JitsiMeetContainer } from "@/components/workplace/JitsiMeetContainer"
-import { WorkplaceCalendar } from "@/components/workplace/WorkplaceCalendar"
+
 import { NoteTaking } from "@/components/workplace/NoteTaking"
-import { TodoList } from "@/components/workplace/TodoList"
 
 export default function WorkplacePage() {
   const { user } = useAuth();
@@ -94,21 +93,9 @@ export default function WorkplacePage() {
             </div>
           )}
           
-          {fullscreenMode === "calendar" && (
-            <div className="flex-1">
-              <WorkplaceCalendar ideaId={ideaId} />
-            </div>
-          )}
-          
           {fullscreenMode === "notes" && (
             <div className="flex-1">
               <NoteTaking ideaId={ideaId} />
-            </div>
-          )}
-          
-          {fullscreenMode === "todo" && (
-            <div className="flex-1">
-              <TodoList ideaId={ideaId} />
             </div>
           )}
         </div>
@@ -179,7 +166,6 @@ export default function WorkplacePage() {
                     <Maximize className="h-4 w-4" />
                   </Button>
                 </div>
-                <WorkplaceCalendar ideaId={ideaId} />
               </div>
               
               <div className="bg-white rounded-lg shadow-sm p-4 h-[400px]">
@@ -195,9 +181,6 @@ export default function WorkplacePage() {
                   >
                     <Maximize className="h-4 w-4" />
                   </Button>
-                </div>
-                <div className="h-[calc(100%-40px)]">
-                  <TodoList ideaId={ideaId} />
                 </div>
               </div>
             </div>

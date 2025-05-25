@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 
 export async function POST(
   request: NextRequest,
@@ -25,13 +26,23 @@ export async function POST(
     });
 
     if (action === "like" && !existingLike) {
-      // Create a new like
-      await prisma.like.create({
-        data: {
-          userId: userId,
-          commentId: commentId
+      try {
+        // Create a new like
+        await prisma.like.create({
+          data: {
+            userId: userId,
+            commentId: commentId
+          }
+        });
+      } catch (e) {
+        // Handle potential unique constraint violation due to race conditions
+        if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') {
+          // This is fine - the user already liked this comment (race condition)
+          console.log("User already liked this comment (concurrent request)");
+        } else {
+          throw e; // Re-throw any other errors
         }
-      });
+      }
     } else if (action === "unlike" && existingLike) {
       // Remove the like
       await prisma.like.delete({
@@ -44,9 +55,18 @@ export async function POST(
       where: { commentId: commentId }
     });
 
+    // Get user's current like status after operation
+    const userLikeStatus = await prisma.like.findFirst({
+      where: {
+        userId: userId,
+        commentId: commentId
+      }
+    });
+
     return NextResponse.json({
       success: true,
       likes: likeCount,
+      hasLiked: !!userLikeStatus,
       message: `Comment ${action === "like" ? "liked" : "unliked"} successfully`,
     });
   } catch (error) {
