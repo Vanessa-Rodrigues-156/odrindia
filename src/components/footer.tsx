@@ -80,7 +80,7 @@ export default function Footer() {
 
           <div className="space-y-4">
             <h3 className="text-xl font-bold">ODR News</h3>
-            <p className="text-gray-300">Global ODR News Live</p>
+            <p className="text-gray-300">Global ODR News Live </p>
             <form className="flex flex-col space-y-2">
               <Input
                 type="url"
