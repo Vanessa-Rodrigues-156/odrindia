@@ -84,7 +84,7 @@ export default function Footer() {
             <form className="flex flex-col space-y-2">
               <Input
                 type="url"
-                placeholder="https://example.com"
+                placeholder="https://example.com "
                 className="border-gray-700 bg-[#263e69] text-white placeholder:text-gray-400"
               />
               <Button className="bg-sky-500 hover:bg-sky-600">Submit Yours</Button>
