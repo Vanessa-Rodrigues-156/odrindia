@@ -87,7 +87,7 @@ export default function Footer() {
                 placeholder="https://example.com "
                 className="border-gray-700 bg-[#263e69] text-white placeholder:text-gray-400"
               />
-              <Button className="bg-sky-500 hover:bg-sky-600">Submit Yours</Button>
+              <Button className="bg-sky-500 hover:bg-sky-600">Submit Yours </Button>
             </form>
           </div>
         </div>
