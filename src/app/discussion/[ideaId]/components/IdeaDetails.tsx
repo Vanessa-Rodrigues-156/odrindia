@@ -1,17 +1,15 @@
 "use client"
-
-import { useState } from "react"
 import { ThumbsUp } from "lucide-react"
-import { format } from "date-fns"
 import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Idea } from "./types"
+import { UserRole } from "@prisma/client"
 
 interface IdeaDetailsProps {
   idea: Idea
-  user: any // Replace with your user type
+  user: UserRole| any
   hasLiked: boolean
   ideaLikes: number
   onLikeIdea: () => Promise<void>

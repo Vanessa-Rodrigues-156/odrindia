@@ -11,6 +11,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Comment } from "./types"
 import { getInitials } from "./utils"
 import { useToast } from "@/components/ui/use-toast"
+import { UserRole } from "@prisma/client"
 
 interface CommentThreadProps {
   comment: Comment
@@ -19,7 +20,7 @@ interface CommentThreadProps {
   userId?: string
   commentLikes: Record<string, boolean>
   expandedComments: Record<string, boolean>
-  user: any // Using any for now, replace with your user type
+  user: UserRole|any
   onLikeComment: (commentId: string) => Promise<void>
   onReply: (parentId: string) => void
   onSubmitReply: (parentId: string, content: string) => Promise<void>

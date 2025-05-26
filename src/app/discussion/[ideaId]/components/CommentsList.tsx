@@ -2,6 +2,7 @@
 
 import { Comment } from "./types"
 import CommentThread from "./CommentThread"
+import { UserRole } from "@prisma/client"
 
 interface CommentsListProps {
   comments: Comment[]
@@ -9,7 +10,7 @@ interface CommentsListProps {
   userId?: string
   commentLikes: Record<string, boolean>
   expandedComments: Record<string, boolean>
-  user: any // Replace with your user type
+  user: UserRole|any
   onLikeComment: (commentId: string) => Promise<void>
   onReply: (parentId: string) => void
   onSubmitReply: (parentId: string, content: string) => Promise<void>

@@ -10,9 +10,6 @@ import { useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { JitsiMeetContainer } from "@/components/workplace/JitsiMeetContainer"
 import { MeetingLogs } from "@/components/workplace/MeetingLogs"
-import { MeetingNotes } from "@/components/workplace/MeetingNotes"
-
-import { NoteTaking } from "@/components/workplace/NoteTaking"
 
 export default function WorkplacePage() {
   const { user, loading } = useAuth();
@@ -171,9 +168,30 @@ export default function WorkplacePage() {
             </div>
           )}
           
-          {fullscreenMode === "notes" && (
+          {fullscreenMode === "meetingnotes" && (
             <div className="flex-1">
-              <NoteTaking ideaId={ideaId} />
+              <div className="bg-white rounded-lg shadow p-4 h-full">
+                <h3 className="text-xl font-semibold text-[#0a1e42] mb-4 flex items-center">
+                  <StickyNote className="h-5 w-5 mr-2" />
+                  Meeting Notes
+                </h3>
+                <div className="flex flex-col justify-center items-center h-[calc(100%-50px)]">
+                  <StickyNote className="h-16 w-16 mx-auto mb-4 text-gray-400" />
+                  <h4 className="text-xl font-medium mb-2 text-gray-700">Meeting-Specific Notes</h4>
+                  <p className="text-gray-500 mb-4 text-center max-w-lg">
+                    Notes are now organized per meeting. Please select a specific meeting from the Meeting Logs 
+                    section to view and add notes related to that meeting.
+                  </p>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => toggleFullscreen("meetinglogs")}
+                    className="text-[#0a1e42] border-[#0a1e42]"
+                  >
+                    <FileText className="h-4 w-4 mr-2" />
+                    View Meeting Logs
+                  </Button>
+                </div>
+              </div>
             </div>
           )}
           
@@ -225,38 +243,37 @@ export default function WorkplacePage() {
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-semibold text-[#0a1e42] flex items-center">
                     <StickyNote className="h-5 w-5 mr-2" />
-                    Notes
+                    Meeting Notes
                   </h3>
                   <Button 
                     variant="ghost" 
                     size="sm" 
-                    onClick={() => toggleFullscreen("notes")}
+                    onClick={() => toggleFullscreen("meetingnotes")}
                   >
                     <Maximize className="h-4 w-4" />
                   </Button>
                 </div>
-                <div className="h-[calc(100%-40px)]">
-                  <NoteTaking ideaId={ideaId} />
+                <div className="h-[calc(100%-40px)] flex flex-col justify-center items-center">
+                  <div className="p-4 text-center">
+                    <StickyNote className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                    <h4 className="text-lg font-medium mb-2 text-gray-700">Meeting-Specific Notes</h4>
+                    <p className="text-gray-500 mb-2">Notes are now connected to specific meetings for better organization</p>
+                    <div className="mt-4">
+                      <Button 
+                        variant="outline" 
+                        onClick={() => toggleFullscreen("meetinglogs")}
+                        className="text-[#0a1e42] border-[#0a1e42]"
+                      >
+                        View Meeting Logs
+                      </Button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
             
             <div className="space-y-6">
-              <div className="bg-white rounded-lg shadow-sm p-4">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-[#0a1e42] flex items-center">
-                    <Calendar className="h-5 w-5 mr-2" />
-                    Calendar
-                  </h3>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    onClick={() => toggleFullscreen("calendar")}
-                  >
-                    <Maximize className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
+              
               
               <div className="bg-white rounded-lg shadow-sm p-4">
                 <div className="flex items-center justify-between mb-4">

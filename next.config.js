@@ -55,11 +55,13 @@ const nextConfig = {
     ],
   },
   
-  // Production optimizations
-  swcMinify: true,
-  
   // Output configuration for containerized deployments
   output: 'standalone',
+  
+  // Compiler options
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
 };
 
 export default nextConfig;

@@ -55,9 +55,6 @@ model Idea {
   reviewedAt DateTime?
   reviewedBy String?
 
-  // Workplace data (for todo lists, notes, calendar events, etc.)
-  workplaceData Json?
-
   // Timestamps
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

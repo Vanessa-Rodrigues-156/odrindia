@@ -1,19 +1,15 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 import { ToastProvider } from '@/components/ui/use-toast'
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import { AuthProvider } from '@/lib/auth';
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+// Configure Geist fonts
+const geistSans = GeistSans;
+const geistMono = GeistMono;
 
 export const metadata: Metadata = {
   title: "ODR - Online Dispute Resolution",
@@ -28,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.className} ${geistMono.variable} font-sans antialiased`}
       >
         {/* Wrap the app in the AuthProvider */}
         <AuthProvider>

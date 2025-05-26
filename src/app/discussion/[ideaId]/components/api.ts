@@ -45,8 +45,14 @@ export const likeComment = async (ideaId: string, commentId: string, userId: str
   return res.json()
 }
 
+interface CommentPayload {
+  content: string;
+  userId: string;
+  parentId?: string;
+}
+
 export const postComment = async (ideaId: string, userId: string, content: string, parentId?: string) => {
-  const payload: any = {
+  const payload: CommentPayload = {
     content,
     userId
   }

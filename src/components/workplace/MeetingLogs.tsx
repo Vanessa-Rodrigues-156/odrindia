@@ -5,9 +5,8 @@ import { useAuth } from "@/lib/auth"
 import { Calendar, Clock, Users, FileText, CalendarPlus, Play, FileEdit } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import { formatDistanceToNow } from 'date-fns'
 
 interface MeetingLogsProps {
@@ -41,13 +40,6 @@ export function MeetingLogs({ ideaId }: MeetingLogsProps) {
   const [newMeetingTitle, setNewMeetingTitle] = useState("");
   const [newMeetingDate, setNewMeetingDate] = useState("");
   const [newMeetingTime, setNewMeetingTime] = useState("");
-  
-  // Fetch meetings for the idea
-  useEffect(() => {
-    if (ideaId) {
-      fetchMeetings();
-    }
-  }, [ideaId]);
   
   const fetchMeetings = async () => {
     try {
@@ -87,7 +79,12 @@ export function MeetingLogs({ ideaId }: MeetingLogsProps) {
       setLoading(false);
     }
   };
-  
+    // Fetch meetings for the idea
+  useEffect(() => {
+    if (ideaId) {
+      fetchMeetings();
+    }
+  }, [ideaId]);
   const handleCreateMeeting = async () => {
     if (!newMeetingTitle || !newMeetingDate || !newMeetingTime) {
       setError("Please fill in all fields");

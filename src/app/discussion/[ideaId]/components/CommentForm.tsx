@@ -7,10 +7,11 @@ import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import Link from "next/link"
 import { getInitials } from "./utils"
+import { IdeaMentor, UserRole } from "@prisma/client"
 
 interface CommentFormProps {
   ideaId: string
-  user: any // Replace with your user type
+  user: UserRole | any
   onSubmitComment: (content: string) => Promise<void>
 }
 

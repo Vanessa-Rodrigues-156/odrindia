@@ -87,27 +87,12 @@ This project integrates Jitsi Meet for video conferencing to enable collaborativ
 
 The workspace for each idea includes:
 - Video conferencing (Jitsi Meet)
-- Shared note-taking
+- Meeting-specific notes
 - Calendar for scheduling events
-- Todo list for tracking tasks
 
 ### Database Migration
 
-To add the required database fields for the workplace functionality:
-
-1. The schema needs a `workplaceData` JSONB field in the `Idea` table
-2. Apply this using the migration file at: `/prisma/migrations/20250525120000_add_workplace_data/migration.sql`
-3. Run migration: `npx prisma migrate resolve --applied 20250525120000_add_workplace_data`
-4. If manual migration is needed, run this SQL directly on your database:
-   ```sql
-   ALTER TABLE "Idea" ADD COLUMN IF NOT EXISTS "workplaceData" JSONB;
-   ```
-
-The `workplaceData` field stores:
-- Meeting configuration
-- Shared notes
-- Calendar events
-- Todo items
+The latest migration removed the `workplaceData` field from the `Idea` table as we've moved to a meeting-centric approach for notes and collaboration. All notes are now managed through meeting-specific notes.
 
 ## Documentation
 

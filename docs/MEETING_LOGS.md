@@ -1,6 +1,6 @@
 # Meeting Logs and Notes System
 
-This module provides functionality to store and manage meeting logs and notes for workplace discussions in the ODR India platform.
+This module provides functionality to store and manage meeting logs and notes for workplace discussions in the ODR India platform. This is now the central system for all note-taking functionality within the application.
 
 ## Features
 
@@ -72,7 +72,7 @@ Stores notes taken during meetings:
 Displays list of meetings for an idea and allows scheduling new meetings
 
 ### MeetingNotes
-Displays and manages notes for a specific meeting
+Displays and manages notes for a specific meeting. This is now the central note-taking component for the entire application, as general notes have been deprecated in favor of this meeting-centric approach.
 
 ### JitsiMeetContainer
 Handles video conferencing and automatically tracks meeting activity:

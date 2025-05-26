@@ -59,7 +59,12 @@ export default function Navbar() {
 	const dropdownRefs = useRef<{ [key: string]: HTMLDivElement | null }>({})
 	const [languageDropdown, setLanguageDropdown] = useState(false)
 	const [profileDropdown, setProfileDropdown] = useState(false)
-	const { user: currentUser, logout } = useAuth()
+	const { user: currentUser, loading, logout, refreshUser } = useAuth()
+
+	// Force refresh user data when component mounts
+	useEffect(() => {
+		refreshUser()
+	}, [])
 
 	// Handle user logout
 	const handleLogout = () => {
@@ -232,7 +237,11 @@ export default function Navbar() {
 					</div>
 
 					{/* Show either login/signup buttons or user avatar based on auth status */}
-					{currentUser ? (
+					{loading ? (
+						<div className="hidden lg:block relative w-9 h-9">
+							<div className="animate-pulse h-9 w-9 rounded-full bg-gray-200"></div>
+						</div>
+					) : currentUser ? (
 						<div className="hidden lg:block relative">
 							<button
 								id="profile-button"
@@ -253,7 +262,7 @@ export default function Navbar() {
 										alt={currentUser.name}
 									/>
 									<AvatarFallback className="bg-[#0a1e42] text-white">
-										{currentUser.name.charAt(0).toUpperCase()}
+										{currentUser.name?.charAt(0).toUpperCase() || "U"}
 									</AvatarFallback>
 								</Avatar>
 								<svg
@@ -397,7 +406,15 @@ export default function Navbar() {
 									))}
 								</nav>
 								<div className="flex items-center gap-4">
-									{currentUser ? (
+									{loading ? (
+										<div className="flex items-center gap-3">
+											<div className="h-10 w-10 rounded-full bg-gray-200 animate-pulse"></div>
+											<div className="space-y-2">
+												<div className="h-4 w-24 bg-gray-200 animate-pulse rounded"></div>
+												<div className="h-3 w-32 bg-gray-200 animate-pulse rounded"></div>
+											</div>
+										</div>
+									) : currentUser ? (
 										<div className="space-y-3">
 											<div className="flex items-center gap-3">
 												<Avatar className="h-10 w-10 border-2 border-[#0a1e42]">
@@ -408,7 +425,7 @@ export default function Navbar() {
 														alt={currentUser.name}
 													/>
 													<AvatarFallback className="bg-[#0a1e42] text-white">
-														{currentUser.name.charAt(0).toUpperCase()}
+														{currentUser.name?.charAt(0).toUpperCase() || "U"}
 													</AvatarFallback>
 												</Avatar>
 												<div>

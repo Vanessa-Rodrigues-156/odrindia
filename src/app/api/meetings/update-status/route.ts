@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getJwtUser } from "@/lib/auth-server";
+import { MeetingStatus } from "@prisma/client";
 
 // POST /api/meetings/update-status
 // Update the status of a meeting (start, end, etc.)
@@ -55,10 +56,13 @@ export async function POST(request: NextRequest) {
       
       return NextResponse.json(newMeeting);
     }
-    
     // Update the meeting status
-    const updateData: any = {
-      status: status
+    const updateData: {
+      status: MeetingStatus;
+      startTime?: Date;
+      endTime?: Date;
+    } = {
+      status: status as MeetingStatus
     };
     
     if (startTime) {

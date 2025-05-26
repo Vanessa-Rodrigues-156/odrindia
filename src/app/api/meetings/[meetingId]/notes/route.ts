@@ -6,7 +6,7 @@ import { getJwtUser } from "@/lib/auth-server";
 // Add a note to a meeting
 export async function POST(
   request: NextRequest,
-  { params }: { params: { meetingId: string } }
+  { params }: { params: Promise<{ meetingId: string }> }
 ) {
   try {
     const user = await getJwtUser(request);
@@ -14,7 +14,7 @@ export async function POST(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     
-    const meetingId = params.meetingId;
+    const {meetingId }=  await params;
     const { content } = await request.json();
     
     if (!content) {
