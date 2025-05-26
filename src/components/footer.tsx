@@ -78,6 +78,20 @@ export default function Footer() {
             </ul>
           </div>
 
+          <div className="space-y-4">
+            <h3 className="text-xl font-bold">ODR News</h3>
+            <p className="text-gray-300">Global ODR News Live </p>
+            <form className="flex flex-col space-y-2">
+              <Input
+                type="url"
+                placeholder="https://example.com "
+                className="border-gray-700 bg-[#263e69] text-white placeholder:text-gray-400"
+              />
+              <Button className="bg-sky-500 hover:bg-sky-600">Submit Yours </Button>
+            </form>
+          </div>
+        </div>
+
           
         </div>
 
