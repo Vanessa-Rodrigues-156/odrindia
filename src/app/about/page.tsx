@@ -14,13 +14,6 @@ export default function AboutPage() {
         {/* Hero Section */}
         <section
           className="relative bg-[#0a1e42] py-20 text-white"
-          style={{
-            backgroundImage: "url('/about-hero.jpg')",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundBlendMode: "overlay",
-            backgroundColor: "rgba(10, 30, 66, 0.85)",
-          }}
         >
           <div className="container mx-auto px-4">
             <div className="text-center">
@@ -28,7 +21,7 @@ export default function AboutPage() {
                 About <span className="text-sky-400">ODR</span> Labs
               </h1>
               <p className="mx-auto mt-4 max-w-[800px] text-lg text-gray-200 md:text-xl">
-              Connect, Collaborate, and Create innovative ODR systems — Shaping access to Justice
+              Connect, Collaborate, and Create innovative ODR systems
               </p>
             </div>
           </div>
@@ -70,7 +63,7 @@ export default function AboutPage() {
         </section>
 
          {/* Our Story */}
-        <section className="bg-gray-50 py-16">
+        <section className="bg-gray-100 py-16">
           <div className="container mx-auto px-4">
             <div className="mb-12 text-center">
               <h2 className="mb-2 text-3xl font-bold tracking-tight text-[#0a1e42] md:text-4xl">Our Story</h2>
@@ -78,101 +71,13 @@ export default function AboutPage() {
                 ODR Lab was born from a shared vision among industry experts, passionate students, and forward-thinking academicians. It serves as a dynamic platform that bridges the gap between academia and industry, empowering innovators to connect with a global community around the design and development of Online Dispute Resolution (ODR) systems. Fueled by the eagerness of students to work on real-world challenges, the pressing societal need for more efficient justice mechanisms, and the collaborative spirit of global idea exchange, ODR Lab stands as a hub for innovation, dialogue, and impactful solutions.
               </p>
             </div>
-
-            {/* <div className="grid gap-8 md:grid-cols-2">
-              <div className="relative aspect-square overflow-hidden rounded-lg shadow-xl">
-                <Image
-                  src="/placeholder.svg?height=500&width=500"
-                  alt="ODR Origin Story"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <div className="flex items-center justify-center">
-                <Button className="w-fit bg-[#0a1e42] hover:bg-[#263e69]">
-                  Learn More About Our Journey
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </div>
-            </div> */}
           </div>
         </section>
                  {/* Our Team */}
         <section className="py-16">
           <div className="container mx-auto px-4">
-            {/* Industry & Academic Mentors */}
-            <div className="mb-16">
-              <h3 className="text-3xl font-bold text-[#0a1e42] text-center mb-8">Industry Academia Mentors</h3>
-              <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 justify-center">
-                <Card className="overflow-hidden border-none shadow-md max-w-xs mx-auto">
-                  <div className="relative h-80 w-full">
-                    <Image 
-                      src="/chittu.png"
-                      alt="Chittu Nagrajan" 
-                      fill 
-                      className="object-cover object-top"
-                      priority
-                    />
-                  </div>
-                  <CardHeader className="bg-white pb-2">
-                    <CardTitle className="text-[#0a1e42]">Chittu Nagrajan</CardTitle>
-                    <CardDescription>Founder CREK ODR</CardDescription>
-                  </CardHeader>
-                  <CardContent className="bg-white">
-                    <p className="text-gray-600">
-                      Guiding the development of innovative ODR solutions and sharing industry expertise.
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card className="overflow-hidden border-none shadow-md max-w-xs mx-auto">
-                    <div className="relative h-80 w-full">
-                    <Image 
-                      src="/suman.png"
-                      alt="Dr Suman Kalani" 
-                      fill 
-                      className="object-cover object-top"
-                      priority
-                    />
-                    </div>
-                  <CardHeader className="bg-white pb-2">
-                    <CardTitle className="text-[#0a1e42]">Dr. Suman Kalani</CardTitle>
-                    <CardDescription>Associate Professor,SVKM&apos;s Pravin Gandhi College of Law</CardDescription>
-                  </CardHeader>
-                  <CardContent className="bg-white">
-                    <p className="text-gray-600">
-                      Providing academic guidance and research expertise in ODR development.
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card className="overflow-hidden border-none shadow-md max-w-xs mx-auto">
-                  <div className="relative h-80 w-full">
-                    <Image 
-                      src="/aastha.jpg"
-                      alt="Assistant Professor Aastha Bhatia" 
-                      fill 
-                      className="object-cover"
-                      priority
-                    />
-                  </div>
-                  <CardHeader className="bg-white pb-2">
-                    <CardTitle className="text-[#0a1e42]">Aastha Bhatia</CardTitle>
-                    <CardDescription>Assistant Professor, Communication Skills, Fr. Conceicao Rodrigues College of Engineering</CardDescription>
-                  </CardHeader>
-                  <CardContent className="bg-white">
-                    <p className="text-gray-600">
-                      Contributing as a Communication Skills expert and Soft Skills Enthusiast.
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-
-            {/* Student Ambassadors */}
-            <div>
               <h3 className="text-3xl font-bold text-[#0a1e42] text-center mb-8">Student Ambassadors</h3>
-              <div className="grid gap-8 sm:grid-cols-2 justify-center mx-auto">
+              <div className="grid gap-8 sm:grid-cols-3 justify-center mx-auto">
                 <Card className="overflow-hidden border-none shadow-md max-w-xs mx-auto">
                   <div className="relative h-64 w-full">
                     <Image 
@@ -214,9 +119,28 @@ export default function AboutPage() {
                     </p>
                   </CardContent>
                 </Card>
+                <Card className="overflow-hidden border-none shadow-md max-w-xs mx-auto">
+                  <div className="relative h-64 w-full">
+                    <Image 
+                      src="/samarth.jpg"
+                      alt="Samarth Jain" 
+                      fill 
+                      className="object-cover object-top"
+                      priority
+                    />
+                  </div>
+                  <CardHeader className="bg-white pb-2">
+                    <CardTitle className="text-[#0a1e42]">Samarth Jain</CardTitle>
+                    <CardDescription>Legal tech graduate from OP Jindal college of Law</CardDescription>
+                  </CardHeader>
+                  <CardContent className="bg-white">
+                    <p className="text-gray-600">
+                      Contributing to reasearch and legal requirements of ODR solutions.
+                    </p>
+                  </CardContent>
+                </Card>
               </div>
             </div>
-          </div>
         </section>
         {/* Values */}
         <section className="bg-[#0a1e42] py-16 text-white">
@@ -253,14 +177,11 @@ export default function AboutPage() {
               <div className="text-center">
                 <h2 className="mb-4 text-3xl font-bold tracking-tight text-[#0a1e42] md:text-4xl">Join Our Mission</h2>
                 <p className="mb-8 text-gray-600">
-                  Whether you&apos;re a legal professional &apos tech enthusiast &apos student &apos innovation enthusiast  academic institution &apos or organization seeking to be part of the ODR community and co-create ODR systems through collaborative efforts, we invite you to connect with us.
+                  Whether you&apos;re a legal professional, tech enthusiast, student, innovation enthusiast, academic institution, or organization seeking to be part of the ODR community and co-create ODR systems through collaborative efforts, we invite you to connect with us.
                 </p>
                 <div className="flex flex-col justify-center gap-4 sm:flex-row">
                   <Button className="bg-[#0a1e42] hover:bg-[#263e69]">
                     <a href="/contact">Contact Us</a>
-                  </Button>
-                  <Button variant="outline" className="border-[#0a1e42] text-[#0a1e42] hover:bg-[#0a1e42] hover:text-white">
-                    View Careers
                   </Button>
                 </div>
               </div>

@@ -29,6 +29,24 @@ const navItems = [
 				description:
 					"ICODR is an international nonprofit, incorporated in the United States, that drives the development, convergence, and adoption of open standards for the global effort to resolve disputes and conflicts using information and communications technology.",
 			},
+			{
+				title: "Mediate",
+				href: "https://odrindia.org/",
+				description:
+					"ODR India is a community of ODR professionals, practitioners, and enthusiasts in India. It aims to promote the use of ODR in India and provide resources and support for ODR practitioners.",
+			},
+			{
+				title: "ODR Resources",
+				href: "https://odr.info/",
+				description:
+					"Explore a curated list of resources, articles, and tools related to Online Dispute Resolution (ODR).",
+			},
+			{
+				title: "ODR Labs",
+				href: "/odrlabs",
+				description:
+					"ODR Labs is a platform for experimentation and innovation in the field of Online Dispute Resolution (ODR).",
+			},
 		],
 	},
 	{

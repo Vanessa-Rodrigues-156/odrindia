@@ -360,6 +360,7 @@ export default function MeetingDetailPage() {
                   roomName={meeting.jitsiRoomName}
                   userName={user.name}
                   userEmail={user.email}
+                  meetingId={meeting.id}
                 />
               )}
             </div>

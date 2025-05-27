@@ -112,6 +112,9 @@ export function MeetingLogs({ ideaId }: MeetingLogsProps) {
         return;
       }
       
+      // Generate a base room name that the server will make unique
+      const baseRoomName = `idea-${ideaId}-${newMeetingTitle.toLowerCase().replace(/\s+/g, '-').substring(0, 20)}`;
+      
       // Attempt to create the meeting with retry logic
       let retries = 2;
       let response: Response | undefined;
@@ -128,7 +131,7 @@ export function MeetingLogs({ ideaId }: MeetingLogsProps) {
               title: newMeetingTitle,
               ideaId,
               startTime: startTime.toISOString(),
-              jitsiRoomName: `idea-${ideaId}`
+              jitsiRoomName: baseRoomName
             }),
           });
           

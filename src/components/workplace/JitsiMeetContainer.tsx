@@ -36,9 +36,10 @@ interface JitsiMeetContainerProps {
   roomName: string;
   userName: string;
   userEmail?: string;
+  meetingId?: string; // Optional meeting ID for tracking specific meetings
 }
 
-export function JitsiMeetContainer({ roomName, userName, userEmail }: JitsiMeetContainerProps) {
+export function JitsiMeetContainer({ roomName, userName, userEmail, meetingId }: JitsiMeetContainerProps) {
   const { user } = useAuth();
   const [mounted, setMounted] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -50,11 +51,20 @@ export function JitsiMeetContainer({ roomName, userName, userEmail }: JitsiMeetC
   const apiRef = useRef<IJitsiMeetAPI | null>(null);
   const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const cleanupEventListeners = useRef<(() => void) | null>(null);
+  
+  // Use a sanitized version of the roomName to avoid issues with special characters
+  const sanitizedRoomName = roomName.replace(/\s+/g, '-').toLowerCase();
 
   // Safely post data to API with error handling
   const safeAPICall = async (endpoint: string, data: any) => {
     try {
       if (!user) return;
+      
+      // Include meetingId in API calls if available
+      const apiData = {
+        ...data,
+        ...(meetingId && { meetingId }),
+      };
       
       const response = await fetch(`/api/meetings/${endpoint}`, {
         method: 'POST',
@@ -62,7 +72,7 @@ export function JitsiMeetContainer({ roomName, userName, userEmail }: JitsiMeetC
           'Content-Type': 'application/json',
         },
         credentials: 'include', // Include cookies for authentication
-        body: JSON.stringify(data),
+        body: JSON.stringify(apiData),
       });
       
       if (!response.ok) {
@@ -95,7 +105,7 @@ export function JitsiMeetContainer({ roomName, userName, userEmail }: JitsiMeetC
       // Update meeting status when component unmounts
       if (apiRef.current) {
         safeAPICall('update-status', {
-          roomName: roomName,
+          roomName: sanitizedRoomName,
           status: 'COMPLETED',
           endTime: new Date().toISOString(),
         });
@@ -108,7 +118,7 @@ export function JitsiMeetContainer({ roomName, userName, userEmail }: JitsiMeetC
         }
       }
     };
-  }, [roomName,user]);
+  }, [roomName, sanitizedRoomName, user, meetingId]);
 
   const handleJitsiIFrameRef = (parentNode: HTMLDivElement) => {
     if (!parentNode) return;
@@ -164,7 +174,7 @@ export function JitsiMeetContainer({ roomName, userName, userEmail }: JitsiMeetC
       
       // Record participant joined in database
       safeAPICall('participant-joined', {
-        roomName: roomName,
+        roomName: sanitizedRoomName,
         participantId: participant.id,
         displayName: participant.displayName,
         joinTime: new Date().toISOString(),
@@ -178,7 +188,7 @@ export function JitsiMeetContainer({ roomName, userName, userEmail }: JitsiMeetC
       
       // Record participant left in database
       safeAPICall('participant-left', {
-        roomName: roomName,
+        roomName: sanitizedRoomName,
         participantId: participant.id,
         leaveTime: new Date().toISOString(),
       });
@@ -258,7 +268,7 @@ export function JitsiMeetContainer({ roomName, userName, userEmail }: JitsiMeetC
       try {
         // Record meeting end in database
         await safeAPICall('end-meeting', {
-          roomName: roomName,
+          roomName: sanitizedRoomName,
           endTime: new Date().toISOString(),
         });
         
@@ -368,7 +378,7 @@ export function JitsiMeetContainer({ roomName, userName, userEmail }: JitsiMeetC
       </div>
       <JitsiMeeting
         domain={JITSI_SERVER}
-        roomName={`${ROOM_PREFIX}${roomName}`}
+        roomName={`${ROOM_PREFIX}${sanitizedRoomName}`}
         configOverwrite={{
           // Core functionality
           startWithAudioMuted: true,

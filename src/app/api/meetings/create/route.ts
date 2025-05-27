@@ -14,16 +14,21 @@ export async function POST(request: NextRequest) {
     const { title, ideaId, startTime, jitsiRoomName } = await request.json();
     
     // Validate required fields
-    if (!title || !ideaId || !startTime || !jitsiRoomName) {
+    if (!title || !ideaId || !startTime) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
+    
+    // Generate a unique Jitsi room name with timestamp to avoid conflicts
+    const uniqueJitsiRoomName = jitsiRoomName 
+      ? `${jitsiRoomName.replace(/\s+/g, '-').toLowerCase()}-${Date.now()}`
+      : `odr-meeting-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
     
     // Create the meeting
     const meeting = await prisma.meetingLog.create({
       data: {
         title,
         startTime: new Date(startTime),
-        jitsiRoomName,
+        jitsiRoomName: uniqueJitsiRoomName,
         status: "SCHEDULED",
         idea: { connect: { id: ideaId } },
         createdBy: { connect: { id: user.id } },

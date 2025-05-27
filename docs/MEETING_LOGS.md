@@ -1,13 +1,13 @@
 # Meeting Logs and Notes System
 
-This module provides functionality to store and manage meeting logs and notes for workplace discussions in the ODR India platform. This is now the central system for all note-taking functionality within the application.
+This module provides functionality to store and manage meeting logs and notes for workplace discussions in the ODR India platform. This is now the central system for all note-taking functionality within the application. The standalone NoteTaking component has been removed in favor of this meeting-centric approach.
 
 ## Features
 
 - **Meeting Scheduling**: Create and schedule meetings with title, date, and time
-- **Meeting Room Integration**: Integration with Jitsi Meet for video conferencing
+- **Meeting Room Integration**: Integration with Jitsi Meet for video conferencing with unique room names
 - **Participant Tracking**: Record who joined and left the meeting, and when
-- **Meeting Notes**: Collaborative note-taking during or after meetings
+- **Meeting Notes**: Collaborative note-taking during or after meetings (replacing general notes)
 - **Meeting Summaries**: Add post-meeting summaries for reference
 - **Meeting Control**: End meeting functionality for organizers and presenters
 - **Authentication**: All features secured with proper authentication
@@ -80,6 +80,14 @@ Handles video conferencing and automatically tracks meeting activity:
 - End meeting button for organizers and presenters
 - Automatic participant tracking
 - Connection status monitoring
+- Unique room name handling to prevent collisions
+
+### Room Name Management
+The system now generates unique room names to prevent collisions:
+- Each meeting gets a unique Jitsi room name by appending timestamps and random strings
+- Room names are sanitized to remove spaces and special characters
+- The system tracks meeting activity using the unique room name
+- This prevents issues when multiple meetings are created with similar names
 
 ## Authentication
 

@@ -112,3 +112,68 @@ We welcome contributions from legal professionals, technologists, students, and 
 ## License
 
 This project is licensed under the Apache License 2.0. See the [LICENSE](./LICENSE) file for details.
+
+
+
+<Card className="overflow-hidden border-none shadow-md max-w-xs mx-auto">
+                  <div className="relative h-80 w-full">
+                    <Image 
+                      src="/chittu.png"
+                      alt="Chittu Nagrajan" 
+                      fill 
+                      className="object-cover object-top"
+                      priority
+                    />
+                  </div>
+                  <CardHeader className="bg-white pb-2">
+                    <CardTitle className="text-[#0a1e42]">Chittu Nagrajan</CardTitle>
+                    <CardDescription>Founder CREK ODR</CardDescription>
+                  </CardHeader>
+                  <CardContent className="bg-white">
+                    <p className="text-gray-600">
+                      Guiding the development of innovative ODR solutions and sharing industry expertise.
+                    </p>
+                  </CardContent>
+                </Card>
+
+                <Card className="overflow-hidden border-none shadow-md max-w-xs mx-auto">
+                    <div className="relative h-80 w-full">
+                    <Image 
+                      src="/suman.png"
+                      alt="Dr Suman Kalani" 
+                      fill 
+                      className="object-cover object-top"
+                      priority
+                    />
+                    </div>
+                  <CardHeader className="bg-white pb-2">
+                    <CardTitle className="text-[#0a1e42]">Dr. Suman Kalani</CardTitle>
+                    <CardDescription>Associate Professor,SVKM&apos;s Pravin Gandhi College of Law</CardDescription>
+                  </CardHeader>
+                  <CardContent className="bg-white">
+                    <p className="text-gray-600">
+                      Providing academic guidance and research expertise in ODR development.
+                    </p>
+                  </CardContent>
+                </Card>
+
+                <Card className="overflow-hidden border-none shadow-md max-w-xs mx-auto">
+                  <div className="relative h-80 w-full">
+                    <Image 
+                      src="/aastha.jpg"
+                      alt="Assistant Professor Aastha Bhatia" 
+                      fill 
+                      className="object-cover"
+                      priority
+                    />
+                  </div>
+                  <CardHeader className="bg-white pb-2">
+                    <CardTitle className="text-[#0a1e42]">Aastha Bhatia</CardTitle>
+                    <CardDescription>Assistant Professor, Communication Skills, Fr. Conceicao Rodrigues College of Engineering</CardDescription>
+                  </CardHeader>
+                  <CardContent className="bg-white">
+                    <p className="text-gray-600">
+                      Contributing as a Communication Skills expert and Soft Skills Enthusiast.
+                    </p>
+                  </CardContent>
+                </Card>

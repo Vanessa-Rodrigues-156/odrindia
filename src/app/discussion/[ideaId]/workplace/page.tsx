@@ -164,6 +164,7 @@ export default function WorkplacePage() {
                 roomName={`idea-${ideaId}`} 
                 userName={user.name} 
                 userEmail={user.email}
+                // General workspace room without specific meetingId
               />
             </div>
           )}
@@ -236,6 +237,8 @@ export default function WorkplacePage() {
                   roomName={`idea-${ideaId}`} 
                   userName={user.name} 
                   userEmail={user.email}
+                  // This is a general workspace room without a specific meetingId
+                  // The unique room name will be generated on the server side
                 />
               </div>
               
