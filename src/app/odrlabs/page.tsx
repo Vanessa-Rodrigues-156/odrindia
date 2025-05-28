@@ -1,10 +1,11 @@
-'use client';
+"use client";
 
 import { Suspense, useEffect, useState } from "react";
 import OdrLabsClient from "./OdrLabsClient";
 import PageGuard from "@/components/guards/PageGuard";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
+import { apiFetch } from "@/lib/api";
 
 export default function OdrLabsPage() {
   const [ideas, setIdeas] = useState([]);
@@ -14,9 +15,7 @@ export default function OdrLabsPage() {
   useEffect(() => {
     const fetchIdeas = async () => {
       try {
-        const response = await fetch("/api/odrlabs/ideas", {
-          credentials: "include", // Important for including auth cookies
-        });
+        const response = await apiFetch("/odrlabs/ideas");
 
         if (!response.ok) {
           if (response.status === 401) {
@@ -46,7 +45,9 @@ export default function OdrLabsPage() {
           <div className="w-12 h-12 rounded-full border-4 border-blue-500 border-t-transparent animate-spin"></div>
         </div>
       ) : error ? (
-        <Alert variant="destructive" className="max-w-3xl mx-auto my-8">
+        <Alert
+          variant="destructive"
+          className="max-w-3xl mx-auto my-8">
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>{error}</AlertDescription>

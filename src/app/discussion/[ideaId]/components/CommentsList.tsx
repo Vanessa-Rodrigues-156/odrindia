@@ -1,21 +1,21 @@
-"use client"
+"use client";
 
-import { Comment } from "./types"
-import CommentThread from "./CommentThread"
-import { UserRole } from "@prisma/client"
+import { Comment, User } from "./types";
+import CommentThread from "./CommentThread";
+import { UserRole } from "@prisma/client";
 
 interface CommentsListProps {
-  comments: Comment[]
-  ideaId: string
-  userId?: string
-  commentLikes: Record<string, boolean>
-  expandedComments: Record<string, boolean>
-  user: UserRole|any
-  onLikeComment: (commentId: string) => Promise<void>
-  onReply: (parentId: string) => void
-  onSubmitReply: (parentId: string, content: string) => Promise<void>
-  onToggleExpand: (commentId: string) => void
-  replyingTo: string | null
+  comments: Comment[];
+  ideaId: string;
+  userId?: string;
+  commentLikes: Record<string, boolean>;
+  expandedComments: Record<string, boolean>;
+  user: User | null;
+  onLikeComment: (commentId: string) => Promise<void>;
+  onReply: (parentId: string) => void;
+  onSubmitReply: (parentId: string, content: string) => Promise<void>;
+  onToggleExpand: (commentId: string) => void;
+  replyingTo: string | null;
 }
 
 export default function CommentsList({
@@ -29,21 +29,23 @@ export default function CommentsList({
   onReply,
   onSubmitReply,
   onToggleExpand,
-  replyingTo
+  replyingTo,
 }: CommentsListProps) {
   if (comments.length === 0) {
     return (
       <div className="rounded-lg border-2 border-dashed border-gray-200 p-12 text-center">
-        <p className="text-gray-500">No comments yet. Be the first to start the discussion!</p>
+        <p className="text-gray-500">
+          No comments yet. Be the first to start the discussion!
+        </p>
       </div>
-    )
+    );
   }
 
   return (
     <div className="space-y-6">
       {comments.map((comment) => (
-        <CommentThread 
-          key={comment.id} 
+        <CommentThread
+          key={comment.id}
           comment={comment}
           ideaId={ideaId}
           userId={userId}
@@ -58,5 +60,5 @@ export default function CommentsList({
         />
       ))}
     </div>
-  )
+  );
 }

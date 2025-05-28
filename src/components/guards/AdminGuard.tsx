@@ -1,17 +1,31 @@
-'use client';
+"use client";
 
-import PageGuard from './PageGuard';
-import { ReactNode } from 'react';
+import { useAuth } from "@/lib/auth";
+import { useRouter } from "next/navigation";
+import { useEffect, ReactNode } from "react";
 
-interface AdminGuardProps {
+export default function AdminGuard({
+  children,
+  redirectTo = "/signin",
+}: {
   children: ReactNode;
   redirectTo?: string;
-}
+}) {
+  const { user, loading } = useAuth();
+  const router = useRouter();
 
-export default function AdminGuard({ children, redirectTo = '/signin' }: AdminGuardProps) {
-  return (
-    <PageGuard requiredRole="ADMIN" redirectTo={redirectTo}>
-      {children}
-    </PageGuard>
-  );
+  useEffect(() => {
+    if (!loading) {
+      if (!user) {
+        router.push(redirectTo);
+      } else if (user.userRole !== "ADMIN") {
+        router.push("/");
+      }
+    }
+  }, [user, loading, router, redirectTo]);
+
+  if (loading || !user || user.userRole !== "ADMIN") {
+    return null;
+  }
+  return <>{children}</>;
 }

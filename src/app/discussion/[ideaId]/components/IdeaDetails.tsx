@@ -1,26 +1,25 @@
-"use client"
-import { ThumbsUp } from "lucide-react"
-import Link from "next/link"
+"use client";
+import { ThumbsUp } from "lucide-react";
+import Link from "next/link";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Idea } from "./types"
-import { UserRole } from "@prisma/client"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Idea, User } from "./types";
 
 interface IdeaDetailsProps {
-  idea: Idea
-  user: UserRole| any
-  hasLiked: boolean
-  ideaLikes: number
-  onLikeIdea: () => Promise<void>
+  idea: Idea;
+  user: User | null;
+  hasLiked: boolean;
+  ideaLikes: number;
+  onLikeIdea: () => Promise<void>;
 }
 
-export default function IdeaDetails({ 
-  idea, 
-  user, 
-  hasLiked, 
-  ideaLikes, 
-  onLikeIdea 
+export default function IdeaDetails({
+  idea,
+  user,
+  hasLiked,
+  ideaLikes,
+  onLikeIdea,
 }: IdeaDetailsProps) {
   return (
     <Card>
@@ -28,12 +27,11 @@ export default function IdeaDetails({
         <div className="flex items-center justify-between">
           <CardTitle className="text-xl text-[#0a1e42]">Idea Details</CardTitle>
           {user ? (
-            <Button 
+            <Button
               variant={hasLiked ? "default" : "outline"}
               size="sm"
               onClick={onLikeIdea}
-              className={hasLiked ? "bg-[#0a1e42] hover:bg-[#263e69]" : ""}
-            >
+              className={hasLiked ? "bg-[#0a1e42] hover:bg-[#263e69]" : ""}>
               <ThumbsUp className="mr-2 h-4 w-4" />
               {ideaLikes}
             </Button>
@@ -58,5 +56,5 @@ export default function IdeaDetails({
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

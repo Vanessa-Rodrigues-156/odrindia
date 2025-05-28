@@ -1,49 +1,65 @@
-"use client"
+"use client";
 
-import { Comment } from "./types"
+import { Comment, User } from "./types";
+import { apiFetch } from "@/lib/api";
 
 // API service functions for discussion-related operations
 export const fetchComments = async (ideaId: string): Promise<Comment[]> => {
-  const res = await fetch(`/api/ideas/${ideaId}/comments`)
-  if (!res.ok) throw new Error('Failed to fetch comments')
-  return res.json()
-}
+  const res = await apiFetch(`/ideas/${ideaId}/comments`);
+  if (!res.ok) throw new Error("Failed to fetch comments");
+  return res.json();
+};
 
-export const checkIdeaLikeStatus = async (ideaId: string, userId: string): Promise<boolean> => {
-  const res = await fetch(`/api/ideas/${ideaId}/like/check?userId=${userId}`)
-  if (!res.ok) throw new Error('Failed to check like status')
-  const data = await res.json()
-  return !!data.hasLiked
-}
+export const checkIdeaLikeStatus = async (
+  ideaId: string,
+  userId: string
+): Promise<boolean> => {
+  const res = await apiFetch(`/ideas/${ideaId}/like/check?userId=${userId}`);
+  if (!res.ok) throw new Error("Failed to check like status");
+  const data = await res.json();
+  return !!data.hasLiked;
+};
 
-export const fetchLikedComments = async (ideaId: string, userId: string): Promise<string[]> => {
-  const res = await fetch(`/api/ideas/${ideaId}/comments/likes?userId=${userId}`)
-  if (!res.ok) throw new Error('Failed to fetch liked comments')
-  const data = await res.json()
-  return data.likedComments
-}
+export const fetchLikedComments = async (
+  ideaId: string,
+  userId: string
+): Promise<string[]> => {
+  const res = await apiFetch(
+    `/ideas/${ideaId}/comments/likes?userId=${userId}`
+  );
+  if (!res.ok) throw new Error("Failed to fetch liked comments");
+  const data = await res.json();
+  return data.likedComments;
+};
 
-export const likeIdea = async (ideaId: string, userId: string, action: 'like' | 'unlike') => {
-  const res = await fetch(`/api/ideas/${ideaId}/like`, {
+export const likeIdea = async (
+  ideaId: string,
+  userId: string,
+  action: "like" | "unlike"
+) => {
+  const res = await apiFetch(`/ideas/${ideaId}/like`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ userId, action }),
-  })
-  
-  if (!res.ok) throw new Error('Failed to update idea like')
-  return res.json()
-}
+  });
 
-export const likeComment = async (ideaId: string, commentId: string, userId: string, action: 'like' | 'unlike') => {
-  const res = await fetch(`/api/ideas/${ideaId}/comments/${commentId}/like`, {
+  if (!res.ok) throw new Error("Failed to update idea like");
+  return res.json();
+};
+
+export const likeComment = async (
+  ideaId: string,
+  commentId: string,
+  userId: string,
+  action: "like" | "unlike"
+) => {
+  const res = await apiFetch(`/ideas/${ideaId}/comments/${commentId}/like`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ userId, action }),
-  })
-  
-  if (!res.ok) throw new Error('Failed to update comment like')
-  return res.json()
-}
+  });
+
+  if (!res.ok) throw new Error("Failed to update comment like");
+  return res.json();
+};
 
 interface CommentPayload {
   content: string;
@@ -51,22 +67,26 @@ interface CommentPayload {
   parentId?: string;
 }
 
-export const postComment = async (ideaId: string, userId: string, content: string, parentId?: string) => {
+export const postComment = async (
+  ideaId: string,
+  userId: string,
+  content: string,
+  parentId?: string
+) => {
   const payload: CommentPayload = {
     content,
-    userId
-  }
-  
+    userId,
+  };
+
   if (parentId) {
-    payload.parentId = parentId
+    payload.parentId = parentId;
   }
-  
-  const res = await fetch(`/api/ideas/${ideaId}/comments`, {
+
+  const res = await apiFetch(`/ideas/${ideaId}/comments`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
-  })
-  
-  if (!res.ok) throw new Error('Failed to post comment')
-  return res.json()
-}
+  });
+
+  if (!res.ok) throw new Error("Failed to post comment");
+  return res.json();
+};
