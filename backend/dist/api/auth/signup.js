@@ -7,7 +7,9 @@ exports.default = signupHandler;
 const prisma_1 = __importDefault(require("../../lib/prisma"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 async function signupHandler(req, res) {
-    const { name, email, password, userRole, contactNumber, city, country, institution, highestEducation, odrLabUsage, } = req.body;
+    const { name, email, password, contactNumber, city, country, userRole, institution, highestEducation, odrLabUsage, facultyMentor, // Accept extra fields but ignore for DB
+    // Accept all possible frontend fields, ignore those not needed
+     } = req.body;
     if (!name || !email || !password) {
         return res
             .status(400)
@@ -45,5 +47,8 @@ async function signupHandler(req, res) {
             createdAt: true,
         },
     });
-    res.status(201).json({ user });
+    // For frontend auto-login, return a JWT token as well
+    const jwt = require("jsonwebtoken");
+    const token = jwt.sign({ id: user.id, email: user.email, userRole: user.userRole }, process.env.JWT_SECRET, { expiresIn: "7d" });
+    res.status(201).json({ user, token });
 }

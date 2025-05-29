@@ -11,6 +11,7 @@ router.use(authenticateJWT);
 // TODO: Add meetings endpoints
 
 // JaaS JWT endpoint
-router.get("/:id/jaas-token", jaasTokenHandler);
+// jaasTokenHandler is an array of middleware functions [ensureAuthenticated, jaasTokenHandlerImpl]
+router.get("/:id/jaas-token", ...jaasTokenHandler);
 
 export default router;

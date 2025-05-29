@@ -96,7 +96,7 @@ router.post("/", async (req: AuthRequest, res) => {
         priorOdrExperience: submission.priorOdrExperience,
         approved: true,
         reviewedAt: new Date(),
-        reviewedBy: req.user.id,
+        reviewedBy: req.user?.id, // Safe access with optional chaining
         ownerId: submission.ownerId,
       }
     });
@@ -108,7 +108,7 @@ router.post("/", async (req: AuthRequest, res) => {
         reviewed: true,
         approved: true,
         reviewedAt: new Date(),
-        reviewedBy: req.user.id
+        reviewedBy: req.user?.id // Safe access with optional chaining
       }
     });
 

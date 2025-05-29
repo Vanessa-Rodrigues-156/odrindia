@@ -1,12 +1,18 @@
 import { Request, Response } from "express";
-import { AuthRequest } from "../../middleware/auth";
+import { AuthRequest, AuthUser } from "../../middleware/auth";
 
 export default async function sessionHandler(req: AuthRequest, res: Response) {
+  console.log("Session check requested");
+  
   if (!req.user) {
-    return res.status(401).json({ error: "Not authenticated" });
+    console.log("Session check failed: No authenticated user");
+    return res.status(401).json({ 
+      authenticated: false,
+      error: "Not authenticated" 
+    });
   }
-  // Only return user fields expected by frontend
-  const user = {
+  // Format user data for consistent response
+  const user: AuthUser = {
     id: req.user.id,
     name: req.user.name,
     email: req.user.email,
@@ -19,5 +25,18 @@ export default async function sessionHandler(req: AuthRequest, res: Response) {
     odrLabUsage: req.user.odrLabUsage,
     createdAt: req.user.createdAt,
   };
-  res.json({ user });
+  
+  // Log successful session check
+  console.log(`Session valid for user: ${user.email} with role: ${user.userRole}`);
+  
+  // Return session data
+  return res.status(200).json({ 
+    authenticated: true,
+    user,
+    // If we have jwt payload with expiration, include time remaining
+    ...(req.jwtPayload?.exp ? {
+      expiresAt: new Date(req.jwtPayload.exp * 1000).toISOString(),
+      expiresIn: req.jwtPayload.exp - Math.floor(Date.now() / 1000)
+    } : {})
+  });
 }

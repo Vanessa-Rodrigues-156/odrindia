@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import prisma from "../../lib/prisma";
 import { AuthRequest } from "../../middleware/auth";
@@ -7,12 +7,22 @@ const JAAS_APP_ID = process.env.JAAS_APP_ID!;
 const JAAS_SECRET = process.env.JAAS_SECRET!; // base64-encoded
 const JAAS_SDK_ID = process.env.JAAS_SDK_ID!;
 
-export default async function jaasTokenHandler(
+// Middleware to ensure user is authenticated
+const ensureAuthenticated = (req: AuthRequest, res: Response, next: NextFunction) => {
+  if (!req.user) {
+    return res.status(401).json({ error: "Authentication required" });
+  }
+  next();
+};
+
+// The actual jaasTokenHandler with authentication check
+async function jaasTokenHandlerImpl(
   req: AuthRequest,
   res: Response
 ) {
   const { id } = req.params; // meetingId
-  const user = req.user;
+  // req.user is guaranteed to be defined because of the middleware
+  const user = req.user!;
 
   // Check if user is allowed to join this meeting
   const meeting = await prisma.meetingLog.findUnique({ where: { id } });
@@ -41,3 +51,6 @@ export default async function jaasTokenHandler(
 
   res.json({ token });
 }
+
+// Export the handler wrapped with authentication middleware
+export default [ensureAuthenticated, jaasTokenHandlerImpl];

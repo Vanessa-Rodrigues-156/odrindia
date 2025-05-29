@@ -1,26 +1,58 @@
-import { Router, Request, Response } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import prisma from "../../lib/prisma";
 import { authenticateJWT, AuthRequest } from "../../middleware/auth";
 
+// Create separate routers for different auth levels
 const router = Router();
+const authenticatedRouter = Router();
+const adminRouter = Router();
+
+// Apply base JWT authentication to all routes
 router.use(authenticateJWT);
+
+// Middleware to ensure user is authenticated
+const ensureAuthenticated = (req: AuthRequest, res: Response, next: NextFunction) => {
+  if (!req.user) {
+    return res.status(401).json({ error: "Authentication required" });
+  }
+  next();
+};
+
+// Middleware to ensure user is an admin
+const ensureAdmin = (req: AuthRequest, res: Response, next: NextFunction) => {
+  if (!req.user) {
+    return res.status(401).json({ error: "Authentication required" });
+  }
+  
+  if (req.user.userRole !== "ADMIN") {
+    return res.status(403).json({ error: "Admin access required" });
+  }
+  
+  next();
+};
+
+// Apply authentication middleware to their respective routers
+authenticatedRouter.use(ensureAuthenticated);
+adminRouter.use(ensureAdmin);
 
 // --- IDEA SUBMISSION FLOW ---
 
 // Submit a new idea (goes to IdeaSubmission, not Idea)
-router.post("/submit", async (req: AuthRequest, res) => {
+// Protected route - requires authentication
+authenticatedRouter.post("/submit", async (req: AuthRequest, res) => {
   const { title, caption, description, priorOdrExperience } = req.body;
   if (!title || !description) {
     return res.status(400).json({ error: "Title and description are required." });
   }
   try {
+    // Since we've used the ensureAuthenticated middleware, req.user is guaranteed to be defined
     const submission = await prisma.ideaSubmission.create({
       data: {
         title,
         caption: caption || null,
         description,
         priorOdrExperience: priorOdrExperience || null,
-        ownerId: req.user.id,
+        ownerId: req.user!.id, // Non-null assertion since middleware guarantees this
       },
       include: { owner: true },
     });
@@ -31,8 +63,8 @@ router.post("/submit", async (req: AuthRequest, res) => {
 });
 
 // Admin: List all pending idea submissions
-router.get("/submissions", async (req: AuthRequest, res) => {
-  if (req.user.userRole !== "ADMIN") return res.status(403).json({ error: "Not authorized" });
+adminRouter.get("/submissions", async (req: AuthRequest, res) => {
+  // Using ensureAdmin middleware means req.user is guaranteed to be defined and have ADMIN role
   const submissions = await prisma.ideaSubmission.findMany({
     where: { reviewed: false },
     include: { owner: true },
@@ -42,8 +74,7 @@ router.get("/submissions", async (req: AuthRequest, res) => {
 });
 
 // Admin: Approve an idea submission
-router.post("/submissions/:id/approve", async (req: AuthRequest, res) => {
-  if (req.user.userRole !== "ADMIN") return res.status(403).json({ error: "Not authorized" });
+adminRouter.post("/submissions/:id/approve", async (req: AuthRequest, res) => {
   const { id } = req.params;
   const submission = await prisma.ideaSubmission.findUnique({ where: { id } });
   if (!submission) return res.status(404).json({ error: "Submission not found" });
@@ -58,22 +89,21 @@ router.post("/submissions/:id/approve", async (req: AuthRequest, res) => {
       ownerId: submission.ownerId,
       approved: true,
       reviewedAt: new Date(),
-      reviewedBy: req.user.id,
+      reviewedBy: req.user!.id, // Non-null assertion since middleware guarantees this
     },
   });
 
   // Mark submission as reviewed/approved
   await prisma.ideaSubmission.update({
     where: { id },
-    data: { reviewed: true, approved: true, reviewedAt: new Date(), reviewedBy: req.user.id },
+    data: { reviewed: true, approved: true, reviewedAt: new Date(), reviewedBy: req.user!.id },
   });
 
   res.json({ success: true, idea });
 });
 
 // Admin: Reject an idea submission
-router.post("/submissions/:id/reject", async (req: AuthRequest, res) => {
-  if (req.user.userRole !== "ADMIN") return res.status(403).json({ error: "Not authorized" });
+adminRouter.post("/submissions/:id/reject", async (req: AuthRequest, res) => {
   const { id } = req.params;
   const { reason } = req.body;
   const submission = await prisma.ideaSubmission.findUnique({ where: { id } });
@@ -87,7 +117,7 @@ router.post("/submissions/:id/reject", async (req: AuthRequest, res) => {
       rejected: true,
       rejectionReason: reason || null,
       reviewedAt: new Date(),
-      reviewedBy: req.user.id,
+      reviewedBy: req.user!.id, // Non-null assertion since middleware guarantees this
     },
   });
 
@@ -97,8 +127,7 @@ router.post("/submissions/:id/reject", async (req: AuthRequest, res) => {
 // --- EXISTING IDEA ROUTES ---
 
 // List all ideas (admin only)
-router.get("/", async (req: AuthRequest, res) => {
-  if (req.user.userRole !== "ADMIN") return res.status(403).json({ error: "Not authorized" });
+adminRouter.get("/", async (req: AuthRequest, res) => {
   const ideas = await prisma.idea.findMany({
     include: {
       owner: true,
@@ -114,8 +143,7 @@ router.get("/", async (req: AuthRequest, res) => {
 });
 
 // Create a new idea (for admin only, normal users use /submit)
-router.post("/", async (req: AuthRequest, res) => {
-  if (req.user.userRole !== "ADMIN") return res.status(403).json({ error: "Not authorized" });
+adminRouter.post("/", async (req: AuthRequest, res) => {
   const { title, caption, description, priorOdrExperience, ownerId } = req.body;
   if (!title || !description || !ownerId) {
     return res.status(400).json({ error: "Title, description, and ownerId are required." });
@@ -130,7 +158,7 @@ router.post("/", async (req: AuthRequest, res) => {
         ownerId,
         approved: true,
         reviewedAt: new Date(),
-        reviewedBy: req.user.id,
+        reviewedBy: req.user!.id,
       },
       include: {
         owner: true,
@@ -179,7 +207,7 @@ router.get("/approved", async (req: Request, res: Response) => {
 });
 
 // Get idea details (for discussion board, must be approved)
-router.get("/:id", async (req: AuthRequest, res: Response) => {
+router.get("/:id", async (req: Request, res: Response) => {
   try {
     const idea = await prisma.idea.findUnique({
       where: { id: req.params.id, approved: true },
@@ -205,12 +233,12 @@ router.get("/:id", async (req: AuthRequest, res: Response) => {
 });
 
 // Update idea (owner only)
-router.put("/:id", async (req: AuthRequest, res) => {
+authenticatedRouter.put("/:id", async (req: AuthRequest, res) => {
   const { id } = req.params;
   const { title, caption, description, priorOdrExperience } = req.body;
   const idea = await prisma.idea.findUnique({ where: { id } });
   if (!idea) return res.status(404).json({ error: "Idea not found" });
-  if (idea.ownerId !== req.user.id && req.user.userRole !== "ADMIN") {
+  if (idea.ownerId !== req.user!.id && req.user!.userRole !== "ADMIN") {
     return res.status(403).json({ error: "Not authorized" });
   }
   const updated = await prisma.idea.update({
@@ -221,11 +249,11 @@ router.put("/:id", async (req: AuthRequest, res) => {
 });
 
 // Delete idea (owner or admin)
-router.delete("/:id", async (req: AuthRequest, res) => {
+authenticatedRouter.delete("/:id", async (req: AuthRequest, res) => {
   const { id } = req.params;
   const idea = await prisma.idea.findUnique({ where: { id } });
   if (!idea) return res.status(404).json({ error: "Idea not found" });
-  if (idea.ownerId !== req.user.id && req.user.userRole !== "ADMIN") {
+  if (idea.ownerId !== req.user!.id && req.user!.userRole !== "ADMIN") {
     return res.status(403).json({ error: "Not authorized" });
   }
   await prisma.idea.delete({ where: { id } });
@@ -243,7 +271,7 @@ router.get("/:id/collaborators", async (req, res) => {
 });
 
 // Add collaborator
-router.post("/:id/collaborators", async (req: AuthRequest, res) => {
+authenticatedRouter.post("/:id/collaborators", async (req: AuthRequest, res) => {
   const { id } = req.params;
   const { userId } = req.body;
   if (!userId) return res.status(400).json({ error: "userId required" });
@@ -264,7 +292,7 @@ router.get("/:id/mentors", async (req, res) => {
 });
 
 // Add mentor
-router.post("/:id/mentors", async (req: AuthRequest, res) => {
+authenticatedRouter.post("/:id/mentors", async (req: AuthRequest, res) => {
   const { id } = req.params;
   const { userId } = req.body;
   if (!userId) return res.status(400).json({ error: "userId required" });
@@ -286,7 +314,7 @@ router.get("/:id/comments", async (req, res) => {
 });
 
 // Add comment
-router.post("/:id/comments", async (req: AuthRequest, res) => {
+authenticatedRouter.post("/:id/comments", async (req: AuthRequest, res) => {
   const { id } = req.params;
   const { content, parentId } = req.body;
   if (!content) return res.status(400).json({ error: "Content required" });
@@ -294,7 +322,7 @@ router.post("/:id/comments", async (req: AuthRequest, res) => {
     data: {
       content,
       ideaId: id,
-      userId: req.user.id,
+      userId: req.user!.id,
       parentId: parentId || null,
     },
     include: { user: true, replies: true, likes: true },
@@ -303,7 +331,7 @@ router.post("/:id/comments", async (req: AuthRequest, res) => {
 });
 
 // Like/unlike idea
-router.post("/:id/like", async (req: AuthRequest, res) => {
+authenticatedRouter.post("/:id/like", async (req: AuthRequest, res) => {
   const { id } = req.params;
   const { action } = req.body; // 'like' or 'unlike'
   if (!["like", "unlike"].includes(action)) {
@@ -311,17 +339,21 @@ router.post("/:id/like", async (req: AuthRequest, res) => {
   }
   if (action === "like") {
     const like = await prisma.like.upsert({
-      where: { userId_ideaId: { userId: req.user.id, ideaId: id } },
+      where: { userId_ideaId: { userId: req.user!.id, ideaId: id } },
       update: {},
-      create: { userId: req.user.id, ideaId: id },
+      create: { userId: req.user!.id, ideaId: id },
     });
     return res.json({ liked: true, like });
   } else {
     await prisma.like.deleteMany({
-      where: { userId: req.user.id, ideaId: id },
+      where: { userId: req.user!.id, ideaId: id },
     });
     return res.json({ liked: false });
   }
 });
+
+// Mount authenticated and admin routers on the main router
+router.use("/", authenticatedRouter);
+router.use("/", adminRouter);
 
 export default router;

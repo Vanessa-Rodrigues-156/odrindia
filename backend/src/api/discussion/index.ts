@@ -1,9 +1,24 @@
-import { Router } from "express";
+import { Router, Response, NextFunction } from "express";
 import { authenticateJWT, AuthRequest } from "../../middleware/auth";
 import prisma from "../../lib/prisma";
 
+// Create routers for different auth levels
 const router = Router();
+const authenticatedRouter = Router();
+
+// Apply base JWT authentication to all routes
 router.use(authenticateJWT);
+
+// Middleware to ensure user is authenticated
+const ensureAuthenticated = (req: AuthRequest, res: Response, next: NextFunction) => {
+  if (!req.user) {
+    return res.status(401).json({ error: "Authentication required" });
+  }
+  next();
+};
+
+// Apply authentication middleware to authenticated router
+authenticatedRouter.use(ensureAuthenticated);
 
 // Get all comments for an idea
 router.get("/:ideaId/comments", async (req, res) => {
@@ -16,8 +31,8 @@ router.get("/:ideaId/comments", async (req, res) => {
   res.json(comments);
 });
 
-// Add a comment to an idea
-router.post("/:ideaId/comments", async (req: AuthRequest, res) => {
+// Add a comment to an idea - requires authentication
+authenticatedRouter.post("/:ideaId/comments", async (req: AuthRequest, res) => {
   const { ideaId } = req.params;
   const { content } = req.body;
   if (!content) return res.status(400).json({ error: "Content required" });
@@ -25,16 +40,16 @@ router.post("/:ideaId/comments", async (req: AuthRequest, res) => {
     data: {
       content,
       ideaId,
-      userId: req.user.id,
+      userId: req.user!.id, // Non-null assertion since middleware guarantees this
     },
   });
   res.status(201).json(comment);
 });
 
-// Like/unlike an idea
-router.post("/:ideaId/like", async (req: AuthRequest, res) => {
+// Like/unlike an idea - requires authentication
+authenticatedRouter.post("/:ideaId/like", async (req: AuthRequest, res) => {
   const { ideaId } = req.params;
-  const userId = req.user.id;
+  const userId = req.user!.id; // Non-null assertion since middleware guarantees this
   const like = await prisma.like.findUnique({
     where: { userId_ideaId: { userId, ideaId } },
   });
@@ -47,25 +62,28 @@ router.post("/:ideaId/like", async (req: AuthRequest, res) => {
   }
 });
 
-// Check if user liked the idea
-router.get("/:ideaId/like/check", async (req: AuthRequest, res) => {
+// Check if user liked the idea - requires authentication
+authenticatedRouter.get("/:ideaId/like/check", async (req: AuthRequest, res) => {
   const { ideaId } = req.params;
-  const userId = req.user.id;
+  const userId = req.user!.id; // Non-null assertion since middleware guarantees this
   const like = await prisma.like.findUnique({
     where: { userId_ideaId: { userId, ideaId } },
   });
   res.json({ hasLiked: !!like });
 });
 
-// Get liked comments for a user on an idea
-router.get("/:ideaId/comments/likes", async (req: AuthRequest, res) => {
+// Get liked comments for a user on an idea - requires authentication
+authenticatedRouter.get("/:ideaId/comments/likes", async (req: AuthRequest, res) => {
   const { ideaId } = req.params;
-  const userId = req.user.id;
+  const userId = req.user!.id; // Non-null assertion since middleware guarantees this
   const likedComments = await prisma.like.findMany({
     where: { userId, comment: { ideaId } },
     select: { commentId: true },
   });
   res.json({ likedCommentIds: likedComments.map((lc) => lc.commentId) });
 });
+
+// Mount authenticated router on the main router
+router.use("/", authenticatedRouter);
 
 export default router;

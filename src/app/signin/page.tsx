@@ -45,40 +45,54 @@ const SignInPage = () => {
     const email = formData.get("email");
     const password = formData.get("password");
 
-    // Debug log
-    console.log("LOGIN PAYLOAD", { email, password, typeofEmail: typeof email });
-    // Ensure both are strings
+    console.log("Processing login form submission");
+    
+    // Validate form data
     if (typeof email !== "string" || typeof password !== "string") {
-      setError("Email and password must be strings.");
+      setError("Email and password must be valid strings.");
+      setLoading(false);
+      return;
+    }
+
+    if (!email.trim() || !password.trim()) {
+      setError("Email and password cannot be empty.");
       setLoading(false);
       return;
     }
 
     try {
+      console.log(`Attempting login for email: ${email}`);
+      
       // Use the auth context login function (which handles token storage)
       const success = await login(email, password);
 
       if (!success) {
-        setError("Invalid email or password");
+        console.error("Login returned failure");
+        setError("Invalid email or password. Please try again.");
         setLoading(false);
         return;
       }
 
+      console.log("Login successful, preparing redirect");
+      
       // Login successful - determine where to redirect
       const urlParams = new URLSearchParams(window.location.search);
       const redirectPath = urlParams.get("redirect");
-
-      // Add a short delay to ensure auth context is updated
+      
+      // Add a slightly longer delay to ensure auth context is fully updated
+      // and the token is properly stored
       setTimeout(() => {
-        if (redirectPath) {
+        if (redirectPath && redirectPath !== '/signin') {
+          console.log(`Redirecting to: ${redirectPath}`);
           router.push(redirectPath); // Go to the originally requested page
         } else {
+          console.log("Redirecting to home page");
           router.push("/"); // Redirect to home page for regular users
         }
-      }, 100);
+      }, 300);
     } catch (err) {
       console.error("Sign in error:", err);
-      setError("Something went wrong with the server. Please try again later.");
+      setError("Unable to connect to the server. Please check your network connection and try again.");
       setLoading(false);
     }
   };

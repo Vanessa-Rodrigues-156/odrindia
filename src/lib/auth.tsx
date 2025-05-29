@@ -47,27 +47,44 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const login = async (email: string, password: string) => {
     setLoading(true);
     try {
+      console.log("Attempting login with email:", email);
       const res = await apiFetch("/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
+      
+      // Parse response data regardless of success/failure for better error messages
+      let data;
+      try {
+        data = await res.json();
+      } catch (parseErr) {
+        console.error("Failed to parse login response:", parseErr);
+        return false;
+      }
+      
       if (!res.ok) {
-        let errorMsg = `Login failed: ${res.status}`;
-        try {
-          const data = await res.json();
-          errorMsg += ` - ${data.error || JSON.stringify(data)}`;
-        } catch {}
+        const errorMsg = `Login failed: ${res.status} - ${data?.error || "Unknown error"}`;
         console.error(errorMsg);
         return false;
       }
-      const data = await res.json();
+      
       if (data.token) {
+        // Store the token in localStorage
         localStorage.setItem("token", data.token);
+        
+        // Update the user state with the returned user data
         setUser(data.user);
+        
+        console.log("Login successful for:", data.user.email, "with role:", data.user.userRole);
+        
+        // Immediately refresh user info to ensure everything is up-to-date
+        await refreshUser();
         return true;
+      } else {
+        console.error("Login returned success but no token was provided");
+        return false;
       }
-      return false;
     } catch (err) {
       console.error("Login error:", err);
       return false;
@@ -85,17 +102,44 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const refreshUser = async () => {
     setLoading(true);
     try {
+      // Check if we have a token to even attempt a session refresh
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.log("No token found, skipping session refresh");
+        setUser(null);
+        return;
+      }
+      
+      console.log("Refreshing user session");
       const res = await apiFetch("/auth/session", {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });
+      
       if (res.ok) {
-        const data = await res.json();
-        setUser(data.user || null);
+        try {
+          const data = await res.json();
+          if (data.user) {
+            console.log("Session refresh successful for:", data.user.email);
+            setUser(data.user);
+          } else {
+            console.warn("Session endpoint returned OK but no user data");
+            setUser(null);
+          }
+        } catch (parseErr) {
+          console.error("Failed to parse session response:", parseErr);
+          setUser(null);
+        }
       } else {
+        console.warn(`Session refresh failed: ${res.status}`);
+        // Clear invalid token
+        if (res.status === 401) {
+          localStorage.removeItem("token");
+        }
         setUser(null);
       }
-    } catch {
+    } catch (err) {
+      console.error("Session refresh error:", err);
       setUser(null);
     } finally {
       setLoading(false);
