@@ -5,34 +5,36 @@ import { useToast } from "@/components/ui/use-toast"
 import { useAuth } from "@/lib/auth"
 
 // Import components
-import IdeaHeader from "./components/IdeaHeader"
-import IdeaDetails from "./components/IdeaDetails"
-import CommentForm from "./components/CommentForm"
-import CommentsList from "./components/CommentsList"
+import IdeaHeader from "./discussioncomponents/IdeaHeader"
+import IdeaDetails from "./discussioncomponents/IdeaDetails"
+import CommentForm from "./discussioncomponents/CommentForm"
+import CommentsList from "./discussioncomponents/CommentsList"
 
 // Import types and API functions
-import { Idea, Comment } from "./components/types"
+import { Idea, Comment } from "./discussioncomponents/types"
 import { 
   fetchComments, 
   checkIdeaLikeStatus, 
   fetchLikedComments,
   likeIdea, 
   likeComment, 
-  postComment 
-} from "./components/api"
+  postComment,
+  fetchIdeaDetails
+} from "./discussioncomponents/api"
 
 interface DiscussionClientProps {
   idea: Idea
   initialComments: Comment[]
 }
 
-export default function DiscussionClient({ idea, initialComments }: DiscussionClientProps) {
+export default function DiscussionClient({ idea: initialIdea, initialComments }: DiscussionClientProps) {
   const { toast } = useToast()
-  const { user } = useAuth()
+  const { user, accessToken } = useAuth()
+  const [idea, setIdea] = useState<Idea>(initialIdea)
   const [comments, setComments] = useState<Comment[]>(initialComments)
   const [replyingTo, setReplyingTo] = useState<string | null>(null)
   const [expandedComments, setExpandedComments] = useState<Record<string, boolean>>({})
-  const [ideaLikes, setIdeaLikes] = useState(idea.likes)
+  const [ideaLikes, setIdeaLikes] = useState(initialIdea.likes)
   const [hasLiked, setHasLiked] = useState(false)
   const [commentLikes, setCommentLikes] = useState<Record<string, boolean>>({})
 
@@ -40,7 +42,7 @@ export default function DiscussionClient({ idea, initialComments }: DiscussionCl
     // Fetch comments on mount
     const loadComments = async () => {
       try {
-        const data = await fetchComments(idea.id)
+        const data = await fetchComments(idea.id, accessToken)
         // Comments should already be properly structured from the API
         setComments(data)
       } catch (error) {
@@ -56,11 +58,11 @@ export default function DiscussionClient({ idea, initialComments }: DiscussionCl
       const checkLikeStatus = async () => {
         try {
           // Check idea like status
-          const ideaLiked = await checkIdeaLikeStatus(idea.id, user.id)
+          const ideaLiked = await checkIdeaLikeStatus(idea.id, user.id, accessToken)
           setHasLiked(ideaLiked)
           
           // Check comment likes
-          const likedComments = await fetchLikedComments(idea.id, user.id)
+          const likedComments = await fetchLikedComments(idea.id, user.id, accessToken)
           const likedCommentsMap: Record<string, boolean> = {}
           likedComments.forEach((commentId: string) => {
             likedCommentsMap[commentId] = true
@@ -73,8 +75,18 @@ export default function DiscussionClient({ idea, initialComments }: DiscussionCl
       
       checkLikeStatus()
     }
-  }, [idea.id, user?.id, toast])
+  }, [idea.id, user?.id, toast, accessToken])
 
+  // Handler for updating collaborator/mentor status
+  const handleCollaborationUpdated = async () => {
+    try {
+      const updatedIdea = await fetchIdeaDetails(idea.id, accessToken);
+      setIdea(updatedIdea);
+    } catch (error) {
+      console.error("Failed to refresh idea details:", error);
+    }
+  }
+  
   // Handler for liking/unliking an idea
   const handleLikeIdea = async () => {
     if (!user) {
@@ -84,7 +96,7 @@ export default function DiscussionClient({ idea, initialComments }: DiscussionCl
     
     const action = hasLiked ? "unlike" : "like"
     try {
-      const data = await likeIdea(idea.id, user.id, action)
+      const data = await likeIdea(idea.id, user.id, action, accessToken)
       setIdeaLikes(data.likes)
       setHasLiked(!hasLiked)
     } catch (error) {
@@ -102,7 +114,7 @@ export default function DiscussionClient({ idea, initialComments }: DiscussionCl
     const isLiked = commentLikes[commentId]
     const action = isLiked ? "unlike" : "like"
     try {
-      const data = await likeComment(idea.id, commentId, user.id, action)
+      const data = await likeComment(idea.id, commentId, user.id, action, accessToken)
       setCommentLikes((prev) => ({ ...prev, [commentId]: !isLiked }))
       setComments((prev) => prev.map(c =>
         c.id === commentId ? { ...c, likes: data.likes } : c
@@ -125,7 +137,7 @@ export default function DiscussionClient({ idea, initialComments }: DiscussionCl
     }
     
     try {
-      const newComment = await postComment(idea.id, user.id, content)
+      const newComment = await postComment(idea.id, user.id, content, undefined, accessToken)
       setComments((prev) => [...prev, { ...newComment, replies: [] }])
       toast({ title: "Comment posted", description: "Your comment has been added to the discussion." })
     } catch (error) {
@@ -141,7 +153,7 @@ export default function DiscussionClient({ idea, initialComments }: DiscussionCl
     }
     
     try {
-      const newReply = await postComment(idea.id, user.id, content, parentId)
+      const newReply = await postComment(idea.id, user.id, content, parentId, accessToken)
       
       // Update comments state to add the reply to the correct parent
       // This function recursively searches for the parent comment in the comment tree
@@ -197,6 +209,7 @@ export default function DiscussionClient({ idea, initialComments }: DiscussionCl
                 hasLiked={hasLiked} 
                 ideaLikes={ideaLikes} 
                 onLikeIdea={handleLikeIdea} 
+                onCollaborationUpdated={handleCollaborationUpdated}
               />
               
               <div className="mt-8">

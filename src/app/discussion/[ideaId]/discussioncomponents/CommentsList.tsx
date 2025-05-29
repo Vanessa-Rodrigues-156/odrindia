@@ -1,9 +1,5 @@
-"use client";
-
 import { Comment, User } from "./types";
 import CommentThread from "./CommentThread";
-import { UserRole } from "@prisma/client";
-
 interface CommentsListProps {
   comments: Comment[];
   ideaId: string;

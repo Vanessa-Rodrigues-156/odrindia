@@ -1,6 +1,13 @@
 import { Request, Response } from "express";
 import { AuthRequest } from "../../middleware/auth";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
+
+// Define the structure for token errors
+interface TokenError {
+  name: string;
+  message: string;
+  expiredAt?: Date;
+}
 
 /**
  * Debug endpoint that helps diagnose authentication issues
@@ -27,14 +34,15 @@ export default async function debugAuthHandler(req: AuthRequest, res: Response) 
   };
 
   // Check JWT validity without using our auth middleware
-  let tokenInfo = null;
-  let tokenError = null;
+  let tokenInfo: JwtPayload | null = null;
+  let tokenError: TokenError | null = null;
 
   if (token) {
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
       // Ensure decoded is an object with our expected properties
-      tokenInfo = typeof decoded === 'object' ? decoded : null;
+      
+      tokenInfo = typeof decoded === 'object' ? decoded as JwtPayload : null;
     } catch (err: any) {
       tokenError = {
         name: err.name,

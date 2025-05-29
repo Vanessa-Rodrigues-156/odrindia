@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { Textarea } from "@/components/ui/textarea";
@@ -34,7 +32,7 @@ export default function CommentForm({
       toast({ title: "Error", description: "Failed to post comment." });
     }
   };
-
+  console.log("idea", ideaId);
   return (
     <div className="mb-6 flex gap-3">
       <Avatar className="h-10 w-10">

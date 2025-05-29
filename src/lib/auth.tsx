@@ -32,6 +32,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
   refreshUser: () => Promise<void>;
+  accessToken: string | null; // Add accessToken to context type
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -40,9 +41,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [accessToken, setAccessToken] = useState<string | null>(null); // Add accessToken state
   const router = useRouter();
 
-  const refreshPromiseRef = useRef<Promise<any> | null>(null);
+  const refreshPromiseRef = useRef<Promise<void> | null>(null);
   const refreshTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Debounced refreshUser function to prevent race conditions
@@ -69,6 +71,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           // Don't set error on 401, just clear the user
           if (response.status === 401) {
             setUser(null);
+            setAccessToken(null); // Clear access token on 401
             return null;
           }
           throw new Error("Failed to refresh session");
@@ -77,9 +80,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const data = await response.json();
         if (data.authenticated && data.user) {
           setUser(data.user);
+          // Store token from response or localStorage
+          setAccessToken(data.token || localStorage.getItem("token")); 
           return data.user;
         } else {
           setUser(null);
+          setAccessToken(null);
           return null;
         }
       } catch (err) {
@@ -132,13 +138,22 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
 
       setUser(data.user);
+      // Store the token in both state and localStorage
+      if (data.token) {
+        setAccessToken(data.token);
+        localStorage.setItem("token", data.token);
+      }
       return data;
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Login error:", err);
-      if (err.name === "AbortError") {
-        setError("Login request timed out. Please try again.");
+      if (err instanceof Error) {
+        if (err.name === "AbortError") {
+          setError("Login request timed out. Please try again.");
+        } else {
+          setError(err.message || "Failed to login. Please check your credentials.");
+        }
       } else {
-        setError(err.message || "Failed to login. Please check your credentials.");
+        setError("Failed to login. Please check your credentials.");
       }
       throw err;
     } finally {
@@ -149,8 +164,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const logout = () => {
     localStorage.removeItem("token");
     setUser(null);
+    setAccessToken(null); // Clear access token on logout
     router.push("/signin");
   };
+
+  // On mount, check for token in localStorage
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setAccessToken(token);
+    }
+  }, []);
 
   const contextValue = {
     user,
@@ -159,6 +183,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     login,
     logout,
     refreshUser,
+    accessToken, // Include accessToken in context
   };
 
   return (

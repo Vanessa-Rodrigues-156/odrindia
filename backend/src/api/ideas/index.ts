@@ -212,7 +212,50 @@ router.get("/:id", async (req: Request, res: Response) => {
     const idea = await prisma.idea.findUnique({
       where: { id: req.params.id, approved: true },
       include: {
-        owner: true,
+        owner: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            userRole: true,
+            country: true,
+            institution: true,
+            city: true,
+            highestEducation: true,
+          }
+        },
+        collaborators: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                userRole: true,
+                country: true,
+                institution: true,
+                city: true,
+                highestEducation: true,
+              }
+            }
+          }
+        },
+        mentors: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                userRole: true,
+                country: true,
+                institution: true,
+                city: true,
+                highestEducation: true,
+              }
+            }
+          }
+        },
         likes: true,
         comments: {
           include: {

@@ -10,6 +10,7 @@ import submitIdeaRoutes from "./api/submit-idea";
 import discussionRoutes from "./api/discussion";
 import adminRoutes from "./api/admin";
 import chatbotRoutes from "./api/chatbot";
+import collaborationRoutes from "./api/collaboration";
 
 const app = express();
 
@@ -38,6 +39,7 @@ app.use("/api/odrlabs", authenticateJWT, odrlabsRoutes);
 app.use("/api/discussion", authenticateJWT, discussionRoutes);
 app.use("/api/submit-idea", authenticateJWT, submitIdeaRoutes);
 app.use("/api/admin", authenticateJWT, adminRoutes);
+app.use("/api/collaboration", authenticateJWT, collaborationRoutes); // Add the new route
 
 app.use(errorHandler);
 
