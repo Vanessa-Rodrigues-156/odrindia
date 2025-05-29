@@ -29,9 +29,14 @@ export default function PageGuard({
   const { toast } = useToast();
 
   useEffect(() => {
+    // Only redirect if not loading and we're certain about authentication status
     if (!loading) {
       if (requireAuth && !user) {
-        router.push(redirectTo);
+        const currentPath = window.location.pathname;
+        // Avoid redirect loops by checking if we're not already at the redirect destination
+        if (currentPath !== redirectTo) {
+          router.push(`${redirectTo}?redirect=${encodeURIComponent(currentPath)}`);
+        }
       } else if (requiredRole && user && user.userRole !== requiredRole) {
         router.push("/");
       }

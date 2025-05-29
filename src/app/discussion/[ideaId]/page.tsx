@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import DiscussionClient from "./DiscussionClient";
 import { apiFetch } from "@/lib/api";
-
+import type { Comment as CommentType, User } from "./components/types";
 // Update the prop type to match the Promise pattern
 interface DiscussionPageProps {
   params: { ideaId: string };
@@ -40,16 +40,12 @@ export default async function DiscussionPage({ params }: DiscussionPageProps) {
     owner: idea.owner,
     createdAt: new Date(idea.createdAt).toISOString(),
     likes: idea.likes?.length || 0,
-    comments: [], // will fill below
+    comments: [] as CommentType[], // will fill below
   };
   // Map comments to tree structure
   const allComments = idea.comments || [];
   // Build a map of comments by id
-  import type { Comment as CommentType, User } from "./components/types";
-  function getInitials(name?: string | null) {
-    if (!name) return "??";
-    return name.split(' ').map(p => p[0]).join('').toUpperCase().substring(0, 2);
-  }
+
   const commentMap = new Map<string, CommentType>();
   allComments.forEach((c: any) => {
     commentMap.set(c.id, {
@@ -58,7 +54,7 @@ export default async function DiscussionPage({ params }: DiscussionPageProps) {
       createdAt: new Date(c.createdAt).toISOString(),
       user: c.user as User,
       parentId: c.parentId,
-      replies: [],
+      replies: [] as CommentType[], // will be filled later
       likes: c.likes?.length || 0,
     });
   });

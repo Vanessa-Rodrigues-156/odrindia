@@ -5,8 +5,100 @@ import { authenticateJWT, AuthRequest } from "../../middleware/auth";
 const router = Router();
 router.use(authenticateJWT);
 
-// List all ideas (with owner, collaborators, mentors, comments, likes)
-router.get("/", async (req, res) => {
+// --- IDEA SUBMISSION FLOW ---
+
+// Submit a new idea (goes to IdeaSubmission, not Idea)
+router.post("/submit", async (req: AuthRequest, res) => {
+  const { title, caption, description, priorOdrExperience } = req.body;
+  if (!title || !description) {
+    return res.status(400).json({ error: "Title and description are required." });
+  }
+  try {
+    const submission = await prisma.ideaSubmission.create({
+      data: {
+        title,
+        caption: caption || null,
+        description,
+        priorOdrExperience: priorOdrExperience || null,
+        ownerId: req.user.id,
+      },
+      include: { owner: true },
+    });
+    res.status(201).json(submission);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to submit idea." });
+  }
+});
+
+// Admin: List all pending idea submissions
+router.get("/submissions", async (req: AuthRequest, res) => {
+  if (req.user.userRole !== "ADMIN") return res.status(403).json({ error: "Not authorized" });
+  const submissions = await prisma.ideaSubmission.findMany({
+    where: { reviewed: false },
+    include: { owner: true },
+    orderBy: { createdAt: "desc" },
+  });
+  res.json(submissions);
+});
+
+// Admin: Approve an idea submission
+router.post("/submissions/:id/approve", async (req: AuthRequest, res) => {
+  if (req.user.userRole !== "ADMIN") return res.status(403).json({ error: "Not authorized" });
+  const { id } = req.params;
+  const submission = await prisma.ideaSubmission.findUnique({ where: { id } });
+  if (!submission) return res.status(404).json({ error: "Submission not found" });
+
+  // Create Idea from submission
+  const idea = await prisma.idea.create({
+    data: {
+      title: submission.title,
+      caption: submission.caption,
+      description: submission.description,
+      priorOdrExperience: submission.priorOdrExperience,
+      ownerId: submission.ownerId,
+      approved: true,
+      reviewedAt: new Date(),
+      reviewedBy: req.user.id,
+    },
+  });
+
+  // Mark submission as reviewed/approved
+  await prisma.ideaSubmission.update({
+    where: { id },
+    data: { reviewed: true, approved: true, reviewedAt: new Date(), reviewedBy: req.user.id },
+  });
+
+  res.json({ success: true, idea });
+});
+
+// Admin: Reject an idea submission
+router.post("/submissions/:id/reject", async (req: AuthRequest, res) => {
+  if (req.user.userRole !== "ADMIN") return res.status(403).json({ error: "Not authorized" });
+  const { id } = req.params;
+  const { reason } = req.body;
+  const submission = await prisma.ideaSubmission.findUnique({ where: { id } });
+  if (!submission) return res.status(404).json({ error: "Submission not found" });
+
+  await prisma.ideaSubmission.update({
+    where: { id },
+    data: {
+      reviewed: true,
+      approved: false,
+      rejected: true,
+      rejectionReason: reason || null,
+      reviewedAt: new Date(),
+      reviewedBy: req.user.id,
+    },
+  });
+
+  res.json({ success: true });
+});
+
+// --- EXISTING IDEA ROUTES ---
+
+// List all ideas (admin only)
+router.get("/", async (req: AuthRequest, res) => {
+  if (req.user.userRole !== "ADMIN") return res.status(403).json({ error: "Not authorized" });
   const ideas = await prisma.idea.findMany({
     include: {
       owner: true,
@@ -21,16 +113,13 @@ router.get("/", async (req, res) => {
   res.json(ideas);
 });
 
-// Create a new idea (from submission form)
+// Create a new idea (for admin only, normal users use /submit)
 router.post("/", async (req: AuthRequest, res) => {
-  const { title, caption, description, priorOdrExperience } = req.body;
-
-  if (!title || !description) {
-    return res
-      .status(400)
-      .json({ error: "Title and description are required." });
+  if (req.user.userRole !== "ADMIN") return res.status(403).json({ error: "Not authorized" });
+  const { title, caption, description, priorOdrExperience, ownerId } = req.body;
+  if (!title || !description || !ownerId) {
+    return res.status(400).json({ error: "Title, description, and ownerId are required." });
   }
-
   try {
     const idea = await prisma.idea.create({
       data: {
@@ -38,7 +127,10 @@ router.post("/", async (req: AuthRequest, res) => {
         caption: caption || null,
         description,
         priorOdrExperience: priorOdrExperience || null,
-        ownerId: req.user.id,
+        ownerId,
+        approved: true,
+        reviewedAt: new Date(),
+        reviewedBy: req.user.id,
       },
       include: {
         owner: true,
@@ -87,37 +179,30 @@ router.get("/approved", async (req: Request, res: Response) => {
 });
 
 // Get idea details (for discussion board, must be approved)
-router.get(
-  "/:id",
-  authenticateJWT,
-  async (req: AuthRequest, res: Response) => {
-    try {
-      const idea = await prisma.idea.findUnique({
-        where: { id: req.params.id, approved: true },
-        include: {
-          owner: true,
-          likes: true,
-          comments: {
-            include: {
-              user: true,
-              likes: true,
-            },
-            orderBy: { createdAt: "asc" },
+router.get("/:id", async (req: AuthRequest, res: Response) => {
+  try {
+    const idea = await prisma.idea.findUnique({
+      where: { id: req.params.id, approved: true },
+      include: {
+        owner: true,
+        likes: true,
+        comments: {
+          include: {
+            user: true,
+            likes: true,
           },
+          orderBy: { createdAt: "asc" },
         },
-      });
-      if (!idea)
-        return res
-          .status(404)
-          .json({ error: "Idea not found or not approved" });
-      // Map comments to tree structure if needed (frontend can also do this)
-      res.json(idea);
-    } catch (err) {
-      console.error("[Ideas] Error fetching idea details:", err);
-      res.status(500).json({ error: "Failed to fetch idea details" });
-    }
+      },
+    });
+    if (!idea)
+      return res.status(404).json({ error: "Idea not found or not approved" });
+    res.json(idea);
+  } catch (err) {
+    console.error("[Ideas] Error fetching idea details:", err);
+    res.status(500).json({ error: "Failed to fetch idea details" });
   }
-);
+});
 
 // Update idea (owner only)
 router.put("/:id", async (req: AuthRequest, res) => {

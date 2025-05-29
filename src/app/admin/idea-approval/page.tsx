@@ -89,9 +89,17 @@ function AdminIdeaApprovalContent() {
   const fetchSubmissions = useCallback(async () => {
     setLoading(true);
     try {
+      console.log("Fetching idea submissions...");
       const res = await apiFetch("/admin/approve-idea");
-      if (!res.ok) throw new Error("Failed to fetch submissions");
+      console.log("Response status:", res.status);
+      
+      if (!res.ok) {
+        console.error("Response not OK:", res.status, res.statusText);
+        throw new Error(`Failed to fetch submissions: ${res.status} ${res.statusText}`);
+      }
+      
       const data = await res.json();
+      console.log("Submissions fetched:", data.length);
       setSubmissions(data);
       setFilteredSubmissions(data);
     } catch (error) {
@@ -163,12 +171,14 @@ function AdminIdeaApprovalContent() {
   const approveIdea = async (id: string) => {
     setApproving(id);
     try {
+      console.log("Approving idea with ID:", id);
       const res = await apiFetch("/admin/approve-idea", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ideaId: id }),
       });
 
+      console.log("Approve response status:", res.status);
       if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.error || "Failed to approve idea");

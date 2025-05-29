@@ -33,20 +33,17 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({
-  children,
-}) => {
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  // Load user from token on mount
+  // Only run on mount
   useEffect(() => {
     refreshUser();
-    // Optionally, set up interval to refresh user info
+    // eslint-disable-next-line
   }, []);
 
-  // Login: call backend, store JWT, set user
   const login = async (email: string, password: string) => {
     setLoading(true);
     try {
@@ -56,7 +53,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         body: JSON.stringify({ email, password }),
       });
       if (!res.ok) {
-        // Log error response for debugging
         let errorMsg = `Login failed: ${res.status}`;
         try {
           const data = await res.json();
@@ -80,14 +76,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-  // Logout: remove JWT, clear user
   const logout = () => {
     localStorage.removeItem("token");
     setUser(null);
     router.push("/signin");
   };
 
-  // Refresh user info from backend
   const refreshUser = async () => {
     setLoading(true);
     try {
@@ -132,7 +126,10 @@ export const withAuth = (Component: React.ComponentType<unknown>) => {
     useEffect(() => {
       if (!loading && !user) {
         const currentPath = window.location.pathname;
-        router.push(`/signin?redirect=${encodeURIComponent(currentPath)}`);
+        // Prevent infinite loops - don't redirect if we're already at /signin
+        if (currentPath !== '/signin') {
+          router.push(`/signin?redirect=${encodeURIComponent(currentPath)}`);
+        }
       }
     }, [loading, user, router]);
 
@@ -190,5 +187,3 @@ export const withAdminAuth = (Component: React.ComponentType<unknown>) => {
     return <Component {...props} />;
   };
 };
-
-// Server-side authentication functionality moved to auth-server.ts

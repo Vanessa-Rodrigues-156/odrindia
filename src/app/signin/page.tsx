@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion"; // Added framer-motion import
 import { useAuth } from "@/lib/auth";
-import { apiFetch } from "@/lib/api";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -45,6 +44,7 @@ const SignInPage = () => {
     const formData = new FormData(event.target as HTMLFormElement);
     const email = formData.get("email");
     const password = formData.get("password");
+
     // Debug log
     console.log("LOGIN PAYLOAD", { email, password, typeofEmail: typeof email });
     // Ensure both are strings
@@ -55,53 +55,30 @@ const SignInPage = () => {
     }
 
     try {
-      // First attempt the login to get the user and set cookies
-      const res = await apiFetch("/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      // Use the auth context login function (which handles token storage)
+      const success = await login(email, password);
 
-      if (!res.ok) {
-        const data = await res.json();
-        setError(data.error || "Login failed");
+      if (!success) {
+        setError("Invalid email or password");
+        setLoading(false);
         return;
       }
 
-      const data = await res.json();
-
-      // Use the auth context to handle user login
-      // DO NOT call login(data.user, data.token) here!
-      // Instead, store the token and user directly
-      localStorage.setItem("token", data.token);
-      // Optionally, set user in context if needed
-      // await refreshUser(); // If you want to immediately update context
-
-      // Verify session is established
-      const sessionRes = await apiFetch("/auth/session", {
-        method: "GET",
-      });
-
-      if (!sessionRes.ok) {
-        setError("Failed to establish session. Please try again.");
-        return;
-      }
-
-      // Get redirect URL from query params or use default based on role
+      // Login successful - determine where to redirect
       const urlParams = new URLSearchParams(window.location.search);
       const redirectPath = urlParams.get("redirect");
 
-      if (redirectPath) {
-        router.push(redirectPath); // Go to the originally requested page
-      } else if (data.user.userRole === "ADMIN") {
-        router.push("/admin/idea-approval");
-      } else {
-        router.push("/"); // Redirect to home page for regular users
-      }
+      // Add a short delay to ensure auth context is updated
+      setTimeout(() => {
+        if (redirectPath) {
+          router.push(redirectPath); // Go to the originally requested page
+        } else {
+          router.push("/"); // Redirect to home page for regular users
+        }
+      }, 100);
     } catch (err) {
       console.error("Sign in error:", err);
       setError("Something went wrong with the server. Please try again later.");
-    } finally {
       setLoading(false);
     }
   };

@@ -1,10 +1,9 @@
 "use client"
 import "./globals.css"
-import Image from "next/image"
 import { ArrowRight } from "lucide-react"
 import { motion } from "framer-motion" // Added framer-motion import
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent} from "@/components/ui/card"
 import HowToCard from "@/components/howtocard"
 import { LetsCollaborate } from "@/components/letscolaborate"
 
@@ -28,14 +27,14 @@ const staggerContainer = {
   }
 };
 
-const scaleIn = {
-  hidden: { opacity: 0, scale: 0.8 },
-  visible: { 
-    opacity: 1, 
-    scale: 1,
-    transition: { duration: 0.5 }
-  }
-};
+// const scaleIn = {
+//   hidden: { opacity: 0, scale: 0.8 },
+//   visible: { 
+//     opacity: 1, 
+//     scale: 1,
+//     transition: { duration: 0.5 }
+//   }
+// };
 
 export default function Home() {
   return (

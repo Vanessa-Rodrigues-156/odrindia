@@ -3,6 +3,7 @@ import { authenticateJWT, AuthRequest } from "../../middleware/auth";
 import prisma from "../../lib/prisma";
 import usersRoutes from "./users";
 import analyticsRoutes from "./analytics";
+import approveIdeaRoutes from "./approve-idea";
 
 const router = Router();
 router.use(authenticateJWT);
@@ -43,5 +44,6 @@ router.post("/reject-idea", requireAdmin, async (req, res) => {
 
 router.use("/users", usersRoutes);
 router.use("/analytics", analyticsRoutes);
+router.use("/approve-idea", approveIdeaRoutes);
 
 export default router;

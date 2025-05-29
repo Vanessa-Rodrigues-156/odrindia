@@ -35,12 +35,13 @@ model User {
   mentoringIdeas     IdeaMentor[]
   comments           Comment[]
   likes              Like[]
-  
+
   // Meeting relationships
-  createdMeetings      MeetingLog[]          @relation("MeetingCreator")
+  createdMeetings       MeetingLog[]         @relation("MeetingCreator")
   meetingParticipations MeetingParticipant[]
-  meetingNotes         MeetingNote[]
-  editedNotes          MeetingNote[]         @relation("NoteEditor")
+  meetingNotes          MeetingNote[]
+  editedNotes           MeetingNote[]        @relation("NoteEditor")
+  IdeaSubmission        IdeaSubmission[]
 }
 
 model Idea {
@@ -146,55 +147,77 @@ enum MeetingStatus {
 }
 
 model MeetingLog {
-  id            String       @id @default(uuid())
+  id            String        @id @default(uuid())
   title         String
   startTime     DateTime
   endTime       DateTime?
-  recordingUrl  String?      @db.Text
-  summary       String?      @db.Text
+  recordingUrl  String?       @db.Text
+  summary       String?       @db.Text
   status        MeetingStatus @default(SCHEDULED)
-  jitsiRoomName String       @unique // Store the Jitsi room name for integration
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  jitsiRoomName String        @unique // Store the Jitsi room name for integration
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 
   // Relations
-  ideaId        String
-  idea          Idea         @relation(fields: [ideaId], references: [id], onDelete: Cascade)
-  
-  createdById   String
-  createdBy     User         @relation("MeetingCreator", fields: [createdById], references: [id])
-  
-  participants  MeetingParticipant[]
-  notes         MeetingNote[]
+  ideaId String
+  idea   Idea   @relation(fields: [ideaId], references: [id], onDelete: Cascade)
+
+  createdById String
+  createdBy   User   @relation("MeetingCreator", fields: [createdById], references: [id])
+
+  participants MeetingParticipant[]
+  notes        MeetingNote[]
 }
 
 model MeetingParticipant {
-  id          String    @id @default(uuid())
+  id          String     @id @default(uuid())
   userId      String
-  user        User      @relation(fields: [userId], references: [id])
+  user        User       @relation(fields: [userId], references: [id])
   meetingId   String
   meeting     MeetingLog @relation(fields: [meetingId], references: [id], onDelete: Cascade)
   joinTime    DateTime?
   leaveTime   DateTime?
-  isPresenter Boolean   @default(false)
-  
+  isPresenter Boolean    @default(false)
+
   @@unique([userId, meetingId])
 }
 
 model MeetingNote {
-  id          String     @id @default(uuid())
-  content     String     @db.Text
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  
+  id        String   @id @default(uuid())
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   // Relations
-  meetingId   String
-  meeting     MeetingLog @relation(fields: [meetingId], references: [id], onDelete: Cascade)
-  
-  authorId    String
-  author      User       @relation(fields: [authorId], references: [id])
-  
+  meetingId String
+  meeting   MeetingLog @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id])
+
   // For collaborative editing tracking
   lastEditedById String?
-  lastEditedBy   User?    @relation("NoteEditor", fields: [lastEditedById], references: [id])
+  lastEditedBy   User?   @relation("NoteEditor", fields: [lastEditedById], references: [id])
+}
+
+model IdeaSubmission {
+  id                 String   @id @default(uuid())
+  title              String
+  caption            String?
+  description        String   @db.Text
+  priorOdrExperience String?  @db.Text
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  // Owner relationship
+  ownerId String
+  owner   User   @relation(fields: [ownerId], references: [id])
+
+  // Status
+  reviewed        Boolean   @default(false)
+  reviewedAt      DateTime?
+  reviewedBy      String?
+  approved        Boolean   @default(false)
+  rejected        Boolean   @default(false)
+  rejectionReason String?
 }

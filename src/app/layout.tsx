@@ -26,7 +26,6 @@ export default function RootLayout({
       <body
         className={`${geistSans.className} ${geistMono.variable} font-sans antialiased`}
       >
-        {/* Wrap the app in the AuthProvider */}
         <AuthProvider>
           <ToastProvider>
             <Navbar />

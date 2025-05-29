@@ -962,8 +962,7 @@ const SignUpPage = () => {
               Registration Successful!
             </h2>
             <p className="text-gray-600 mb-6">
-              Thank you for registering. You will be redirected to the login
-              page shortly...
+              Thank you for registering. You will be redirected to the homepage shortly...
             </p>
           </motion.div>
         ) : (
