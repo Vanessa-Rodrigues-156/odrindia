@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/lib/auth";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -87,6 +87,41 @@ export default function MeetingDetailPage() {
   const [isEditingSummary, setIsEditingSummary] = useState(false);
   const [summaryText, setSummaryText] = useState("");
 
+  // Memoize fetchMeetingDetails function to avoid race conditions
+  const fetchMeetingDetails = useCallback(async () => {
+    try {
+      setLoading(true);
+      const response = await apiFetch(`/meetings/${meetingId}`, {
+        credentials: "include", // Include cookies for authentication
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          router.push("/signin");
+          return;
+        }
+
+        if (response.status === 404) {
+          setError("Meeting not found");
+          return;
+        }
+
+        throw new Error("Failed to fetch meeting");
+      }
+
+      const data = await response.json();
+      setMeeting(data);
+    } catch (err) {
+      console.error("Error fetching meeting details:", err);
+      setError("Failed to load meeting details. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  }, [meetingId, router]); // Add relevant dependencies
+
   useEffect(() => {
     if (!user) {
       router.push("/signin");
@@ -94,7 +129,7 @@ export default function MeetingDetailPage() {
     }
 
     fetchMeetingDetails();
-  }, [meetingId, user, router]);
+  }, [meetingId, user, router, fetchMeetingDetails]); // Now including fetchMeetingDetails
 
   useEffect(() => {
     if (meeting?.summary) {
@@ -129,40 +164,6 @@ export default function MeetingDetailPage() {
     } catch (err) {
       console.error("Error updating summary:", err);
       setError("Failed to update summary. Please try again.");
-    }
-  };
-
-  const fetchMeetingDetails = async () => {
-    try {
-      setLoading(true);
-      const response = await apiFetch(`/meetings/${meetingId}`, {
-        credentials: "include", // Include cookies for authentication
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        if (response.status === 401) {
-          router.push("/signin");
-          return;
-        }
-
-        if (response.status === 404) {
-          setError("Meeting not found");
-          return;
-        }
-
-        throw new Error("Failed to fetch meeting");
-      }
-
-      const data = await response.json();
-      setMeeting(data);
-    } catch (err) {
-      console.error("Error fetching meeting details:", err);
-      setError("Failed to load meeting details. Please try again later.");
-    } finally {
-      setLoading(false);
     }
   };
 

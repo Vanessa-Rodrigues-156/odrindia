@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import dynamic from "next/dynamic";
 import {
   Video,
@@ -70,38 +70,41 @@ export function JitsiMeetContainer({
   const sanitizedRoomName = roomName.replace(/\s+/g, "-").toLowerCase();
 
   // Safely post data to API with error handling
-  const safeAPICall = async (
-    endpoint: string,
-    data: Record<string, unknown>
-  ) => {
-    try {
-      if (!user) return;
+  const safeAPICall = useCallback(
+    async (
+      endpoint: string,
+      data: Record<string, unknown>
+    ) => {
+      try {
+        if (!user) return;
 
-      // Include meetingId in API calls if available
-      const apiData = {
-        ...data,
-        ...(meetingId && { meetingId }),
-      };
+        // Include meetingId in API calls if available
+        const apiData = {
+          ...data,
+          ...(meetingId && { meetingId }),
+        };
 
-      const response = await apiFetch(`/meetings/${endpoint}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include", // Include cookies for authentication
-        body: JSON.stringify(apiData),
-      });
+        const response = await apiFetch(`/meetings/${endpoint}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include", // Include cookies for authentication
+          body: JSON.stringify(apiData),
+        });
 
-      if (!response.ok) {
-        throw new Error(`API error: ${response.status}`);
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status}`);
+        }
+
+        return await response.json();
+      } catch (err) {
+        console.error(`Failed with API endpoint ${endpoint}:`, err);
+        // Don't set UI error for backend issues that don't affect the user experience
       }
-
-      return await response.json();
-    } catch (err) {
-      console.error(`Failed with API endpoint ${endpoint}:`, err);
-      // Don't set UI error for backend issues that don't affect the user experience
-    }
-  };
+    },
+    [user, meetingId] // Only recreate when user or meetingId changes
+  );
 
   // Component lifecycle management
   useEffect(() => {
@@ -135,7 +138,7 @@ export function JitsiMeetContainer({
         }
       }
     };
-  }, [roomName, sanitizedRoomName, user, meetingId]);
+  }, [roomName, sanitizedRoomName, safeAPICall]); // Now safeAPICall is properly memoized
 
   const handleJitsiIFrameRef = (parentNode: HTMLDivElement) => {
     if (!parentNode) return;

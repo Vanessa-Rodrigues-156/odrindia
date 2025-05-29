@@ -5,6 +5,8 @@ import React, {
   useState,
   useEffect,
   ReactNode,
+  useCallback,
+  useRef,
 } from "react";
 import { useRouter } from "next/navigation";
 import { apiFetch } from "./api";
@@ -26,6 +28,7 @@ export interface User {
 interface AuthContextType {
   user: User | null;
   loading: boolean;
+  error: string | null;
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
   refreshUser: () => Promise<void>;
@@ -36,7 +39,64 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+
+  const refreshPromiseRef = useRef<Promise<any> | null>(null);
+  const refreshTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Debounced refreshUser function to prevent race conditions
+  const refreshUser = useCallback(async () => {
+    // If a refresh is already in progress, return that promise
+    if (refreshPromiseRef.current) {
+      return refreshPromiseRef.current;
+    }
+
+    // Clear any pending timeout
+    if (refreshTimeoutRef.current) {
+      clearTimeout(refreshTimeoutRef.current);
+    }
+
+    // Create and store the refresh promise
+    refreshPromiseRef.current = (async () => {
+      try {
+        const response = await apiFetch("/auth/session", {
+          method: "GET",
+          credentials: "include",
+        });
+
+        if (!response.ok) {
+          // Don't set error on 401, just clear the user
+          if (response.status === 401) {
+            setUser(null);
+            return null;
+          }
+          throw new Error("Failed to refresh session");
+        }
+
+        const data = await response.json();
+        if (data.authenticated && data.user) {
+          setUser(data.user);
+          return data.user;
+        } else {
+          setUser(null);
+          return null;
+        }
+      } catch (err) {
+        console.error("Session refresh error:", err);
+        setUser(null);
+        return null;
+      } finally {
+        // Reset the promise reference after a short delay to prevent immediate subsequent calls
+        refreshTimeoutRef.current = setTimeout(() => {
+          refreshPromiseRef.current = null;
+        }, 2000);
+        setLoading(false);
+      }
+    })();
+
+    return refreshPromiseRef.current;
+  }, []);
 
   // Only run on mount
   useEffect(() => {
@@ -46,48 +106,41 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const login = async (email: string, password: string) => {
     setLoading(true);
+    setError(null);
+
     try {
-      console.log("Attempting login with email:", email);
-      const res = await apiFetch("/auth/login", {
+      // Add request timeout to avoid hanging requests
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+      const response = await apiFetch("/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
+        credentials: "include",
+        signal: controller.signal,
       });
-      
-      // Parse response data regardless of success/failure for better error messages
-      let data;
-      try {
-        data = await res.json();
-      } catch (parseErr) {
-        console.error("Failed to parse login response:", parseErr);
-        return false;
+
+      clearTimeout(timeoutId);
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Log more detailed error information for debugging
+        console.error("Login error response:", response.status, data);
+        throw new Error(data.error || "Authentication failed");
       }
-      
-      if (!res.ok) {
-        const errorMsg = `Login failed: ${res.status} - ${data?.error || "Unknown error"}`;
-        console.error(errorMsg);
-        return false;
-      }
-      
-      if (data.token) {
-        // Store the token in localStorage
-        localStorage.setItem("token", data.token);
-        
-        // Update the user state with the returned user data
-        setUser(data.user);
-        
-        console.log("Login successful for:", data.user.email, "with role:", data.user.userRole);
-        
-        // Immediately refresh user info to ensure everything is up-to-date
-        await refreshUser();
-        return true;
-      } else {
-        console.error("Login returned success but no token was provided");
-        return false;
-      }
-    } catch (err) {
+
+      setUser(data.user);
+      return data;
+    } catch (err: any) {
       console.error("Login error:", err);
-      return false;
+      if (err.name === "AbortError") {
+        setError("Login request timed out. Please try again.");
+      } else {
+        setError(err.message || "Failed to login. Please check your credentials.");
+      }
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -99,55 +152,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     router.push("/signin");
   };
 
-  const refreshUser = async () => {
-    setLoading(true);
-    try {
-      // Check if we have a token to even attempt a session refresh
-      const token = localStorage.getItem("token");
-      if (!token) {
-        console.log("No token found, skipping session refresh");
-        setUser(null);
-        return;
-      }
-      
-      console.log("Refreshing user session");
-      const res = await apiFetch("/auth/session", {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
-      
-      if (res.ok) {
-        try {
-          const data = await res.json();
-          if (data.user) {
-            console.log("Session refresh successful for:", data.user.email);
-            setUser(data.user);
-          } else {
-            console.warn("Session endpoint returned OK but no user data");
-            setUser(null);
-          }
-        } catch (parseErr) {
-          console.error("Failed to parse session response:", parseErr);
-          setUser(null);
-        }
-      } else {
-        console.warn(`Session refresh failed: ${res.status}`);
-        // Clear invalid token
-        if (res.status === 401) {
-          localStorage.removeItem("token");
-        }
-        setUser(null);
-      }
-    } catch (err) {
-      console.error("Session refresh error:", err);
-      setUser(null);
-    } finally {
-      setLoading(false);
-    }
+  const contextValue = {
+    user,
+    loading,
+    error,
+    login,
+    logout,
+    refreshUser,
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, refreshUser }}>
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );

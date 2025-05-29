@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/lib/auth";
 import {
   Calendar,
@@ -57,7 +57,8 @@ export function MeetingLogs({ ideaId }: MeetingLogsProps) {
   const [newMeetingDate, setNewMeetingDate] = useState("");
   const [newMeetingTime, setNewMeetingTime] = useState("");
 
-  const fetchMeetings = async () => {
+  // Memoize fetchMeetings to avoid unnecessary re-renders and race conditions
+  const fetchMeetings = useCallback(async () => {
     try {
       setLoading(true);
       const response = await apiFetch(`/meetings/idea/${ideaId}`, {
@@ -94,13 +95,15 @@ export function MeetingLogs({ ideaId }: MeetingLogsProps) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [ideaId]); // Include ideaId as dependency since it's used in the API call
+
   // Fetch meetings for the idea
   useEffect(() => {
     if (ideaId) {
       fetchMeetings();
     }
-  }, [ideaId]);
+  }, [ideaId, fetchMeetings]); // fetchMeetings is now memoized and included
+
   const handleCreateMeeting = async () => {
     if (!newMeetingTitle || !newMeetingDate || !newMeetingTime) {
       setError("Please fill in all fields");

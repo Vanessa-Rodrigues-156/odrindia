@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/lib/auth";
 import { FileText, Send, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -34,14 +34,8 @@ export function MeetingNotes({ meetingId }: MeetingNotesProps) {
   const [error, setError] = useState("");
   const [newNoteContent, setNewNoteContent] = useState("");
 
-  // Fetch notes for the meeting
-  useEffect(() => {
-    if (meetingId) {
-      fetchNotes();
-    }
-  }, [meetingId]);
-
-  const fetchNotes = async () => {
+  // Memoize fetchNotes to avoid unnecessary re-renders and race conditions
+  const fetchNotes = useCallback(async () => {
     try {
       setLoading(true);
       const response = await apiFetch(`/meetings/${meetingId}/notes`, {
@@ -59,7 +53,14 @@ export function MeetingNotes({ meetingId }: MeetingNotesProps) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [meetingId]);
+
+  // Fetch notes for the meeting
+  useEffect(() => {
+    if (meetingId) {
+      fetchNotes();
+    }
+  }, [meetingId, fetchNotes]); // fetchNotes is now memoized and included
 
   const handleAddNote = async () => {
     if (!newNoteContent.trim()) {

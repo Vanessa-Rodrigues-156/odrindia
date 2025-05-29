@@ -79,11 +79,11 @@ export default function Navbar() {
 	const [profileDropdown, setProfileDropdown] = useState(false)
 	const { user: currentUser, loading, logout, refreshUser } = useAuth()
 
-	// Force refresh user data when component mounts
+	// Force refresh user data when component mounts - use useCallback to prevent race conditions
 	useEffect(() => {
-		refreshUser()
-	}, [])
-
+		refreshUser();
+	}, [refreshUser]); // Add refreshUser as dependency since it's from context and should be stable
+	
 	// Handle user logout
 	const handleLogout = () => {
 		logout()

@@ -11,9 +11,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
  * This page is for debugging authentication issues
  * It should be removed or disabled in production
  */
+
+interface DebugInfo {
+  token?: string;
+  session?: Record<string, unknown>;
+  user?: Record<string, unknown>;
+  error?: string;
+  [key: string]: unknown;
+}
+
 export default function AuthTestPage() {
   const { user, loading, logout, refreshUser } = useAuth();
-  const [debugInfo, setDebugInfo] = useState<any>(null);
+  const [debugInfo, setDebugInfo] = useState<DebugInfo | null>(null);
   const [testStatus, setTestStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [loadingInfo, setLoadingInfo] = useState(false);
 

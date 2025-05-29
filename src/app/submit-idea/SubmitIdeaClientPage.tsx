@@ -48,9 +48,9 @@ export default function SubmitIdeaClientPage() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
-    idea_caption: "",
+    idea_caption: "", // Frontend form field name
     description: "",
-    odr_experience: "",
+    odr_experience: "", // Frontend form field name
     consent: false,
   });
   const [formErrors, setFormErrors] = useState<Record<string, string[]>>({});
@@ -119,20 +119,19 @@ export default function SubmitIdeaClientPage() {
         return;
       }
 
-      const submissionData = new FormData();
+      // Map frontend field names to what the backend expects
+      const mappedData = {
+        title: formData.title,
+        caption: formData.idea_caption, // Map to backend field name
+        description: formData.description,
+        priorOdrExperience: formData.odr_experience, // Map to backend field name
+        consent: formData.consent,
+      };
 
-      // Add the user ID from authentication
-      submissionData.append("userId", user.id);
-
-      // Append form data
-      Object.entries(formData).forEach(([key, value]) => {
-        submissionData.append(key, value.toString());
-      });
-
-      const response = await apiFetch("/submit-idea", {
+      const response = await apiFetch("/ideas/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(parsed.data),
+        body: JSON.stringify(mappedData), // Send mapped data instead of parsed.data
       });
 
       const responseData = await response.json();

@@ -3,14 +3,24 @@ import { notFound } from "next/navigation";
 import DiscussionClient from "./DiscussionClient";
 import { apiFetch } from "@/lib/api";
 import type { Comment as CommentType, User } from "./components/types";
-// Update the prop type to match the Promise pattern
-interface DiscussionPageProps {
-  params: { ideaId: string };
-}
 
-// Update generateMetadata to use await params
-export async function generateMetadata({ params }: DiscussionPageProps): Promise<Metadata> {
-  const res = await apiFetch(`/ideas/${params.ideaId}`, { method: "GET" });
+// Use proper typings for Next.js App Router
+type PageProps = {
+  params: { ideaId: string | string[] | undefined }; // Align ideaId type with SegmentParams
+  searchParams?: { [key: string]: string | string[] | undefined };
+};
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  // Ensure ideaId is a string before using it, as it might be string[] or undefined
+  const ideaId = Array.isArray(params.ideaId) ? params.ideaId[0] : params.ideaId;
+
+  if (typeof ideaId !== 'string') {
+    return {
+      title: "Invalid Idea ID",
+      description: "The idea ID is invalid.",
+    };
+  }
+  const res = await apiFetch(`/ideas/${ideaId}`, { method: "GET" });
   if (!res.ok) {
     return {
       title: "Idea Not Found",
@@ -24,8 +34,18 @@ export async function generateMetadata({ params }: DiscussionPageProps): Promise
   };
 }
 
-export default async function DiscussionPage({ params }: DiscussionPageProps) {
-  const res = await apiFetch(`/ideas/${params.ideaId}`, { method: "GET" });
+// Using the proper function signature for Next.js App Router pages
+export default async function DiscussionPage(props: PageProps) {
+  const { params } = props;
+  // Ensure ideaId is a string before using it
+  const ideaId = Array.isArray(params.ideaId) ? params.ideaId[0] : params.ideaId;
+
+  if (typeof ideaId !== 'string') {
+    notFound();
+    return null; // Should be unreachable if notFound() works as expected
+  }
+
+  const res = await apiFetch(`/ideas/${ideaId}`, { method: "GET" });
   if (!res.ok) {
     notFound();
   }
@@ -45,15 +65,23 @@ export default async function DiscussionPage({ params }: DiscussionPageProps) {
   // Map comments to tree structure
   const allComments = idea.comments || [];
   // Build a map of comments by id
+  interface RawComment {
+    id: string;
+    content: string;
+    createdAt: string;
+    user: User;
+    parentId?: string;
+    likes?: Array<unknown>;
+  }
 
   const commentMap = new Map<string, CommentType>();
-  allComments.forEach((c: any) => {
+  allComments.forEach((c: RawComment) => {
     commentMap.set(c.id, {
       id: c.id,
       content: c.content,
       createdAt: new Date(c.createdAt).toISOString(),
       user: c.user as User,
-      parentId: c.parentId,
+      parentId: c.parentId || null,
       replies: [] as CommentType[], // will be filled later
       likes: c.likes?.length || 0,
     });
