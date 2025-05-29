@@ -1,12 +1,37 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import axios from "axios";
+import { useAuth } from "@/lib/auth";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
 const ChatInterface = () => {
     const [message, setMessage] = useState("");
     const [chatHistory, setChatHistory] = useState([]);
     const [loading, setLoading] = useState(false);
     const chatContainerRef = useRef(null);
+    const { accessToken } = useAuth();
+    
+    // Function to interact with our backend API
+    async function sendChatMessage(message) {
+        try {
+            const response = await axios.post(`${API_URL}/api/chat/message`, 
+                { message },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': accessToken ? `Bearer ${accessToken}` : ''
+                    }
+                }
+            );
+            
+            return response.data.response; // Get the AI response from our backend
+        } catch (error) {
+            console.error('Error calling chat API:', error);
+            throw error;
+        }
+    }
     
     // Auto-scroll to bottom when messages are added
     useEffect(() => {
@@ -20,21 +45,21 @@ const ChatInterface = () => {
 
         const userMessage = { sender: "user", text: message };
         setChatHistory((prev) => [...prev, userMessage]);
+        const userQuery = message;
         setMessage("");
 
         try {
             setLoading(true);
             
-            // Placeholder for actual API call
-            // Replace this with your actual API implementation
-            setTimeout(() => {
-                const botMessage = { 
-                    sender: "bot", 
-                    text: "This is a placeholder response. Replace this with your actual API implementation." 
-                };
-                setChatHistory((prev) => [...prev, botMessage]);
-                setLoading(false);
-            }, 1000);
+            // Call our backend API
+            const aiResponse = await sendChatMessage(userQuery);
+            
+            // Add AI response to chat history
+            const botMessage = { 
+                sender: "bot", 
+                text: aiResponse
+            };
+            setChatHistory((prev) => [...prev, botMessage]);
             
         } catch (error) {
             console.error("Error sending message:", error);
@@ -43,6 +68,7 @@ const ChatInterface = () => {
                 text: "Sorry, I'm having trouble connecting to the AI model. Please try again later.",
             };
             setChatHistory((prev) => [...prev, errorMessage]);
+        } finally {
             setLoading(false);
         }
     };

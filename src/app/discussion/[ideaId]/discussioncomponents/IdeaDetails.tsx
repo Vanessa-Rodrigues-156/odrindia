@@ -1,5 +1,5 @@
 "use client";
-import { ThumbsUp, Users, BookOpen, User as UserIcon } from "lucide-react";
+import { ThumbsUp, User as UserIcon } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
