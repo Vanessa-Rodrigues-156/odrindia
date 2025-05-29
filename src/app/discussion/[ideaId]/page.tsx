@@ -1,68 +1,51 @@
 import { Metadata } from "next";
-import { notFound } from "next/navigation";
-import DiscussionClient from "./DiscussionClient";
-import { prisma } from "@/lib/prisma";
+import { Suspense } from "react";
+import { apiFetch } from "@/lib/api";
+import ClientDiscussionWrapper from "./ClientDiscussionWrapper";
 
-// Update the prop type to match the Promise pattern
-interface DiscussionPageProps {
-  params: Promise<{ ideaId: string }>;
-}
+// Full Next.js PageProps type with our specific params
+type PageProps = {
+ params: Promise<{ ideaId: string }>;
+};
 
-// Update generateMetadata to use await params
-export async function generateMetadata({ params }: DiscussionPageProps): Promise<Metadata> {
-  const { ideaId } = await params;
-  const idea = await prisma.idea.findUnique({ where: { id: ideaId } });
-  if (!idea) {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  // Ensure ideaId is a string (it should already be based on our type)
+  const { ideaId } = await params;  
+  try {
+    const res = await apiFetch(`/ideas/${ideaId}`, { method: "GET" });
+    if (!res.ok) {
+      return {
+        title: "Idea Not Found",
+        description: "The requested idea could not be found.",
+      };
+    }
+    
+    const idea = await res.json();
     return {
-      title: "Idea Not Found",
-      description: "The requested idea could not be found.",
+      title: `Discussion: ${idea.description.split(".")[0]}`,
+      description: idea.description.substring(0, 160),
+    };
+  } catch (error) {
+    console.error("Error generating metadata:", error);
+    return {
+      title: "Discussion",
+      description: "View and discuss ideas",
     };
   }
-  return {
-    title: `Discussion: ${idea.description.split(".")[0]}`,
-    description: idea.description.substring(0, 160),
-  };
 }
 
-// Update the page component to use await params
-export default async function DiscussionPage({ params }: DiscussionPageProps) {
+// Server component - the main page
+export default async function DiscussionPage({ params }: PageProps) {
+  // Extract ideaId from params - we need to await it since it could be a Promise
   const { ideaId } = await params;
-  const idea = await prisma.idea.findUnique({
-    where: { id: ideaId },
-    include: {
-      comments: {
-        include: {
-          user: true,
-        },
-      },
-      user: true,
-    },
-  });
-  if (!idea) {
-    notFound();
-  }
-  // Map DB idea to expected props for DiscussionClient
-  const mappedIdea = {
-    id: idea.id,
-    name: idea.user?.name || "Anonymous",
-    email: idea.user?.email || "anonymous@example.com",
-    country: idea.user?.country || "",
-    description: idea.description,
-    submittedAt: idea.createdAt.toISOString(),
-    likes: idea.likes,
-  };
-  // Map comments to expected structure, including user details and required authorRole
-  const comments = idea.comments.map((c) => ({
-    id: c.id,
-    author: c.user?.name || "Anonymous",
-    authorEmail: c.user?.email || "anonymous@example.com",
-    authorCountry: c.user?.country || "",
-    authorRole: "", // or a default value if needed
-    content: c.content,
-    createdAt: c.createdAt.toISOString(),
-    likes: c.likes,
-    parentId: c.parentId,
-    replies: [],
-  }));
-  return <DiscussionClient idea={mappedIdea} initialComments={comments} />;
+  return (
+    <Suspense fallback={
+      <div className="flex flex-col items-center justify-center py-12 space-y-4">
+        <div className="w-12 h-12 border-4 border-gray-300 border-t-blue-600 rounded-full animate-spin"></div>
+        <p className="text-gray-600">Loading discussion...</p>
+      </div>
+    }>
+      <ClientDiscussionWrapper ideaId={ideaId} />
+    </Suspense>
+  );
 }

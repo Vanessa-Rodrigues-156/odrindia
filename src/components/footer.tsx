@@ -1,13 +1,13 @@
 import Link from "next/link"
 import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react"
-
+import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 
 export default function Footer() {
   return (
     <footer className="bg-[#0a1e42] text-white">
-      <div className="container mx-auto px-4 py-6">
-        <div className="grid gap-10 items-stretch md:grid-cols-2 lg:grid-cols-2">
+      <div className="container mx-auto px-4 py-4">
+        <div className="grid gap-10 items-stretch md:grid-cols-3 lg:grid-cols-3">
           <div className="space-y-4">
             <h3 className="text-xl font-bold">ODR</h3>
             <p className="text-gray-300">
@@ -42,9 +42,9 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="space-y-4 w-fit">
+          <div className="space-y-2 w-fit">
             <h3 className="text-xl font-bold">Quick Links</h3>
-            <ul className="space-y-2">
+            <ul className="space-y-1">
               <li>
                 <Link href="/" className="text-gray-300 hover:text-white">
                   Home
@@ -78,10 +78,24 @@ export default function Footer() {
             </ul>
           </div>
 
+          <div className="space-y-4">
+            <h3 className="text-xl font-bold">ODR News</h3>
+            <p className="text-gray-300">Global ODR News Live </p>
+            <form className="flex flex-col space-y-2">
+              <Input
+                type="url"
+                placeholder="https://example.com "
+                className="border-gray-700 bg-[#263e69] text-white placeholder:text-gray-400"
+              />
+              <Button className="bg-sky-500 hover:bg-sky-600">Submit Yours </Button>
+            </form>
+          </div>
+        </div>
+
           
         </div>
 
-        <div className="mt-12 border-t border-gray-700 pt-8">
+        <div className="mt-8 border-t border-gray-700 pt-4 ">
           <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
             <p className="text-center text-sm text-gray-300 md:text-left">
               © {new Date().getFullYear()} ODR. All rights reserved.
@@ -98,7 +112,6 @@ export default function Footer() {
               </Link>
             </div>
           </div>
-        </div>
       </div>
     </footer>
   )

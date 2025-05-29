@@ -1,5 +1,5 @@
 'use client'
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode, useCallback } from 'react';
 
 type ToastVariant = 'default' | 'destructive' | 'success';
 
@@ -21,19 +21,25 @@ const ToastContext = createContext<ToastContextValue | undefined>(undefined);
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
-  const toast = ({ title, description, variant = 'default' }: { title: string; description?: string; variant?: ToastVariant }) => {
+  // Define dismissToast with useCallback to prevent unnecessary re-renders
+  const dismissToast = useCallback((id: string) => {
+    setToasts((prevToasts) => prevToasts.filter((toast) => toast.id !== id));
+  }, []);
+
+  // Define toast function with useCallback to prevent unnecessary re-renders
+  const toast = useCallback(({ title, description, variant = 'default' }: { title: string; description?: string; variant?: ToastVariant }) => {
     const id = Math.random().toString(36).substring(2, 9);
+    
+    // Update toasts state with the new toast
     setToasts((prevToasts) => [...prevToasts, { id, title, description, variant }]);
 
     // Auto dismiss after 5 seconds
     setTimeout(() => {
       dismissToast(id);
     }, 5000);
-  };
-
-  const dismissToast = (id: string) => {
-    setToasts((prevToasts) => prevToasts.filter((toast) => toast.id !== id));
-  };
+    
+    return id; // Return id so callers can dismiss manually if needed
+  }, [dismissToast]);
 
   return (
     <ToastContext.Provider value={{ toasts, toast, dismissToast }}>

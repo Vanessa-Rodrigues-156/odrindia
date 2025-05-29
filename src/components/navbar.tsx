@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Menu } from "lucide-react"
+import { useAuth } from "@/lib/auth"
 
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
@@ -27,6 +28,24 @@ const navItems = [
 				href: "https://icodr.org/standards/",
 				description:
 					"ICODR is an international nonprofit, incorporated in the United States, that drives the development, convergence, and adoption of open standards for the global effort to resolve disputes and conflicts using information and communications technology.",
+			},
+			{
+				title: "Mediate",
+				href: "https://odrindia.org/",
+				description:
+					"ODR India is a community of ODR professionals, practitioners, and enthusiasts in India. It aims to promote the use of ODR in India and provide resources and support for ODR practitioners.",
+			},
+			{
+				title: "ODR Resources",
+				href: "https://odr.info/",
+				description:
+					"Explore a curated list of resources, articles, and tools related to Online Dispute Resolution (ODR).",
+			},
+			{
+				title: "ODR Labs",
+				href: "/odrlabs",
+				description:
+					"ODR Labs is a platform for experimentation and innovation in the field of Online Dispute Resolution (ODR).",
 			},
 		],
 	},
@@ -52,44 +71,23 @@ const navItems = [
 	},
 ]
 
-// Type definition for user
-interface User {
-	id: string
-	name: string
-	email: string
-	role: string
-}
-
 export default function Navbar() {
 	const [isOpen, setIsOpen] = useState(false)
 	const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
 	const dropdownRefs = useRef<{ [key: string]: HTMLDivElement | null }>({})
 	const [languageDropdown, setLanguageDropdown] = useState(false)
 	const [profileDropdown, setProfileDropdown] = useState(false)
-	const [currentUser, setCurrentUser] = useState<User | null>(null)
+	const { user: currentUser, loading, logout, refreshUser } = useAuth()
 
-	// Check if user is logged in on component mount
+	// Force refresh user data when component mounts - use useCallback to prevent race conditions
 	useEffect(() => {
-		const userJson = localStorage.getItem("currentUser")
-		if (userJson) {
-			try {
-				const user = JSON.parse(userJson)
-				setCurrentUser(user)
-			} catch (error) {
-				console.error("Failed to parse user data from localStorage", error)
-				// Clear invalid data
-				localStorage.removeItem("currentUser")
-			}
-		}
-	}, [])
-
+		refreshUser();
+	}, [refreshUser]); // Add refreshUser as dependency since it's from context and should be stable
+	
 	// Handle user logout
 	const handleLogout = () => {
-		localStorage.removeItem("currentUser")
-		setCurrentUser(null)
+		logout()
 		setProfileDropdown(false)
-		// Redirect to home page if necessary
-		window.location.href = "/"
 	}
 
 	// Close dropdown when clicking outside
@@ -257,7 +255,11 @@ export default function Navbar() {
 					</div>
 
 					{/* Show either login/signup buttons or user avatar based on auth status */}
-					{currentUser ? (
+					{loading ? (
+						<div className="hidden lg:block relative w-9 h-9">
+							<div className="animate-pulse h-9 w-9 rounded-full bg-gray-200"></div>
+						</div>
+					) : currentUser ? (
 						<div className="hidden lg:block relative">
 							<button
 								id="profile-button"
@@ -278,7 +280,7 @@ export default function Navbar() {
 										alt={currentUser.name}
 									/>
 									<AvatarFallback className="bg-[#0a1e42] text-white">
-										{currentUser.name.charAt(0).toUpperCase()}
+										{currentUser.name?.charAt(0).toUpperCase() || "U"}
 									</AvatarFallback>
 								</Avatar>
 								<svg
@@ -319,7 +321,7 @@ export default function Navbar() {
 										Your Profile
 									</Link>
 
-									{currentUser.role === "ADMIN" && (
+									{currentUser.userRole === "ADMIN" && (
 										<Link
 											href="/admin/idea-approval"
 											onClick={() => setProfileDropdown(false)}
@@ -422,7 +424,15 @@ export default function Navbar() {
 									))}
 								</nav>
 								<div className="flex items-center gap-4">
-									{currentUser ? (
+									{loading ? (
+										<div className="flex items-center gap-3">
+											<div className="h-10 w-10 rounded-full bg-gray-200 animate-pulse"></div>
+											<div className="space-y-2">
+												<div className="h-4 w-24 bg-gray-200 animate-pulse rounded"></div>
+												<div className="h-3 w-32 bg-gray-200 animate-pulse rounded"></div>
+											</div>
+										</div>
+									) : currentUser ? (
 										<div className="space-y-3">
 											<div className="flex items-center gap-3">
 												<Avatar className="h-10 w-10 border-2 border-[#0a1e42]">
@@ -433,7 +443,7 @@ export default function Navbar() {
 														alt={currentUser.name}
 													/>
 													<AvatarFallback className="bg-[#0a1e42] text-white">
-														{currentUser.name.charAt(0).toUpperCase()}
+														{currentUser.name?.charAt(0).toUpperCase() || "U"}
 													</AvatarFallback>
 												</Avatar>
 												<div>
@@ -453,7 +463,7 @@ export default function Navbar() {
 													</button>
 												</Link>
 
-												{currentUser.role === "ADMIN" && (
+												{currentUser.userRole === "ADMIN" && (
 													<Link
 														href="/admin/idea-approval"
 														onClick={() => setIsOpen(false)}

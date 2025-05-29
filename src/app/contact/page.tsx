@@ -368,23 +368,23 @@ export default function ContactPage() {
                   </AccordionItem>
                   <AccordionItem value="item-2">
                     <AccordionTrigger className="text-left font-medium">
-                      How can I get involved with ODR India?
+                      How can I get involved with ODRLab?
                     </AccordionTrigger>
                     <AccordionContent>
-                      You can get involved with ODR India by joining our community, participating in workshops and conferences, contributing to research, or partnering with us on projects. Please contact us through this form or send an email to info@odrindia.org to explore collaboration opportunities.
+                      You can get involved with ODRLab by joining our community, participating in workshops and conferences, contributing to research, or partnering with us on projects. Please contact us through this form or send an email to info@ODRLab.org to explore collaboration opportunities.
                     </AccordionContent>
                   </AccordionItem>
                   <AccordionItem value="item-3">
                     <AccordionTrigger className="text-left font-medium">
-                      What services does ODR India provide?
+                      What services does ODRLab provide?
                     </AccordionTrigger>
                     <AccordionContent>
-                      ODR India provides a range of services including ODR platform development, training for mediators and arbitrators in online tools, research on ODR best practices, policy advocacy, and educational resources on effective dispute resolution techniques in the digital environment.
+                      ODRLab provides a range of services including ODR platform development, training for mediators and arbitrators in online tools, research on ODR best practices, policy advocacy, and educational resources on effective dispute resolution techniques in the digital environment.
                     </AccordionContent>
                   </AccordionItem>
                   <AccordionItem value="item-4">
                     <AccordionTrigger className="text-left font-medium">
-                      Is ODR legally binding in India?
+                      Is ODR legally binding inLab?
                     </AccordionTrigger>
                     <AccordionContent>
                       The legal status of ODR outcomes depends on the method used. Arbitration awards from ODR processes are generally enforceable under the Arbitration and Conciliation Act. Mediation settlements can be made binding through proper documentation. The Indian judiciary has been increasingly supportive of ODR initiatives to reduce court backlogs.

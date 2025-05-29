@@ -1,10 +1,9 @@
 "use client"
 import "./globals.css"
-import Image from "next/image"
 import { ArrowRight } from "lucide-react"
 import { motion } from "framer-motion" // Added framer-motion import
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent} from "@/components/ui/card"
 import HowToCard from "@/components/howtocard"
 import { LetsCollaborate } from "@/components/letscolaborate"
 
@@ -28,14 +27,14 @@ const staggerContainer = {
   }
 };
 
-const scaleIn = {
-  hidden: { opacity: 0, scale: 0.8 },
-  visible: { 
-    opacity: 1, 
-    scale: 1,
-    transition: { duration: 0.5 }
-  }
-};
+// const scaleIn = {
+//   hidden: { opacity: 0, scale: 0.8 },
+//   visible: { 
+//     opacity: 1, 
+//     scale: 1,
+//     transition: { duration: 0.5 }
+//   }
+// };
 
 export default function Home() {
   return (
@@ -234,168 +233,6 @@ export default function Home() {
                         Submit Your Idea
                       </Button>
                     </motion.div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            </motion.div>
-          </div>
-        </motion.section>
-
-        {/* CTA Section */}
-        <motion.section 
-          className="bg-[#0a1e42] py-16 text-white relative overflow-hidden"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true, margin: "-100px" }}
-        >
-          {/* Background animation elements */}
-          <motion.div 
-            className="absolute top-10 left-10 w-60 h-60 rounded-full bg-blue-500/10"
-            animate={{ 
-              scale: [1, 1.2, 1],
-              opacity: [0.1, 0.2, 0.1]
-            }}
-            transition={{ duration: 8, repeat: Infinity }}
-          />
-          <motion.div 
-            className="absolute bottom-10 right-10 w-80 h-80 rounded-full bg-sky-400/10"
-            animate={{ 
-              scale: [1, 1.1, 1],
-              opacity: [0.1, 0.2, 0.1]
-            }}
-            transition={{ duration: 6, repeat: Infinity }}
-          />
-          
-          <div className="container mx-auto px-4 relative z-10">
-            <motion.div 
-              className="mx-auto max-w-3xl text-center"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-            >
-              <motion.h2 
-                className="mb-4 text-3xl font-bold tracking-tight md:text-4xl"
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5 }}
-                viewport={{ once: true }}
-              >
-                READY TO BE PART OF ONLINE DISPUTE RESOLUTION CREATORS GLOBAL NETWORK?
-              </motion.h2>
-              <motion.p 
-                className="mb-8 text-lg text-gray-200"
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                viewport={{ once: true }}
-              >
-                Join thousands of businesses and individuals who are already benefiting from our ODR solutions.
-              </motion.p>
-              <motion.div 
-                className="flex flex-col justify-center gap-4 sm:flex-row"
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-                viewport={{ once: true }}
-              >
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
-                  <Button size="lg" className="bg-white text-[#0a1e42] hover:bg-gray-100">
-                    Get Started
-                  </Button>
-                </motion.div>
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
-                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
-                    Contact Us
-                  </Button>
-                </motion.div>
-              </motion.div>
-            </motion.div>
-          </div>
-        </motion.section>
-
-        {/* Latest News Section */}
-        <motion.section 
-          className="py-16"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true, margin: "-100px" }}
-        >
-          <div className="container mx-auto px-4">
-            <motion.div 
-              className="mb-12 text-center"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-            >
-              <motion.h2 
-                className="mb-2 text-3xl font-bold tracking-tight text-[#0a1e42] md:text-4xl"
-                variants={fadeInUp}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-              >
-                ODR News
-              </motion.h2>
-            </motion.div>
-
-            <motion.div  
-              className="grid gap-6 justify-center md:grid-cols-2 lg:grid-cols-3"
-              initial="hidden"
-              whileInView="visible"
-              variants={staggerContainer}
-              viewport={{ once: true }}
-            >
-              <motion.div 
-                variants={scaleIn}
-                whileHover={{ 
-                  scale: 1.03, 
-                  boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" 
-                }}
-                transition={{ type: "spring", stiffness: 400, damping: 10 }}
-              >
-                <Card className="overflow-hidden h-full">
-                  <div className="relative h-48 w-full">
-                    <Image src="/news1.png" alt="News Image" fill className="object-cover" />
-                  </div>
-                  <CardHeader>
-                    <CardTitle className="text-[#0a1e42]">25th International Forum on ODR</CardTitle>
-                    <CardDescription>29th - 30th April 2025</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-600">
-                    The International Forum on Online Dispute Resolution was launched in 2001 by the National Center for Technology and Dispute Resolution at the University of Massachusetts (NCTDR) and it has since become the premiere ODR gathering for courts, providers, and academics. This year, the 25th forum will be held in London at the beautiful Old Royal Naval College, a UNESCO Heritage site.
-                    </p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-
-              <motion.div 
-                variants={scaleIn}
-                whileHover={{ 
-                  scale: 1.03, 
-                  boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" 
-                }}
-                transition={{ type: "spring", stiffness: 400, damping: 10 }}
-              >
-                <Card 
-                  className="overflow-hidden h-full cursor-pointer" 
-                  onClick={() => window.location.href = ' https://icodr.org/standards/'}
-                >
-                  <div className="relative h-48 w-full">
-                    <Image src="/placeholder.svg?height=200&width=400" alt="News Image" fill className="object-cover" />
-                  </div>
-                  <CardHeader>
-                    <CardTitle className="text-[#0a1e42]">Launch of New ODR Platform</CardTitle>
-                    <CardDescription>March 12, 2023</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-600">
-                      We&apos;re excited to announce the launch of our new and improved ODR platform with enhanced features.
-                    </p>
                   </CardContent>
                 </Card>
               </motion.div>

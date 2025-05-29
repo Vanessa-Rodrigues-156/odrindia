@@ -12,6 +12,8 @@ ODR India is a full-stack web platform for co-creating Online Dispute Resolution
 - **Mentor & Ideator Registration:** Join as a mentor or ideator to contribute or seek guidance.
 - **Chatbot Legal Assistant:** Get instant answers to legal and ODR-related queries.
 - **Discussion Forums:** Engage in detailed discussions on submitted ideas.
+- **Virtual Meeting Integration:** Conduct real-time meetings with Jitsi Meet integration for seamless collaboration.
+- **Collaborative Note-Taking:** Take and share notes during meetings to document discussions and decisions.
 - **File Attachments:** Share research, proposals, and supporting documents.
 - **Multilingual & Inclusive:** Designed to support diverse users and cross-border collaboration.
 - **Secure Authentication:** User registration and login with role-based access.
@@ -71,6 +73,35 @@ ODR India is a full-stack web platform for co-creating Online Dispute Resolution
 - `public/` – Static assets (images, logos)
 - `tailwind.config.ts` – Tailwind CSS configuration
 
+## Video Conferencing Integration
+
+This project integrates Jitsi Meet for video conferencing to enable collaborative meetings for each idea workspace. Each idea has a dedicated meeting room where participants can discuss, share screens, and collaborate in real-time.
+
+### Jitsi Meet Setup
+
+1. The integration uses `@jitsi/react-sdk` to embed Jitsi Meet into the application
+2. Install with: `npm install @jitsi/react-sdk`
+3. Each idea has a unique room based on its ID (`odrindia-idea-{ideaId}`)
+
+### Workplace Features
+
+The workspace for each idea includes:
+- Video conferencing (Jitsi Meet)
+- Meeting-specific notes
+- Calendar for scheduling events
+
+### Database Migration
+
+The latest migration removed the `workplaceData` field from the `Idea` table as we've moved to a meeting-centric approach for notes and collaboration. All notes are now managed through meeting-specific notes.
+
+## Documentation
+
+- [Database Troubleshooting Guide](./docs/DATABASE_TROUBLESHOOTING.md) - Solutions for common database issues
+- [Meeting Logs Guide](./docs/MEETING_LOGS.md) - How to use the meeting logs functionality
+- [Production Deployment Guide](./docs/PRODUCTION_DEPLOYMENT.md) - Instructions for deploying to production
+- [Jitsi Integration Guide](./docs/JITSI_INTEGRATION.md) - Details on the Jitsi Meet integration
+- [Authentication Testing](./docs/AUTHENTICATION_TESTING.md) - Guide for testing the authentication flow
+
 ## Contributing
 
 We welcome contributions from legal professionals, technologists, students, and anyone passionate about ODR.  
@@ -81,3 +112,68 @@ We welcome contributions from legal professionals, technologists, students, and 
 ## License
 
 This project is licensed under the Apache License 2.0. See the [LICENSE](./LICENSE) file for details.
+
+
+
+<Card className="overflow-hidden border-none shadow-md max-w-xs mx-auto">
+                  <div className="relative h-80 w-full">
+                    <Image 
+                      src="/chittu.png"
+                      alt="Chittu Nagrajan" 
+                      fill 
+                      className="object-cover object-top"
+                      priority
+                    />
+                  </div>
+                  <CardHeader className="bg-white pb-2">
+                    <CardTitle className="text-[#0a1e42]">Chittu Nagrajan</CardTitle>
+                    <CardDescription>Founder CREK ODR</CardDescription>
+                  </CardHeader>
+                  <CardContent className="bg-white">
+                    <p className="text-gray-600">
+                      Guiding the development of innovative ODR solutions and sharing industry expertise.
+                    </p>
+                  </CardContent>
+                </Card>
+
+                <Card className="overflow-hidden border-none shadow-md max-w-xs mx-auto">
+                    <div className="relative h-80 w-full">
+                    <Image 
+                      src="/suman.png"
+                      alt="Dr Suman Kalani" 
+                      fill 
+                      className="object-cover object-top"
+                      priority
+                    />
+                    </div>
+                  <CardHeader className="bg-white pb-2">
+                    <CardTitle className="text-[#0a1e42]">Dr. Suman Kalani</CardTitle>
+                    <CardDescription>Associate Professor,SVKM&apos;s Pravin Gandhi College of Law</CardDescription>
+                  </CardHeader>
+                  <CardContent className="bg-white">
+                    <p className="text-gray-600">
+                      Providing academic guidance and research expertise in ODR development.
+                    </p>
+                  </CardContent>
+                </Card>
+
+                <Card className="overflow-hidden border-none shadow-md max-w-xs mx-auto">
+                  <div className="relative h-80 w-full">
+                    <Image 
+                      src="/aastha.jpg"
+                      alt="Assistant Professor Aastha Bhatia" 
+                      fill 
+                      className="object-cover"
+                      priority
+                    />
+                  </div>
+                  <CardHeader className="bg-white pb-2">
+                    <CardTitle className="text-[#0a1e42]">Aastha Bhatia</CardTitle>
+                    <CardDescription>Assistant Professor, Communication Skills, Fr. Conceicao Rodrigues College of Engineering</CardDescription>
+                  </CardHeader>
+                  <CardContent className="bg-white">
+                    <p className="text-gray-600">
+                      Contributing as a Communication Skills expert and Soft Skills Enthusiast.
+                    </p>
+                  </CardContent>
+                </Card>
