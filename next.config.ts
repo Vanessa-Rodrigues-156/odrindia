@@ -2,67 +2,19 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  
-  // Security headers
-  headers: async () => {
+  async headers() {
     return [
       {
-        source: '/(.*)',
+        source: '/:path*',
         headers: [
           {
-            key: 'X-DNS-Prefetch-Control',
-            value: 'on',
-          },
-          {
-            key: 'X-XSS-Protection',
-            value: '1; mode=block',
-          },
-          {
-            key: 'X-Frame-Options',
-            value: 'SAMEORIGIN',
-          },
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
-          },
-          {
-            key: 'Referrer-Policy',
-            value: 'strict-origin-when-cross-origin',
-          },
-          {
-            key: 'Permissions-Policy',
-            value: 'camera=(self), microphone=(self), geolocation=(), interest-cohort=()',
-          },
-          // Content Security Policy - customize as needed for your app
-          {
             key: 'Content-Security-Policy',
-            value: process.env.NODE_ENV === 'production' 
-              ? `default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.jitsi.net https://meet.jit.si; connect-src 'self' https://*.jitsi.net https://meet.jit.si wss://*.jitsi.net wss://meet.jit.si; style-src 'self' 'unsafe-inline' https://*.jitsi.net https://meet.jit.si; img-src 'self' data: blob: https://*.jitsi.net https://meet.jit.si; media-src 'self' blob: https://*.jitsi.net https://meet.jit.si; frame-src 'self' https://*.jitsi.net https://meet.jit.si;` 
-              : '',
-          },
-        ],
-      },
+            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.jitsi.net https://meet.jit.si; connect-src 'self' https://*.jitsi.net https://meet.jit.si wss://*.jitsi.net wss://meet.jit.si http://localhost:4000 http://localhost:4000/api; img-src 'self' data: https://*.jitsi.net https://meet.jit.si; style-src 'self' 'unsafe-inline' https://*.jitsi.net https://meet.jit.si; frame-src 'self' https://*.jitsi.net https://meet.jit.si; font-src 'self' https://*.jitsi.net https://meet.jit.si;"
+          }
+        ]
+      }
     ];
-  },
-  
-  // Enable image optimization
-  images: {
-   // domains: ['meet.jit.si'],
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '**.jitsi.net',
-        port: '',
-        pathname: '/**',
-      },
-    ],
-  },
-  
-  // Production optimizations
-  swcMinify: true, // Faster minification
-  
-  // Output configuration
-  output: process.env.STANDALONE === 'true' ? 'standalone' : undefined,
+  }
 };
 
 export default nextConfig;

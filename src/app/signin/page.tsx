@@ -43,8 +43,16 @@ const SignInPage = () => {
     setLoading(true);
 
     const formData = new FormData(event.target as HTMLFormElement);
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
+    const email = formData.get("email");
+    const password = formData.get("password");
+    // Debug log
+    console.log("LOGIN PAYLOAD", { email, password, typeofEmail: typeof email });
+    // Ensure both are strings
+    if (typeof email !== "string" || typeof password !== "string") {
+      setError("Email and password must be strings.");
+      setLoading(false);
+      return;
+    }
 
     try {
       // First attempt the login to get the user and set cookies
@@ -63,34 +71,32 @@ const SignInPage = () => {
       const data = await res.json();
 
       // Use the auth context to handle user login
-      try {
-        await login(data.user, data.token);
+      // DO NOT call login(data.user, data.token) here!
+      // Instead, store the token and user directly
+      localStorage.setItem("token", data.token);
+      // Optionally, set user in context if needed
+      // await refreshUser(); // If you want to immediately update context
 
-        // Verify session is established
-        const sessionRes = await fetch("/api/auth/session", {
-          method: "GET",
-          credentials: "include",
-        });
+      // Verify session is established
+      const sessionRes = await apiFetch("/auth/session", {
+        method: "GET",
+      });
 
-        if (!sessionRes.ok) {
-          setError("Failed to establish session. Please try again.");
-          return;
-        }
+      if (!sessionRes.ok) {
+        setError("Failed to establish session. Please try again.");
+        return;
+      }
 
-        // Get redirect URL from query params or use default based on role
-        const urlParams = new URLSearchParams(window.location.search);
-        const redirectPath = urlParams.get("redirect");
+      // Get redirect URL from query params or use default based on role
+      const urlParams = new URLSearchParams(window.location.search);
+      const redirectPath = urlParams.get("redirect");
 
-        if (redirectPath) {
-          router.push(redirectPath); // Go to the originally requested page
-        } else if (data.user.userRole === "ADMIN") {
-          router.push("/admin/idea-approval");
-        } else {
-          router.push("/"); // Redirect to home page for regular users
-        }
-      } catch (loginErr) {
-        console.error("Login context error:", loginErr);
-        setError("Failed to complete sign in. Please try again.");
+      if (redirectPath) {
+        router.push(redirectPath); // Go to the originally requested page
+      } else if (data.user.userRole === "ADMIN") {
+        router.push("/admin/idea-approval");
+      } else {
+        router.push("/"); // Redirect to home page for regular users
       }
     } catch (err) {
       console.error("Sign in error:", err);

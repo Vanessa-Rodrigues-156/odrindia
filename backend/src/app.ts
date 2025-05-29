@@ -9,28 +9,34 @@ import odrlabsRoutes from "./api/odrlabs";
 import submitIdeaRoutes from "./api/submit-idea";
 import discussionRoutes from "./api/discussion";
 import adminRoutes from "./api/admin";
+import chatbotRoutes from "./api/chatbot";
 
 const app = express();
 
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "*",
+    origin: (origin, callback) => {
+      // Remove trailing slash if present
+      if (origin) {
+        const cleanOrigin = origin.replace(/\/$/, "");
+        callback(null, cleanOrigin === "http://localhost:3000" ? cleanOrigin : false);
+      } else {
+        callback(null, false);
+      }
+    },
     credentials: true,
   })
 );
 app.use(express.json());
 
+app.use("/api/chatbot", chatbotRoutes);
 app.use("/api/auth", authRoutes);
-app.use("/api/ideas", ideasRoutes);
-app.use("/api/meetings", meetingsRoutes);
-
+app.use("/api/ideas", authenticateJWT, ideasRoutes);
+app.use("/api/meetings", authenticateJWT, meetingsRoutes);
 // Protect ODR Lab and Discussion routes
-app.use("/api/odrlabs", authenticateJWT);
+app.use("/api/odrlabs", authenticateJWT, odrlabsRoutes);
 app.use("/api/discussion", authenticateJWT, discussionRoutes);
-
-app.use("/api/odrlabs", odrlabsRoutes);
-app.use("/api/submit-idea", submitIdeaRoutes);
-
+app.use("/api/submit-idea", authenticateJWT, submitIdeaRoutes);
 app.use("/api/admin", authenticateJWT, adminRoutes);
 
 app.use(errorHandler);

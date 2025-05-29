@@ -7,14 +7,17 @@ export default async function signupHandler(req: Request, res: Response) {
     name,
     email,
     password,
-    userRole,
     contactNumber,
     city,
     country,
+    userRole,
     institution,
     highestEducation,
     odrLabUsage,
+    facultyMentor, // Accept extra fields but ignore for DB
+    // Accept all possible frontend fields, ignore those not needed
   } = req.body;
+
   if (!name || !email || !password) {
     return res
       .status(400)
@@ -52,5 +55,12 @@ export default async function signupHandler(req: Request, res: Response) {
       createdAt: true,
     },
   });
-  res.status(201).json({ user });
+  // For frontend auto-login, return a JWT token as well
+  const jwt = require("jsonwebtoken");
+  const token = jwt.sign(
+    { id: user.id, email: user.email, userRole: user.userRole },
+    process.env.JWT_SECRET,
+    { expiresIn: "7d" }
+  );
+  res.status(201).json({ user, token });
 }

@@ -7,15 +7,6 @@ const Chatbot = () => {
   const [message, setMessage] = useState("");
   const [chatHistory, setChatHistory] = useState([]);
   const [loading, setLoading] = useState(false);
-  const messagesEndRef = useRef(null);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [chatHistory, loading]);
 
   const handleSendMessage = async () => {
     if (!message.trim()) return;
@@ -26,16 +17,19 @@ const Chatbot = () => {
 
     try {
       setLoading(true);
-      const res = await apiFetch("/chatbot", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message }),
-      });
-
+      // const res = await apiFetch("/chatbot", {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify({ message }),
+      // });
+     const res = await apiFetch("/chatbot/test", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ message }),
+});
       if (!res.ok) {
         throw new Error("Failed to fetch response from chatbot");
       }
-
       const data = await res.json();
       const botMessage = { sender: "bot", text: data.response };
       setChatHistory((prev) => [...prev, botMessage]);
@@ -247,7 +241,6 @@ const Chatbot = () => {
                 </div>
               </div>
             )}
-            <div ref={messagesEndRef} />
           </>
         )}
       </div>

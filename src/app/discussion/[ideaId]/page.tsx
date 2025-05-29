@@ -1,109 +1,79 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import DiscussionClient from "./DiscussionClient";
-import { prisma } from "@/lib/prisma";
+import { apiFetch } from "@/lib/api";
 
 // Update the prop type to match the Promise pattern
 interface DiscussionPageProps {
-  params: Promise<{ ideaId: string }>;
+  params: { ideaId: string };
 }
 
 // Update generateMetadata to use await params
 export async function generateMetadata({ params }: DiscussionPageProps): Promise<Metadata> {
-  const { ideaId } = await params;
-  const idea = await prisma.idea.findUnique({ where: { id: ideaId } });
-  if (!idea) {
+  const res = await apiFetch(`/ideas/${params.ideaId}`, { method: "GET" });
+  if (!res.ok) {
     return {
       title: "Idea Not Found",
       description: "The requested idea could not be found.",
     };
   }
+  const idea = await res.json();
   return {
     title: `Discussion: ${idea.description.split(".")[0]}`,
     description: idea.description.substring(0, 160),
   };
 }
 
-// Update the page component to use await params
 export default async function DiscussionPage({ params }: DiscussionPageProps) {
-  const { ideaId } = await params;
-  const idea = await prisma.idea.findUnique({
-    where: { id: ideaId },
-    include: {
-      owner: true,
-      likes: true,
-    },
-  });
-  if (!idea) {
+  const res = await apiFetch(`/ideas/${params.ideaId}`, { method: "GET" });
+  if (!res.ok) {
     notFound();
   }
+  const idea = await res.json();
   // Map DB idea to expected props for DiscussionClient
   const mappedIdea = {
     id: idea.id,
-    name: idea.owner?.name || "Anonymous",
-    email: idea.owner?.email || "anonymous@example.com",
-    country: idea.owner?.country || "",
+    title: idea.title,
+    caption: idea.caption,
     description: idea.description,
-    submittedAt: idea.createdAt.toISOString(),
+    country: idea.owner?.country || "",
+    owner: idea.owner,
+    createdAt: new Date(idea.createdAt).toISOString(),
     likes: idea.likes?.length || 0,
+    comments: [], // will fill below
   };
-  // Get all comments for this idea
-  const allComments = await prisma.comment.findMany({
-    where: { ideaId: idea.id },
-    include: {
-      user: true,
-      likes: true,
-    },
-    orderBy: { createdAt: 'asc' }
-  });
-
+  // Map comments to tree structure
+  const allComments = idea.comments || [];
   // Build a map of comments by id
-  type Comment = {
-    id: string;
-    author: string;
-    authorEmail: string;
-    authorCountry: string;
-    authorRole: string;
-    content: string;
-    createdAt: string;
-    likes: number;
-    parentId: string | null;
-    avatar: string;
-    replies: Comment[];
-  };
+  import type { Comment as CommentType, User } from "./components/types";
   function getInitials(name?: string | null) {
     if (!name) return "??";
     return name.split(' ').map(p => p[0]).join('').toUpperCase().substring(0, 2);
   }
-  const commentMap = new Map<string, Comment>();
-  allComments.forEach(c => {
+  const commentMap = new Map<string, CommentType>();
+  allComments.forEach((c: any) => {
     commentMap.set(c.id, {
       id: c.id,
-      author: c.user?.name || "Anonymous",
-      authorEmail: c.user?.email || "anonymous@example.com",
-      authorCountry: c.user?.country || "",
-      authorRole: c.user?.userRole || "INNOVATOR",
       content: c.content,
-      createdAt: c.createdAt.toISOString(),
-      likes: c.likes?.length || 0,
+      createdAt: new Date(c.createdAt).toISOString(),
+      user: c.user as User,
       parentId: c.parentId,
-      avatar: getInitials(c.user?.name),
       replies: [],
+      likes: c.likes?.length || 0,
     });
   });
-
   // Attach replies to their parent
-  const topLevelComments: Comment[] = [];
+  const topLevelComments: CommentType[] = [];
   commentMap.forEach(comment => {
     if (comment.parentId) {
       const parent = commentMap.get(comment.parentId);
       if (parent) {
-        parent.replies.push(comment);
+        (parent.replies = parent.replies || []).push(comment);
       }
     } else {
       topLevelComments.push(comment);
     }
   });
-
+  mappedIdea.comments = topLevelComments;
   return <DiscussionClient idea={mappedIdea} initialComments={topLevelComments} />;
 }
