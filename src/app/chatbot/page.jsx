@@ -1,7 +1,7 @@
-import ChatInterface from './ChatInterface';
+import Chat from './Chat'
 
 const ChatbotPage = () => {
-  return <ChatInterface />;
+  return <Chat/>;
 };
 
-export default ChatbotPage;
+export default  ChatbotPage;

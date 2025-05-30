@@ -1,32 +1,28 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import axios from "axios";
-import { useAuth } from "@/lib/auth";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
-
-const ChatInterface = () => {
+const Chat = () => {
     const [message, setMessage] = useState("");
     const [chatHistory, setChatHistory] = useState([]);
     const [loading, setLoading] = useState(false);
     const chatContainerRef = useRef(null);
-    const { accessToken } = useAuth();
     
-    // Function to interact with our backend API
+    // Function to interact with Python FastAPI backend
     async function sendChatMessage(message) {
         try {
-            const response = await axios.post(`${API_URL}/api/chat/message`, 
-                { message },
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': accessToken ? `Bearer ${accessToken}` : ''
-                    }
-                }
-            );
+            const response = await fetch('http://localhost:5000/ask', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message })
+            });
             
-            return response.data.response; // Get the AI response from our backend
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            return data.response || data.error;
         } catch (error) {
             console.error('Error calling chat API:', error);
             throw error;
@@ -51,7 +47,7 @@ const ChatInterface = () => {
         try {
             setLoading(true);
             
-            // Call our backend API
+            // Call the Python FastAPI backend
             const aiResponse = await sendChatMessage(userQuery);
             
             // Add AI response to chat history
@@ -74,11 +70,11 @@ const ChatInterface = () => {
     };
 
     return (
-        <><div
+        <div
             style={{
                 display: "flex",
                 flexDirection: "column",
-                height: "calc(100vh - 64px)" /* Adjust for navbar height */,
+                height: "calc(100vh - 64px)",
                 maxHeight: "calc(100vh - 64px)",
                 margin: "0",
                 overflow: "hidden",
@@ -449,8 +445,7 @@ const ChatInterface = () => {
                 }
             `}</style>
         </div>
-        </>
     );
 };
 
-export default ChatInterface;
+export default Chat;
