@@ -1,77 +1,81 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import React, { useState, useRef, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { Menu } from "lucide-react"
+import { ChevronDown, Menu, Search, BookOpen, Users, FileText, ExternalLink, Scale, Home, Info, MessageSquare, Lightbulb, BookOpenCheck, Contact } from "lucide-react"
 import { useAuth } from "@/lib/auth"
+import { motion, AnimatePresence } from "framer-motion"
 
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { cn } from "@/lib/utils"
 
 const navItems = [
 	{
 		title: "Home",
-		href: "/",
+		href: "/home",
+		icon: Home
 	},
 	{
 		title: "About",
 		href: "/about",
+		icon: Info
 	},
 	{
 		title: "ODR Resources",
 		href: "/resources",
+		icon: BookOpenCheck,
 		children: [
 			{
 				title: "ICODR standards",
 				href: "https://icodr.org/standards/",
 				description:
 					"ICODR is an international nonprofit, incorporated in the United States, that drives the development, convergence, and adoption of open standards for the global effort to resolve disputes and conflicts using information and communications technology.",
+				icon: Scale,
 			},
 			{
 				title: "Mediate",
 				href: "https://odrindia.org/",
 				description:
 					"ODR India is a community of ODR professionals, practitioners, and enthusiasts in India. It aims to promote the use of ODR in India and provide resources and support for ODR practitioners.",
+				icon: Users,
 			},
 			{
-				title: "ODR Resources",
+				title: "ODR",
 				href: "https://odr.info/",
 				description:
 					"Explore a curated list of resources, articles, and tools related to Online Dispute Resolution (ODR).",
-			},
-			{
-				title: "ODR Labs",
-				href: "/odrlabs",
-				description:
-					"ODR Labs is a platform for experimentation and innovation in the field of Online Dispute Resolution (ODR).",
+				icon: BookOpen,
 			},
 		],
 	},
 	{
-		title: "Mentors",
-		href: "/mentors",
-	},
-	{
 		title: "Chatbot",
 		href: "/chatbot",
+		icon: MessageSquare
 	},
 	{
 		title: "Idea Board",
 		href: "/submit-idea",
+		icon: Lightbulb
 	},
 	{
 		title: "ODR Lab",
 		href: "/odrlabs",
+		icon: BookOpen
 	},
 	{
-		title: "Reflect Results",
-		href: "/results",
+		title: "Mentors",
+		href: "/mentors",
+		icon: Users
 	},
 	{
 		title: "Contact",
 		href: "/contact",
+		icon: Contact
 	},
 ]
 
@@ -79,7 +83,6 @@ export default function Navbar() {
 	const [isOpen, setIsOpen] = useState(false)
 	const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
 	const dropdownRefs = useRef<{ [key: string]: HTMLDivElement | null }>({})
-	const [languageDropdown, setLanguageDropdown] = useState(false)
 	const [profileDropdown, setProfileDropdown] = useState(false)
 	const { user: currentUser, loading, logout, refreshUser } = useAuth()
 
@@ -105,17 +108,6 @@ export default function Navbar() {
 				setActiveDropdown(null)
 			}
 
-			// Close language dropdown when clicking outside
-			const langButton = document.getElementById("language-button")
-			const langDropdown = document.getElementById("language-dropdown")
-			if (
-				languageDropdown &&
-				event.target !== langButton &&
-				!langDropdown?.contains(event.target as Node)
-			) {
-				setLanguageDropdown(false)
-			}
-
 			// Close profile dropdown when clicking outside
 			const profileButton = document.getElementById("profile-button")
 			const profileDropdownElement = document.getElementById("profile-dropdown")
@@ -132,7 +124,7 @@ export default function Navbar() {
 		return () => {
 			document.removeEventListener("mousedown", handleClickOutside)
 		}
-	}, [activeDropdown, languageDropdown, profileDropdown])
+	}, [activeDropdown, profileDropdown])
 
 	const toggleDropdown = (title: string) => {
 		setActiveDropdown(activeDropdown === title ? null : title)
@@ -157,229 +149,295 @@ export default function Navbar() {
 
 				{/* Desktop Navigation */}
 				<nav className="hidden lg:block">
-					<ul className="flex items-center space-x-8">
+					<ul className="flex items-center space-x-5">
 						{navItems.map((item) => (
 							<li key={item.title} className="relative">
 								{item.children ? (
-									<div
-										ref={(el) => {
-											dropdownRefs.current[item.title] = el
-										}}
-										className="relative"
-									>
-										<button
-											onClick={() => toggleDropdown(item.title)}
-											className={`flex items-center text-[#0a1e42] hover:text-[#29487e] px-1 py-2 font-medium text-sm transition-colors ${
-												activeDropdown === item.title ? "text-[#29487e]" : ""
-											}`}
-										>
-											{item.title}
-											<svg
-												className={`ml-1 h-4 w-4 transition-transform ${
-													activeDropdown === item.title ? "rotate-180" : ""
-												}`}
-												xmlns="http://www.w3.org/2000/svg"
-												viewBox="0 0 20 20"
-												fill="currentColor"
+									<Popover>
+										<PopoverTrigger asChild>
+											<button
+												className={cn(
+													"group flex items-center gap-1.5 px-3 py-2 text-sm font-medium transition-all duration-200",
+													"text-slate-800 hover:text-blue-600 rounded-md hover:bg-blue-50 transform hover:scale-105",
+													activeDropdown === item.title && "text-blue-600 bg-blue-50"
+												)}
+												onClick={() => toggleDropdown(item.title)}
 											>
-												<path
-													fillRule="evenodd"
-													d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-													clipRule="evenodd"
+												{item.icon && (
+													<div className={cn(
+														"text-slate-500 transition-colors",
+														activeDropdown === item.title ? "text-blue-600" : "group-hover:text-blue-600"
+													)}>
+														{React.createElement(item.icon, { size: 16 })}
+													</div>
+												)}
+												<span>{item.title}</span>
+												<ChevronDown
+													size={16}
+													className={cn(
+														"transition-transform duration-200 text-slate-400",
+														activeDropdown === item.title && "rotate-180 text-blue-600"
+													)}
 												/>
-											</svg>
-										</button>
-
-										{activeDropdown === item.title && (
-											<div className="absolute left-0 top-full z-10 mt-1 w-[400px] rounded-md border bg-white p-4 shadow-lg">
-												<ul className="grid md:grid-cols-2 gap-3">
-													{item.children.map((child) => (
-														<li key={child.title}>
-															<Link
-																href={child.href}
-																className="block rounded-md p-3 hover:bg-[#f0f4fa] transition-colors"
-																onClick={() => setActiveDropdown(null)}
-															>
-																<div className="font-medium text-[#0a1e42]">
-																	{child.title}
-																</div>
-																<p className="text-sm text-gray-500 line-clamp-2">
-																	{child.description}
-																</p>
-															</Link>
-														</li>
-													))}
-												</ul>
-											</div>
-										)}
-									</div>
+												<span className="absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-blue-500/0 via-blue-500/70 to-blue-500/0 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+											</button>
+										</PopoverTrigger>
+										<AnimatePresence>
+											{activeDropdown === item.title && (
+												<PopoverContent
+													side="bottom"
+													align="start"
+													sideOffset={8}
+													className="w-[400px] p-0 border border-slate-200 rounded-xl shadow-lg"
+													forceMount
+													asChild
+												>
+													<motion.div
+														initial={{ opacity: 0, y: 10 }}
+														animate={{ opacity: 1, y: 0 }}
+														exit={{ opacity: 0, y: 10 }}
+														transition={{ duration: 0.2 }}
+													>
+														<div className="grid grid-cols-1 md:grid-cols-2 gap-2 p-2 bg-white rounded-xl overflow-hidden">
+															{item.children.map((child, index) => (
+																<Link
+																	key={index}
+																	href={child.href}
+																	onClick={() => setActiveDropdown(null)}
+																	className="flex gap-3 p-4 rounded-lg hover:bg-blue-50 transition-colors group"
+																	target={child.href.startsWith('http') ? "_blank" : undefined}
+																	rel={child.href.startsWith('http') ? "noopener noreferrer" : undefined}
+																>
+																	<div className="flex-shrink-0 mt-1">
+																		{child.icon && (
+																			<div className="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center transition-colors group-hover:bg-blue-200">
+																				{React.createElement(child.icon, { size: 20 })}
+																			</div>
+																		)}
+																	</div>
+																	<div className="flex flex-col flex-1">
+																		<div className="font-medium text-slate-900 flex items-center gap-1 group-hover:text-blue-600 transition-colors">
+																			{child.title}
+																			{child.href.startsWith('http') && (
+																				<ExternalLink size={14} className="text-slate-400 group-hover:text-blue-500" />
+																			)}
+																		</div>
+																		<p className="text-sm text-slate-600 line-clamp-2 mt-1">
+																			{child.description}
+																		</p>
+																	</div>
+																</Link>
+															))}
+														</div>
+													</motion.div>
+												</PopoverContent>
+											)}
+										</AnimatePresence>
+									</Popover>
 								) : (
 									<Link
 										href={item.href}
-										className="text-[#0a1e42] hover:text-[#29487e] px-1 py-2 font-medium text-sm transition-colors"
+										className={cn(
+											"group relative flex items-center gap-1.5 px-3 py-2 text-sm font-medium transition-all duration-200",
+											"text-slate-800 hover:text-blue-600 rounded-md hover:bg-blue-50 transform hover:scale-105"
+										)}
 									>
-										{item.title}
+										{item.icon && (
+											<div className="text-slate-500 group-hover:text-blue-600 transition-colors">
+												{React.createElement(item.icon, { size: 16 })}
+											</div>
+										)}
+										<span>{item.title}</span>
+										<span className="absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-blue-500/0 via-blue-500/70 to-blue-500/0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 									</Link>
 								)}
 							</li>
 						))}
 					</ul>
 				</nav>
-
-				<div className="flex items-center gap-4">
-					{/* Language Selector */}
-					<div className="hidden lg:block relative">
-						<button
-							id="language-button"
-							onClick={() => setLanguageDropdown(!languageDropdown)}
-							className="flex h-8 w-8 items-center justify-center rounded-md border border-input bg-background text-xs font-medium"
-						>
-							EN
-						</button>
-
-						{languageDropdown && (
-							<div
-								id="language-dropdown"
-								className="absolute right-0 top-full z-10 mt-1 min-w-[120px] rounded-md border bg-white py-1 shadow-lg"
-							>
-								<button
-									onClick={() => setLanguageDropdown(false)}
-									className="block w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
-								>
-									English
-								</button>
-								<button
-									onClick={() => setLanguageDropdown(false)}
-									className="block w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
-								>
-									Ελληνικά
-								</button>
-							</div>
-						)}
-					</div>
-
 					{/* Show either login/signup buttons or user avatar based on auth status */}
 					{loading ? (
-						<div className="hidden lg:block relative w-9 h-9">
-							<div className="animate-pulse h-9 w-9 rounded-full bg-gray-200"></div>
+						<div className="hidden lg:flex gap-2 items-center">
+							<div className="animate-pulse h-9 w-9 rounded-full bg-slate-200"></div>
+							<div className="animate-pulse h-4 w-16 rounded bg-slate-200"></div>
 						</div>
 					) : currentUser ? (
-						<div className="hidden lg:block relative">
-							<button
-								id="profile-button"
-								onClick={() => setProfileDropdown(!profileDropdown)}
-								className="flex items-center gap-2 rounded-full focus:outline-none transition-transform hover:scale-105"
-								aria-label="User menu"
-								aria-expanded={profileDropdown}
-							>
-								<Avatar
-									className={`h-9 w-9 border-2 ${
-										profileDropdown ? "border-[#29487e]" : "border-white"
-									} transition-colors`}
+						<Popover>
+							<PopoverTrigger asChild>
+								<button
+									id="profile-button"
+									className="hidden lg:flex items-center gap-2 px-2.5 py-1.5 rounded-full transition-all border border-transparent hover:border-slate-200 hover:bg-slate-50"
+									aria-label="User menu"
+									onClick={() => setProfileDropdown(!profileDropdown)}
 								>
-									<AvatarImage
-										src={`https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(
-											currentUser.name
-										)}`}
-										alt={currentUser.name}
-									/>
-									<AvatarFallback className="bg-[#0a1e42] text-white">
-										{currentUser.name?.charAt(0).toUpperCase() || "U"}
-									</AvatarFallback>
-								</Avatar>
-								<svg
-									className={`h-4 w-4 text-gray-500 transition-transform ${
-										profileDropdown ? "rotate-180" : ""
-									}`}
-									xmlns="http://www.w3.org/2000/svg"
-									viewBox="0 0 20 20"
-									fill="currentColor"
-								>
-									<path
-										fillRule="evenodd"
-										d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-										clipRule="evenodd"
-									/>
-								</svg>
-							</button>
-
-							{profileDropdown && (
-								<div
-									id="profile-dropdown"
-									className="absolute right-0 top-full z-10 mt-2 min-w-[200px] origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-								>
-									<div className="border-b border-gray-100 px-4 py-3">
-										<p className="text-sm font-medium text-gray-900">
-											{currentUser.name}
-										</p>
-										<p className="truncate text-xs text-gray-500">
-											{currentUser.email}
-										</p>
+									<Avatar
+										className="h-8 w-8 border-2 border-white shadow-sm transition-all"
+									>
+										<AvatarImage
+											src={`https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(
+												currentUser.name
+											)}`}
+											alt={currentUser.name}
+										/>
+										<AvatarFallback className="bg-blue-600 text-white">
+											{currentUser.name?.charAt(0).toUpperCase() || "U"}
+										</AvatarFallback>
+									</Avatar>
+									<div className="flex flex-col items-start">
+										<span className="text-sm font-medium text-slate-800 leading-none">
+											{currentUser.name.split(' ')[0]}
+										</span>
+										<span className="text-xs text-slate-500">
+											{currentUser.userRole.charAt(0) + currentUser.userRole.slice(1).toLowerCase()}
+										</span>
 									</div>
-
-									<Link
-										href="/profile"
-										onClick={() => setProfileDropdown(false)}
-										className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+									<ChevronDown 
+										size={14} 
+										className={cn(
+											"text-slate-400 transition-transform duration-200",
+											profileDropdown && "rotate-180"
+										)} 
+									/>
+								</button>
+							</PopoverTrigger>
+							<AnimatePresence>
+								{profileDropdown && (
+									<PopoverContent
+										id="profile-dropdown"
+										className="w-[260px] p-1.5 rounded-xl shadow-xl border-slate-200"
+										align="end"
+										sideOffset={8}
+										forceMount
+										asChild
 									>
-										Your Profile
-									</Link>
-
-									{currentUser.userRole === "ADMIN" && (
-										<Link
-											href="/admin/idea-approval"
-											onClick={() => setProfileDropdown(false)}
-											className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+										<motion.div
+											initial={{ opacity: 0, y: 10 }}
+											animate={{ opacity: 1, y: 0 }}
+											exit={{ opacity: 0, y: 10 }}
+											transition={{ duration: 0.15 }}
 										>
-											Admin Dashboard
-										</Link>
-									)}
+											<div className="p-3 mb-1.5 border-b border-slate-100">
+												<div className="flex items-center gap-3">
+													<Avatar className="h-10 w-10 border-2 border-blue-100">
+														<AvatarImage
+															src={`https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(
+																currentUser.name
+															)}`}
+															alt={currentUser.name}
+														/>
+														<AvatarFallback className="bg-blue-600 text-white">
+															{currentUser.name?.charAt(0).toUpperCase() || "U"}
+														</AvatarFallback>
+													</Avatar>
+													<div>
+														<p className="font-medium text-slate-900 leading-tight">
+															{currentUser.name}
+														</p>
+														<p className="text-xs text-slate-500 mt-0.5 truncate max-w-[170px]">
+															{currentUser.email}
+														</p>
+													</div>
+												</div>
+											</div>
 
-									<Link
-										href="/submit-idea"
-										onClick={() => setProfileDropdown(false)}
-										className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-									>
-										Submit an Idea
-									</Link>
+											<Link
+												href="/profile"
+												onClick={() => setProfileDropdown(false)}
+												className="flex w-full items-center gap-2 rounded-md px-3 py-2.5 text-sm text-slate-700 hover:bg-blue-50"
+											>
+												<div className="h-7 w-7 rounded-full bg-blue-100 flex items-center justify-center">
+													<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-600">
+														<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+														<circle cx="12" cy="7" r="4"></circle>
+													</svg>
+												</div>
+												Your Profile
+											</Link>
 
-									<button
-										onClick={handleLogout}
-										className="block w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-gray-100"
-									>
-										Sign out
-									</button>
-								</div>
-							)}
-						</div>
+											{currentUser.userRole === "ADMIN" && (
+												<Link
+													href="/admin/idea-approval"
+													onClick={() => setProfileDropdown(false)}
+													className="flex w-full items-center gap-2 rounded-md px-3 py-2.5 text-sm text-slate-700 hover:bg-blue-50"
+												>
+													<div className="h-7 w-7 rounded-full bg-blue-100 flex items-center justify-center">
+														<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-600">
+															<path d="M12 2H2v10h10V2z"></path>
+															<path d="M22 12h-10v10h10V12z"></path>
+															<path d="M12 12H2v10h10V12z"></path>
+														</svg>
+													</div>
+													Admin Dashboard
+												</Link>
+											)}
+
+											<Link
+												href="/submit-idea"
+												onClick={() => setProfileDropdown(false)}
+												className="flex w-full items-center gap-2 rounded-md px-3 py-2.5 text-sm text-slate-700 hover:bg-blue-50"
+											>
+												<div className="h-7 w-7 rounded-full bg-blue-100 flex items-center justify-center">
+													<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-600">
+														<path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+														<polyline points="14 2 14 8 20 8"></polyline>
+														<line x1="12" y1="18" x2="12" y2="12"></line>
+														<line x1="9" y1="15" x2="15" y2="15"></line>
+													</svg>
+												</div>
+												Submit an Idea
+											</Link>
+
+											<button
+												onClick={handleLogout}
+												className="flex w-full items-center gap-2 rounded-md px-3 py-2.5 text-sm text-red-600 hover:bg-red-50 mt-1 border-t border-slate-100 pt-2"
+											>
+												<div className="h-7 w-7 rounded-full bg-red-100 flex items-center justify-center">
+													<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-red-600">
+														<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+														<polyline points="16 17 21 12 16 7"></polyline>
+														<line x1="21" y1="12" x2="9" y2="12"></line>
+													</svg>
+												</div>
+												Sign out
+											</button>
+										</motion.div>
+									</PopoverContent>
+								)}
+							</AnimatePresence>
+						</Popover>
 					) : (
-						<>
-							{/* Login Button */}
-							<Link href="/signin" className="hidden lg:block">
-								<button className="flex h-8 items-center justify-center rounded-md bg-[#0a1e42] px-4 text-sm font-medium text-white hover:bg-[#29487e]">
+						<div className="hidden lg:flex items-center gap-2">
+							<Button asChild className="bg-transparent border border-slate-300 text-slate-700 hover:text-blue-600 hover:border-blue-200 hover:bg-blue-50 shadow-sm">
+								<Link href="/signin">
 									Sign in
-								</button>
-							</Link>
-							{/* Signup Button */}
-							<Link href="/signup" className="hidden lg:block">
-								<button className="flex h-8 items-center justify-center rounded-md bg-[#0a1e42] px-4 text-sm font-medium text-white hover:bg-[#29487e]">
+								</Link>
+							</Button>
+							<Button asChild className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm">
+								<Link href="/signup">
 									Sign Up
-								</button>
-							</Link>
-						</>
+								</Link>
+							</Button>
+						</div>
 					)}
 
 					{/* Mobile Menu Toggle */}
 					<Sheet open={isOpen} onOpenChange={setIsOpen}>
 						<SheetTrigger asChild>
-							<Button variant="ghost" size="sm" className="h-8 w-8 p-0 lg:hidden">
+							<Button 
+								variant="ghost" 
+								size="sm" 
+								className="h-9 w-9 rounded-full p-0 lg:hidden bg-slate-50 hover:bg-slate-100 text-slate-700"
+							>
 								<Menu className="h-5 w-5" />
 								<span className="sr-only">Toggle menu</span>
 							</Button>
 						</SheetTrigger>
-						<SheetContent side="right" className="w-[300px] sm:w-[400px]">
-							<div className="flex flex-col gap-6 py-4 ml-2">
-								<div className="flex items-center justify-between">
+						<SheetContent 
+							side="right" 
+							className="w-[300px] sm:w-[350px] border-l border-slate-100 p-0"
+						>
+							<div className="flex flex-col h-full">
+								<div className="p-4 border-b border-slate-100">
 									<Link
 										href="/"
 										className="flex items-center space-x-2"
@@ -391,97 +449,157 @@ export default function Navbar() {
 												alt="ODR Logo"
 												fill
 												className="object-contain"
+												priority
 											/>
 										</div>
 									</Link>
-									{/*  Button to close the menu not required though. */}
-									{/* <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => setIsOpen(false)}>
-                    <X className="h-5 w-5" />
-                    <span className="sr-only">Close menu</span>
-                  </Button> */}
 								</div>
-								<nav className="flex flex-col gap-4">
-									{navItems.map((item) => (
-										<div key={item.title}>
-											<Link
-												href={item.href}
-												className="text-lg font-medium text-[#0a1e42] hover:text-[#29487e]"
-												onClick={() => setIsOpen(false)}
-											>
-												{item.title}
-											</Link>
-											{item.children && (
-												<div className="mt-2 ml-4 flex flex-col gap-2">
-													{item.children.map((child) => (
-														<Link
-															key={child.title}
-															href={child.href}
-															className="text-sm text-gray-600 hover:text-[#0a1e42]"
-															onClick={() => setIsOpen(false)}
-														>
-															{child.title}
-														</Link>
-													))}
-												</div>
-											)}
-										</div>
-									))}
+								
+								{/* Search Box */}
+								<div className="px-4 py-3 border-b border-slate-100">
+									<div className="relative">
+										<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={16} />
+										<input 
+											type="text" 
+											placeholder="Search..." 
+											className="w-full h-10 pl-9 pr-4 rounded-lg bg-slate-50 border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+										/>
+									</div>
+								</div>
+
+								{/* Menu Items */}
+								<nav className="flex-grow py-4 px-2 overflow-y-auto">
+									<div className="flex flex-col gap-1 px-2">
+										{navItems.map((item) => (
+											<div key={item.title} className="mb-1">
+												{item.children ? (
+													<div className="mb-1">
+														<div className="flex justify-between items-center py-2 px-3 rounded-md hover:bg-slate-50 transition-colors">
+															<div className="flex items-center gap-2">
+																{item.icon && React.createElement(item.icon, { 
+																	size: 18,
+																	className: "text-blue-500" 
+																})}
+																<span className="font-medium text-slate-800">
+																	{item.title}
+																</span>
+															</div>
+															<ChevronDown size={16} className="text-slate-400" />
+														</div>
+														<div className="mt-2 ml-3 flex flex-col space-y-2 border-l-2 border-slate-100 pl-3">
+															{item.children.map((child) => (
+																<Link
+																	key={child.title}
+																	href={child.href}
+																	className="py-2.5 px-3 text-sm flex items-center gap-2.5 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
+																	onClick={() => setIsOpen(false)}
+																	target={child.href.startsWith('http') ? "_blank" : undefined}
+																	rel={child.href.startsWith('http') ? "noopener noreferrer" : undefined}
+																>
+																	{child.icon && React.createElement(child.icon, { 
+																		size: 18,
+																		className: "text-blue-500" 
+																	})}
+																	<span>{child.title}</span>
+																	{child.href.startsWith('http') && (
+																		<ExternalLink size={12} className="text-slate-400 ml-auto" />
+																	)}
+																</Link>
+															))}
+														</div>
+													</div>
+												) : (
+													<Link
+														href={item.href}
+														className="flex items-center gap-2 py-2.5 px-3 font-medium text-slate-800 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
+														onClick={() => setIsOpen(false)}
+													>
+														{item.icon && React.createElement(item.icon, { 
+															size: 18,
+															className: "text-blue-500" 
+														})}
+														{item.title}
+													</Link>
+												)}
+											</div>
+										))}
+									</div>
 								</nav>
-								<div className="flex items-center gap-4">
+								
+								{/* User Section / Auth Buttons */}
+								<div className="mt-auto border-t border-slate-100 p-4">
 									{loading ? (
 										<div className="flex items-center gap-3">
-											<div className="h-10 w-10 rounded-full bg-gray-200 animate-pulse"></div>
+											<div className="h-10 w-10 rounded-full bg-slate-200 animate-pulse"></div>
 											<div className="space-y-2">
-												<div className="h-4 w-24 bg-gray-200 animate-pulse rounded"></div>
-												<div className="h-3 w-32 bg-gray-200 animate-pulse rounded"></div>
+												<div className="h-4 w-24 bg-slate-200 animate-pulse rounded"></div>
+												<div className="h-3 w-32 bg-slate-200 animate-pulse rounded"></div>
 											</div>
 										</div>
 									) : currentUser ? (
-										<div className="space-y-3">
-											<div className="flex items-center gap-3">
-												<Avatar className="h-10 w-10 border-2 border-[#0a1e42]">
+										<div className="space-y-4">
+											<div className="flex items-center gap-3 p-3 rounded-xl bg-slate-50">
+												<Avatar className="h-10 w-10 border-2 border-white shadow-sm">
 													<AvatarImage
 														src={`https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(
 															currentUser.name
 														)}`}
 														alt={currentUser.name}
 													/>
-													<AvatarFallback className="bg-[#0a1e42] text-white">
+													<AvatarFallback className="bg-blue-600 text-white">
 														{currentUser.name?.charAt(0).toUpperCase() || "U"}
 													</AvatarFallback>
 												</Avatar>
 												<div>
-													<p className="font-medium text-gray-900">
+													<p className="font-medium text-slate-900">
 														{currentUser.name}
 													</p>
-													<p className="text-xs text-gray-500">
+													<p className="text-xs text-slate-500">
 														{currentUser.email}
 													</p>
 												</div>
 											</div>
 
-											<div className="space-y-1 mt-2 border-t pt-2">
-												<Link href="/profile" onClick={() => setIsOpen(false)}>
-													<button className="flex w-full items-center rounded-md px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100">
-														Your Profile
-													</button>
+											<div className="grid grid-cols-1 gap-2">
+												<Link 
+													href="/profile" 
+													onClick={() => setIsOpen(false)}
+													className="flex items-center gap-2 px-3 py-2 bg-white rounded-lg border border-slate-200 text-sm font-medium text-slate-700 hover:border-blue-200 hover:bg-blue-50"
+												>
+													<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-500">
+														<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+														<circle cx="12" cy="7" r="4"></circle>
+													</svg>
+													Your Profile
 												</Link>
 
 												{currentUser.userRole === "ADMIN" && (
 													<Link
 														href="/admin/idea-approval"
 														onClick={() => setIsOpen(false)}
+														className="flex items-center gap-2 px-3 py-2 bg-white rounded-lg border border-slate-200 text-sm font-medium text-slate-700 hover:border-blue-200 hover:bg-blue-50"
 													>
-														<button className="flex w-full items-center rounded-md px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100">
-															Admin Dashboard
-														</button>
+														<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-500">
+															<path d="M12 2H2v10h10V2z"></path>
+															<path d="M22 12h-10v10h10V12z"></path>
+															<path d="M12 12H2v10h10V12z"></path>
+														</svg>
+														Admin Dashboard
 													</Link>
 												)}
 
-												<Link href="/submit-idea" onClick={() => setIsOpen(false)}>
-													<button className="flex w-full items-center rounded-md px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100">
-														Submit an Idea
-													</button>
+												<Link 
+													href="/submit-idea" 
+													onClick={() => setIsOpen(false)}
+													className="flex items-center gap-2 px-3 py-2 bg-white rounded-lg border border-slate-200 text-sm font-medium text-slate-700 hover:border-blue-200 hover:bg-blue-50"
+												>
+													<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-500">
+														<path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+														<polyline points="14 2 14 8 20 8"></polyline>
+														<line x1="12" y1="18" x2="12" y2="12"></line>
+														<line x1="9" y1="15" x2="15" y2="15"></line>
+													</svg>
+													Submit an Idea
 												</Link>
 
 												<button
@@ -489,32 +607,36 @@ export default function Navbar() {
 														handleLogout()
 														setIsOpen(false)
 													}}
-													className="flex w-full items-center rounded-md px-2 py-1.5 text-sm text-red-600 hover:bg-gray-100"
+													className="flex items-center justify-center gap-2 px-3 py-2 bg-red-50 rounded-lg border border-red-100 text-sm font-medium text-red-600 hover:bg-red-100"
 												>
+													<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-red-500">
+														<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+														<polyline points="16 17 21 12 16 7"></polyline>
+														<line x1="21" y1="12" x2="9" y2="12"></line>
+													</svg>
 													Sign out
 												</button>
 											</div>
 										</div>
 									) : (
-										<>
-											<Link href="/signin" onClick={() => setIsOpen(false)}>
-												<button className="flex h-8 items-center justify-center rounded-md bg-[#0a1e42] px-4 text-sm font-medium text-white hover:bg-[#29487e]">
+										<div className="grid grid-cols-2 gap-3">
+											<Button asChild variant="outline" className="w-full justify-center">
+												<Link href="/signin" onClick={() => setIsOpen(false)}>
 													Sign In
-												</button>
-											</Link>
-											<Link href="/signup" onClick={() => setIsOpen(false)}>
-												<button className="flex h-8 items-center justify-center rounded-md bg-[#0a1e42] px-4 text-sm font-medium text-white hover:bg-[#29487e]">
+												</Link>
+											</Button>
+											<Button asChild className="w-full justify-center bg-blue-600 hover:bg-blue-700">
+												<Link href="/signup" onClick={() => setIsOpen(false)}>
 													Sign Up
-												</button>
-											</Link>
-										</>
+												</Link>
+											</Button>
+										</div>
 									)}
 								</div>
 							</div>
 						</SheetContent>
 					</Sheet>
 				</div>
-			</div>
 		</header>
 	)
 }
