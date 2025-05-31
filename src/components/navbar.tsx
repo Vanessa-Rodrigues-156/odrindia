@@ -50,6 +50,10 @@ const navItems = [
 		],
 	},
 	{
+		title: "Mentors",
+		href: "/mentors",
+	},
+	{
 		title: "Chatbot",
 		href: "/chatbot",
 	},
