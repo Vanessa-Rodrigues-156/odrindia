@@ -1,4 +1,5 @@
-export const API_BASE_URL = "https://odrlab.com/api";
+export const API_BASE_URL = "https://odrlab.com/backend";
+
 //process.env.NEXT_PUBLIC_API_BASE_URL || 
 export async function apiFetch(path: string, options: RequestInit = {}) {
   const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
@@ -27,24 +28,16 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
     const response = await fetch(`${API_BASE_URL}${path}`, { 
       ...options, 
       headers,
-      credentials: 'same-origin' // Include cookies if they're used
+      credentials: 'same-origin' 
     });
     
-    // Log response status for debugging
     console.log(`API Response from ${path}: Status ${response.status}`);
     
-    // Handle session expiration/unauthorized
     if (response.status === 401) {
       console.warn(`Unauthorized response from ${path}`);
-      
-      // Don't clear token for login/session endpoints as that's expected behavior
-      // when checking if a user is authenticated
       if (path !== '/auth/login' && path !== '/auth/session' && token && typeof window !== "undefined") {
         console.warn('Session expired or invalid token - clearing token');
         localStorage.removeItem('token');
-        
-        // We don't auto-redirect here to avoid infinite loops
-        // Let the auth provider handle redirects
       }
     }
     
