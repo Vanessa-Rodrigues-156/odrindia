@@ -143,38 +143,6 @@ export default function WelcomePage() {
           ))}
         </div>
       </div>
-
-      {/* Header */}
-      <header className="relative z-10 px-4 lg:px-6 h-16 flex items-center border-b border-[#ddd9db]">
-        <div
-          className={`flex items-center justify-center transition-all duration-1000 ${isVisible ? "translate-x-0 opacity-100" : "-translate-x-10 opacity-0"}`}
-        >
-          <div className="w-8 h-8 bg-[#486581] rounded-full flex items-center justify-center p-1">
-            <Image
-              src="/Logobg.png"
-              alt="ODR Lab Logo"
-              width={24}
-              height={24}
-              className="w-full h-full object-contain"
-            />
-          </div>
-          <span className="ml-2 text-xl font-bold text-[#486581]">ODR LAB</span>
-        </div>
-        <nav
-          className={`ml-auto flex gap-6 transition-all duration-1000 delay-300 ${isVisible ? "translate-x-0 opacity-100" : "translate-x-10 opacity-0"}`}
-        >
-          <Link href="#" className="text-sm font-medium text-[#917e6e] hover:text-[#486581] transition-colors">
-            Home
-          </Link>
-          <Link href="#" className="text-sm font-medium text-[#917e6e] hover:text-[#486581] transition-colors">
-            About
-          </Link>
-          <Link href="#" className="text-sm font-medium text-[#917e6e] hover:text-[#486581] transition-colors">
-            Contact
-          </Link>
-        </nav>
-      </header>
-
       {/* Main Content */}
       <main className="relative z-10 flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] px-4">
         {/* Launch Announcement */}
