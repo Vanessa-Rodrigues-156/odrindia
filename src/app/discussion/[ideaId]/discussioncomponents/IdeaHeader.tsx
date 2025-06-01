@@ -17,7 +17,7 @@ export default function IdeaHeader({ idea }: IdeaHeaderProps) {
           href="/odrlabs"
           className="mb-6 inline-flex items-center text-gray-200 hover:text-white">
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to ODR Labs
+          Back to ODR Lab
         </Link>
         <div className="mx-auto max-w-4xl">
           <h1 className="mb-4 text-2xl font-bold tracking-tight md:text-3xl lg:text-4xl">

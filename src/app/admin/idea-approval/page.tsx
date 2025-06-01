@@ -195,7 +195,7 @@ function AdminIdeaApprovalContent() {
       toast({
         title: "Idea approved!",
         description:
-          "The idea has been approved and is now live on the ODR Labs page.",
+          "The idea has been approved and is now live on the ODR Lab page.",
         variant: "default",
       });
     } catch (error) {
