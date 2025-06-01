@@ -11,7 +11,7 @@ const Chat = () => {
     // Function to interact with Python FastAPI backend
     async function sendChatMessage(message) {
         try {
-            const response = await fetch('https://odrlab.com/ask', {
+            const response = await fetch('https://odrlab.com/chat/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ message })
