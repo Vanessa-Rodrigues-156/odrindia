@@ -276,8 +276,16 @@ const SignUpPage = () => {
 
       if (res.ok) {
         setSuccess("Registration successful!");
-        // Auto login the user after successful registration
-        login(data.user, data.token);
+        // Always set token in localStorage for immediate session
+        if (data.token) {
+          if (typeof window !== "undefined") {
+            localStorage.setItem("token", data.token);
+          }
+        }
+        // Always trigger login to update auth context and user state
+        if (login) {
+          await login(form.email, form.password);
+        }
         setTimeout(() => {
           router.push("/");
         }, 3000);

@@ -14,10 +14,20 @@ interface MentorCardProps {
 
 const MentorCard: React.FC<MentorCardProps> = ({ mentor, onClick }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [imgSrc, setImgSrc] = useState<string>(`/mentor/${mentor.id}.png`);
   const ideaCount = mentor.mentoringIdeas.length;
   
   // Generate placeholder image based on mentor's name
   const placeholderImage = `https://ui-avatars.com/api/?name=${encodeURIComponent(mentor.name)}&background=0D8ABC&color=fff&size=256`;
+  
+  // If PNG fails, try JPG, else fallback to placeholder
+  const handleImgError = () => {
+    if (imgSrc === `/mentor/${mentor.id}.png`) {
+      setImgSrc(`/mentor/${mentor.id}.jpg`);
+    } else {
+      setImgSrc(placeholderImage);
+    }
+  };
   
   return (
     <TooltipProvider>
@@ -34,10 +44,11 @@ const MentorCard: React.FC<MentorCardProps> = ({ mentor, onClick }) => {
           <div className="flex flex-col items-center">
             <div className="relative w-32 h-32 mb-4 rounded-full overflow-hidden">
               <Image 
-                src={placeholderImage}
+                src={imgSrc}
                 alt={mentor.name} 
                 fill
                 className="object-cover"
+                onError={handleImgError}
               />
             </div>
             <h3 className="text-xl font-semibold mb-2 text-center">{mentor.name}</h3>
