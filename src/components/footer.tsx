@@ -56,17 +56,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/services" className="text-gray-300 hover:text-white">
-                  ODR Services
-                </Link>
-              </li>
-              <li>
-                <Link href="/news" className="text-gray-300 hover:text-white">
-                  News & Events
-                </Link>
-              </li>
-              <li>
-                <Link href="/lab" className="text-gray-300 hover:text-white">
+                <Link href="/odrlabs" className="text-gray-300 hover:text-white">
                   ODR Lab
                 </Link>
               </li>
@@ -95,7 +85,7 @@ export default function Footer() {
           
         </div>
 
-        <div className="mt-8 border-t border-gray-700 pt-4 ">
+        <div className="mt-8 border-t border-gray-700 pt-4 mb-4">
           <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
             <p className="text-center text-sm text-gray-300 md:text-left">
               © {new Date().getFullYear()} ODR. All rights reserved.
@@ -106,9 +96,6 @@ export default function Footer() {
               </Link>
               <Link href="/terms-of-service" className="text-sm text-gray-300 hover:text-white">
                 Terms of Service
-              </Link>
-              <Link href="/cookies" className="text-sm text-gray-300 hover:text-white">
-                Cookies
               </Link>
             </div>
           </div>
