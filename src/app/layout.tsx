@@ -24,12 +24,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.className} ${geistMono.variable} font-sans antialiased`}
+        className={`${geistSans.className} ${geistMono.variable} font-sans antialiased  flex flex-col`}
       >
         <AuthProvider>
           <ToastProvider>
             <Navbar />
-            {children}
+            <main className="flex-1">
+              {children}
+            </main>
             <Footer />
           </ToastProvider>
         </AuthProvider>

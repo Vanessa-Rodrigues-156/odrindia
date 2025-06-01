@@ -4,7 +4,8 @@ import Image from "next/image"
 import { Award, Clock, Globe, Target, Users, Zap } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import StudentAmbassadorSection from "@/components/about/StudentAmbassadorSection"
 
 
 export default function AboutPage() {
@@ -18,7 +19,7 @@ export default function AboutPage() {
           <div className="container mx-auto px-4">
             <div className="text-center">
               <h1 className="text-4xl font-bold leading-tight tracking-tighter md:text-5xl lg:text-6xl">
-                About <span className="text-sky-400">ODR</span> Labs
+                About <span className="text-sky-400">ODR</span> Lab
               </h1>
               <p className="mx-auto mt-4 max-w-[800px] text-lg text-gray-200 md:text-xl">
               Connect, Collaborate, and Create innovative ODR systems
@@ -73,75 +74,9 @@ export default function AboutPage() {
             </div>
           </div>
         </section>
-                 {/* Our Team */}
-        <section className="py-16">
-          <div className="container mx-auto px-4">
-              <h3 className="text-3xl font-bold text-[#0a1e42] text-center mb-8">Student Ambassadors</h3>
-              <div className="grid gap-8 sm:grid-cols-3 justify-center mx-auto">
-                <Card className="overflow-hidden border-none shadow-md max-w-xs mx-auto">
-                  <div className="relative h-64 w-full">
-                    <Image 
-                      src="/vanessa.jpg"
-                      alt="Vanessa Rodrigues" 
-                      fill 
-                      className="object-cover"
-                      priority
-                    />
-                  </div>
-                  <CardHeader className="bg-white pb-2">
-                    <CardTitle className="text-[#0a1e42]">Vanessa Rodrigues</CardTitle>
-                    <CardDescription>Second Year Computer Engineering Student,Fr. Conceicao Rodrigues College of Engineering</CardDescription>
-                  </CardHeader>
-                  <CardContent className="bg-white">
-                    <p className="text-gray-600">
-                      Contributing to the development and innovation of ODR solutions.
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card className="overflow-hidden border-none shadow-md max-w-xs mx-auto">
-                  <div className="relative h-64 w-full">
-                    <Image 
-                      src="/anjali.jpg"
-                      alt="Anjali Singh" 
-                      fill 
-                      className="object-cover object-top"
-                      priority
-                    />
-                  </div>
-                  <CardHeader className="bg-white pb-2">
-                    <CardTitle className="text-[#0a1e42]">Anjali Singh</CardTitle>
-                    <CardDescription> Bachelor of Science in Information Technology Student, SVKM&apos;s Usha Pravin Gandhi College </CardDescription>
-                  </CardHeader>
-                  <CardContent className="bg-white">
-                    <p className="text-gray-600">
-                      Contributing to the development and innovation of ODR solutions.
-                    </p>
-                  </CardContent>
-                </Card>
-                <Card className="overflow-hidden border-none shadow-md max-w-xs mx-auto">
-                  <div className="relative h-64 w-full">
-                    <Image 
-                      src="/samarth.jpg"
-                      alt="Samarth Jain" 
-                      fill 
-                      className="object-cover object-top"
-                      priority
-                    />
-                  </div>
-                  <CardHeader className="bg-white pb-2">
-                    <CardTitle className="text-[#0a1e42]">Samarth Jain</CardTitle>
-                    <CardDescription>Legal tech graduate from OP Jindal college of Law</CardDescription>
-                  </CardHeader>
-                  <CardContent className="bg-white">
-                    <p className="text-gray-600">
-                      Contributing to reasearch and legal requirements of ODR solutions.
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-        </section>
+        
+        {/* Student Ambassadors Section */}
+        <StudentAmbassadorSection />
         {/* Values */}
         <section className="bg-[#0a1e42] py-16 text-white">
           <div className="container mx-auto px-4">

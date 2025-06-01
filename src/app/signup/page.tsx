@@ -907,7 +907,7 @@ const SignUpPage = () => {
 
   return (
     <motion.div
-      className="flex flex-col items-center justify-center min-h-fit bg-gray-100 text-gray-900 p-6 relative"
+      className="flex flex-col items-center justify-center h-full bg-gray-100 text-gray-900 p-6 relative"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}>
