@@ -3,10 +3,18 @@ export const API_BASE_URL = "https://odrlab.com/backend/api";
 //process.env.NEXT_PUBLIC_API_BASE_URL || 
 export async function apiFetch(path: string, options: RequestInit = {}) {
   const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-  
+
   // Create headers object with proper typing
   const headers = new Headers(options.headers || {});
-  
+
+  // Always set Content-Type for non-GET requests
+  if (
+    ((options.method && options.method !== 'GET') || options.body) &&
+    !headers.has("Content-Type")
+  ) {
+    headers.set("Content-Type", "application/json");
+  }
+
   // Add auth token if available
   if (token) {
     headers.set("Authorization", `Bearer ${token}`);
@@ -15,20 +23,16 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
     console.log(`API Request to ${path}: No auth token available`);
   }
 
-  // Set Content-Type header if needed
-  if (
-    ((options.method && options.method !== 'GET') || options.body) && 
-    !headers.has("Content-Type")
-  ) {
-    headers.set("Content-Type", "application/json");
-  }
+  // Set CORS headers required by backend (for fetch, these are set by browser, but for clarity):
+  headers.set("Accept", "application/json");
+  // Optionally, you can set 'Origin' header, but browser usually sets it automatically
 
   try {
     console.log(`Making API request to: ${API_BASE_URL}${path}`);
-    const response = await fetch(`${API_BASE_URL}${path}`, { 
-      ...options, 
+    const response = await fetch(`${API_BASE_URL}${path}`, {
+      ...options,
       headers,
-      credentials: 'same-origin' 
+      credentials: 'include' // Always send cookies and credentials for cross-origin
     });
     
     console.log(`API Response from ${path}: Status ${response.status}`);
