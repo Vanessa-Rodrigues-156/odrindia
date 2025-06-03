@@ -144,7 +144,7 @@ export default function WelcomePage() {
         </div>
       </div>
       {/* Main Content */}
-      <main className="relative z-10 flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] px-4">
+      <main className="relative z-10 flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] px-4 pt-4">
         {/* Launch Announcement */}
         <div
           className={`text-center mb-8 transition-all duration-1000 delay-500 ${isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"}`}
@@ -207,17 +207,12 @@ export default function WelcomePage() {
         <div
           className={`flex flex-col sm:flex-row gap-4 mb-16 transition-all duration-1000 delay-1100 ${isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"}`}
         >
-          <Button className="bg-[#486581] hover:bg-[#486581]/90 text-white px-8 py-3 text-lg rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg group">
-            Register as a Mentor
-            <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-          </Button>
-          <Button
-            variant="outline"
-            className="border-[#486581] text-[#486581] hover:bg-[#486581] hover:text-white px-8 py-3 text-lg rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg group"
-          >
-            Register as an Ideator
-            <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-          </Button>
+          <Link href={"/signup"} className="w-full sm:w-auto">
+            <Button className="bg-[#486581] hover:bg-[#486581]/90 text-white px-8 py-3 text-lg rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg group">
+              Register as a Mentor or Ideator
+              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </Link>
         </div>
 
         {/* Animated Steps Preview */}

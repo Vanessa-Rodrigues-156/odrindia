@@ -44,6 +44,9 @@ export default function MentorsPage() {
     (mentor.country && mentor.country.toLowerCase().includes(searchTerm.toLowerCase()))
   );
   
+  // Check if user is logged in and has mentors to show
+  const showLoginMessage = !user && mentors.length > 0 && searchTerm.length === 0;
+  
   const handleMentorClick = (mentor: MentorWithIdeas) => {
     setSelectedMentor(mentor);
     setIsModalOpen(true);
@@ -124,6 +127,37 @@ export default function MentorsPage() {
               </div>
             ))}
           </div>
+        ) : showLoginMessage ? (
+          <motion.div 
+            className="text-center py-16"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="max-w-md mx-auto bg-gradient-to-b from-blue-50 to-white p-8 rounded-xl border border-blue-100 shadow-md">
+              <div className="mb-6 text-blue-600">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-bold text-blue-800 mb-4">Login to know more about the mentors of the ODR Lab</h3>
+              <p className="text-gray-600 mb-6">Connect with expert mentors who can guide you through your innovation journey</p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <Button 
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md text-lg transition-all"
+                  onClick={() => window.location.href = '/signup'}
+                >
+                  Sign Up
+                </Button>
+                <Button 
+                  className="bg-white hover:bg-gray-50 text-blue-600 border border-blue-200 px-6 py-2 rounded-md text-lg transition-all"
+                  onClick={() => window.location.href = '/signin'}
+                >
+                  Log In
+                </Button>
+              </div>
+            </div>
+          </motion.div>
         ) : filteredMentors.length > 0 ? (
           <motion.div 
             className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
@@ -140,10 +174,17 @@ export default function MentorsPage() {
             ))}
           </motion.div>
         ) : (
-          <div className="text-center py-16">
-            <h3 className="text-xl font-medium text-gray-700 mb-2">No mentors found</h3>
-            <p className="text-gray-500">Try adjusting your search criteria</p>
-          </div>
+          <motion.div 
+            className="text-center py-16"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="max-w-md mx-auto bg-white rounded-xl border border-gray-200 shadow p-8">
+              <h3 className="text-xl font-medium text-gray-700 mb-2">No mentors found</h3>
+              <p className="text-gray-500">Try adjusting your search criteria</p>
+            </div>
+          </motion.div>
         )}
       </div>
       
