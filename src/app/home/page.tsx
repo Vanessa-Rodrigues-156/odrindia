@@ -1,6 +1,6 @@
 "use client"
 import "../globals.css"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, Link } from "lucide-react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent} from "@/components/ui/card"
@@ -113,9 +113,6 @@ export default function Home() {
                   <Button size="lg" className="bg-sky-500 hover:bg-sky-600" onClick={() => window.location.href = '/signup'}>
                     Register as a Mentor
                     <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                  <Button size="lg" variant="outline" className="border-gray-200 bg-[#0a1e42] text-white hover:bg-white/10" onClick={() => window.location.href = '/about'}>
-                    Register as an Ideator
                   </Button>
                 </motion.div>
               </motion.div>

@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // Animation variants
 const fadeInUp = {
@@ -46,8 +47,23 @@ const pageTransition = {
   },
 };
 
+// Main user types for initial categorization
+const mainUserTypes = [
+  { value: "innovator", label: "Student Innovator" },
+  { value: "mentor", label: "Mentor" },
+  { value: "faculty", label: "Faculty" },
+  { value: "other", label: "Other" },
+];
+
+// Subtypes for mentors
+const mentorTypes = [
+  { value: "tech", label: "Technical Enthusiast" },
+  { value: "law", label: "Law Enthusiast" },
+];
+
+// Legacy userTypes kept for compatibility with backend
 const userTypes = [
-  { value: "student", label: "Student" },
+  { value: "student", label: "Ideator" },
   { value: "faculty", label: "Faculty" },
   { value: "tech", label: "Tech Enthusiast" },
   { value: "law", label: "Law Enthusiast" },
@@ -81,6 +97,9 @@ const initialForm = {
   // Law Enthusiast
   lawFirm: "",
   // Other
+  mainUserType: "", // For initial selection
+  mentorType: "", // For mentor subtype selection
+  // Other user types
   otherRole: "",
   otherWorkplace: "",
 };
@@ -138,9 +157,26 @@ const SignUpPage = () => {
       }
     }
     if (step === 1) {
-      if (!form.userType) {
-        setError("Please select your type.");
+      if (!form.mainUserType) {
+        setError("Please select whether you're a Student Innovator or Mentor.");
         return;
+      }
+      
+      // Set the userType based on mainUserType and mentorType for backend compatibility
+      if (form.mainUserType === "innovator") {
+        // For student innovators, keep as student
+        setForm(prev => ({ ...prev, userType: "student" }));
+      } else if (form.mainUserType === "mentor") {
+        // For mentors, validate that a mentor type is selected
+        if (!form.mentorType) {
+          setError("Please select your mentor type.");
+          return;
+        }
+        // Set userType based on mentorType
+        setForm(prev => ({ ...prev, userType: prev.mentorType }));
+      } else {
+        // For faculty and others, use the mainUserType directly
+        setForm(prev => ({ ...prev, userType: prev.mainUserType }));
       }
     }
     if (step === 2) {
@@ -254,11 +290,11 @@ const SignUpPage = () => {
             form.userType === "student"
               ? "INNOVATOR"
               : form.userType === "faculty"
-              ? "MENTOR"
+              ? "OTHER"
               : form.userType === "law"
               ? "MENTOR"
               : form.userType === "tech"
-              ? "INNOVATOR"
+              ? "MENTOR"
               : "OTHER",
           institution:
             form.studentInstitute ||
@@ -416,25 +452,161 @@ const SignUpPage = () => {
             variants={pageTransition}
             className="space-y-6">
             <motion.div variants={fadeInUp}>
-              <Label className="block mb-3">Select User Type</Label>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {userTypes.map((type) => (
-                  <motion.div
-                    key={type.value}
-                    variants={fadeInUp}
-                    whileHover={{ scale: 1.02 }}
-                    className={`border p-4 rounded cursor-pointer ${
-                      form.userType === type.value
-                        ? "bg-[#0a1e42] text-white border-[#0a1e42]"
-                        : "border-gray-300 hover:border-[#0a1e42]"
-                    }`}
-                    onClick={() =>
-                      setForm((prev) => ({ ...prev, userType: type.value }))
-                    }>
-                    <div className="font-medium">{type.label}</div>
-                  </motion.div>
-                ))}
+              <h3 className="text-xl font-medium text-center text-[#0a1e42] mb-6">How would you like to join ODR Lab?</h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                {/* Student Innovator Option */}
+                <motion.div
+                  variants={fadeInUp}
+                  whileHover={{ scale: 1.02 }}
+                  className={`border p-5 rounded-lg cursor-pointer transition-all shadow-sm hover:shadow-md ${
+                    form.mainUserType === "innovator"
+                      ? "bg-blue-50 border-blue-500 ring-2 ring-blue-200"
+                      : "border-gray-300 hover:border-blue-300"
+                  }`}
+                  onClick={() =>
+                    setForm((prev) => ({ 
+                      ...prev, 
+                      mainUserType: "innovator",
+                      mentorType: "" // Reset mentor type when switching
+                    }))
+                  }>
+                  <div className="flex flex-col items-center text-center">
+                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                      </svg>
+                    </div>
+                    <div className="font-bold text-lg text-blue-800">Student Innovator</div>
+                    <p className="text-sm text-gray-600 mt-2">
+                      Join as a student to innovate and learn with ODR Lab
+                    </p>
+                  </div>
+                </motion.div>
+                
+                {/* Mentor Option */}
+                <motion.div
+                  variants={fadeInUp}
+                  whileHover={{ scale: 1.02 }}
+                  className={`border p-5 rounded-lg cursor-pointer transition-all shadow-sm hover:shadow-md ${
+                    form.mainUserType === "mentor"
+                      ? "bg-indigo-50 border-indigo-500 ring-2 ring-indigo-200"
+                      : "border-gray-300 hover:border-indigo-300"
+                  }`}
+                  onClick={() =>
+                    setForm((prev) => ({ ...prev, mainUserType: "mentor" }))
+                  }>
+                  <div className="flex flex-col items-center text-center">
+                    <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center mb-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                      </svg>
+                    </div>
+                    <div className="font-bold text-lg text-indigo-800">Mentor</div>
+                    <p className="text-sm text-gray-600 mt-2">
+                      Join as a mentor to guide and support student innovations
+                    </p>
+                  </div>
+                </motion.div>
+                
+                {/* Faculty Option */}
+                <motion.div
+                  variants={fadeInUp}
+                  whileHover={{ scale: 1.02 }}
+                  className={`border p-5 rounded-lg cursor-pointer transition-all shadow-sm hover:shadow-md ${
+                    form.mainUserType === "faculty"
+                      ? "bg-teal-50 border-teal-500 ring-2 ring-teal-200"
+                      : "border-gray-300 hover:border-teal-300"
+                  }`}
+                  onClick={() =>
+                    setForm((prev) => ({ 
+                      ...prev, 
+                      mainUserType: "faculty",
+                      mentorType: "" // Reset mentor type when switching
+                    }))
+                  }>
+                  <div className="flex flex-col items-center text-center">
+                    <div className="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center mb-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path d="M12 14l9-5-9-5-9 5 9 5z" />
+                        <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
+                      </svg>
+                    </div>
+                    <div className="font-bold text-lg text-teal-800">Faculty</div>
+                    <p className="text-sm text-gray-600 mt-2">
+                      Join as faculty to integrate ODR Lab into your teaching
+                    </p>
+                  </div>
+                </motion.div>
+                
+                {/* Other Option */}
+                <motion.div
+                  variants={fadeInUp}
+                  whileHover={{ scale: 1.02 }}
+                  className={`border p-5 rounded-lg cursor-pointer transition-all shadow-sm hover:shadow-md ${
+                    form.mainUserType === "other"
+                      ? "bg-amber-50 border-amber-500 ring-2 ring-amber-200"
+                      : "border-gray-300 hover:border-amber-300"
+                  }`}
+                  onClick={() =>
+                    setForm((prev) => ({ 
+                      ...prev, 
+                      mainUserType: "other",
+                      mentorType: "" // Reset mentor type when switching
+                    }))
+                  }>
+                  <div className="flex flex-col items-center text-center">
+                    <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mb-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                      </svg>
+                    </div>
+                    <div className="font-bold text-lg text-amber-800">Other</div>
+                    <p className="text-sm text-gray-600 mt-2">
+                      Join in another capacity
+                    </p>
+                  </div>
+                </motion.div>
               </div>
+              
+              {/* Show mentor type selection only if mentor is selected */}
+              {form.mainUserType === "mentor" && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                  <h4 className="font-medium text-indigo-800 mb-4">Please select your mentor type:</h4>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {mentorTypes.map((type) => (
+                      <motion.div
+                        key={type.value}
+                        variants={fadeInUp}
+                        whileHover={{ scale: 1.02 }}
+                        className={`border p-4 rounded cursor-pointer transition-all ${
+                          form.mentorType === type.value
+                            ? "bg-indigo-100 border-indigo-400"
+                            : "border-gray-300 hover:border-indigo-300"
+                        }`}
+                        onClick={() =>
+                          setForm((prev) => ({ ...prev, mentorType: type.value }))
+                        }>
+                        <div className="font-medium">
+                          {type.label}
+                          {type.value === "tech" && (
+                            <p className="text-xs text-gray-600 mt-1">For technical professionals who can guide innovative tech projects</p>
+                          )}
+                          {type.value === "law" && (
+                            <p className="text-xs text-gray-600 mt-1">For legal professionals who can provide expertise on regulatory aspects</p>
+                          )}
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
             </motion.div>
           </motion.div>
         );
@@ -453,69 +625,89 @@ const SignUpPage = () => {
                 initial="hidden"
                 animate="visible"
                 variants={staggerContainer}>
-                <motion.div
-                  className="space-y-4"
-                  variants={fadeInUp}>
-                  <div>
-                    <Label htmlFor="highestEducation">Highest Education</Label>
-                    <Input
-                      id="highestEducation"
-                      name="highestEducation"
-                      value={form.highestEducation}
-                      onChange={handleChange}
-                      placeholder="Your highest education"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="studentInstitute">Institute</Label>
-                    <Input
-                      id="studentInstitute"
-                      name="studentInstitute"
-                      value={form.studentInstitute}
-                      onChange={handleChange}
-                      placeholder="Your institute name"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="courseStatus">Course Status</Label>
-                    <select
-                      id="courseStatus"
-                      name="courseStatus"
-                      className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#0a1e42]"
-                      value={form.courseStatus}
-                      onChange={handleChange}
-                      required>
-                      <option value="">Select status</option>
-                      <option value="ongoing">Ongoing</option>
-                      <option value="completed">Completed</option>
-                    </select>
-                  </div>
-                  <div>
-                    <Label htmlFor="courseName">Course Name</Label>
-                    <Input
-                      id="courseName"
-                      name="courseName"
-                      value={form.courseName}
-                      onChange={handleChange}
-                      placeholder="Your course name"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="odrLabPurpose">
-                      Purpose for joining ODR Lab
-                    </Label>
-                    <Textarea
-                      id="odrLabPurpose"
-                      name="odrLabPurpose"
-                      value={form.odrLabPurpose}
-                      onChange={handleChange}
-                      placeholder="Why do you want to join the ODR Lab? How will you use it?"
-                      rows={4}
-                    />
-                  </div>
+                <motion.div variants={fadeInUp} className="mb-6">
+                  <h3 className="text-lg font-medium text-blue-800 mb-4">Student Innovator Information</h3>
+                  <p className="text-sm text-gray-600 mb-6">Please provide your academic details to help us customize your experience</p>
+                  
+                  <Tabs defaultValue="education" className="w-full">
+                    <TabsList className="grid w-full grid-cols-2 mb-6">
+                      <TabsTrigger value="education" className="text-sm">Academic Details</TabsTrigger>
+                      <TabsTrigger value="purpose" className="text-sm">Purpose & Goals</TabsTrigger>
+                    </TabsList>
+                    
+                    <TabsContent value="education" className="space-y-4 pt-2">
+                      <div>
+                        <Label htmlFor="highestEducation" className="text-blue-700">Highest Education</Label>
+                        <Input
+                          id="highestEducation"
+                          name="highestEducation"
+                          value={form.highestEducation}
+                          onChange={handleChange}
+                          placeholder="Your highest education qualification"
+                          className="mt-1"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="studentInstitute" className="text-blue-700">Institute</Label>
+                        <Input
+                          id="studentInstitute"
+                          name="studentInstitute"
+                          value={form.studentInstitute}
+                          onChange={handleChange}
+                          placeholder="Your institute or university name"
+                          className="mt-1"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="courseName" className="text-blue-700">Course/Program Name</Label>
+                        <Input
+                          id="courseName"
+                          name="courseName"
+                          value={form.courseName}
+                          onChange={handleChange}
+                          placeholder="Your course or program name"
+                          className="mt-1"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="courseStatus" className="text-blue-700">Course Status</Label>
+                        <select
+                          id="courseStatus"
+                          name="courseStatus"
+                          className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 mt-1"
+                          value={form.courseStatus}
+                          onChange={handleChange}
+                          required>
+                          <option value="">Select status</option>
+                          <option value="ongoing">Ongoing</option>
+                          <option value="completed">Completed</option>
+                        </select>
+                      </div>
+                    </TabsContent>
+                    
+                    <TabsContent value="purpose" className="space-y-4 pt-2">
+                      <div>
+                        <Label htmlFor="odrLabPurpose" className="text-blue-700">
+                          Purpose for joining ODR Lab
+                        </Label>
+                        <Textarea
+                          id="odrLabPurpose"
+                          name="odrLabPurpose"
+                          value={form.odrLabPurpose}
+                          onChange={handleChange}
+                          placeholder="Why do you want to join the ODR Lab? What are your innovation goals? How will this platform help your academic or personal growth?"
+                          rows={6}
+                          className="mt-1"
+                        />
+                        <p className="text-xs text-gray-500 mt-2">
+                          Your response helps us understand your goals and how we can better support your innovation journey.
+                        </p>
+                      </div>
+                    </TabsContent>
+                  </Tabs>
                 </motion.div>
               </motion.div>
             )}
@@ -605,96 +797,152 @@ const SignUpPage = () => {
               </motion.div>
             )}
 
+            {/* Tech Enthusiast Mentor */}
             {form.userType === "tech" && (
               <motion.div
                 initial="hidden"
                 animate="visible"
                 variants={staggerContainer}>
-                <motion.div
-                  className="space-y-4"
-                  variants={fadeInUp}>
-                  <div>
-                    <Label htmlFor="techOrg">Organization</Label>
-                    <Input
-                      id="techOrg"
-                      name="techOrg"
-                      value={form.techOrg}
-                      onChange={handleChange}
-                      placeholder="Your organization"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="techRole">Role</Label>
-                    <Input
-                      id="techRole"
-                      name="techRole"
-                      value={form.techRole}
-                      onChange={handleChange}
-                      placeholder="Your role in the organization"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="odrLabPurpose">
-                      How do you plan to use ODR Lab?
-                    </Label>
-                    <Textarea
-                      id="odrLabPurpose"
-                      name="odrLabPurpose"
-                      value={form.odrLabPurpose}
-                      onChange={handleChange}
-                      placeholder="How will you use ODR Lab in your technical work?"
-                      rows={4}
-                    />
-                  </div>
+                <motion.div variants={fadeInUp} className="mb-6">
+                  <h3 className="text-lg font-medium text-indigo-800 mb-4">Technical Enthusiast Mentor</h3>
+                  <p className="text-sm text-gray-600 mb-6">
+                    As a technical mentor, you&apos;ll guide students in developing innovative technology solutions.
+                  </p>
+                  
+                  <Tabs defaultValue="profile" className="w-full">
+                    <TabsList className="grid w-full grid-cols-2 mb-6">
+                      <TabsTrigger value="profile" className="text-sm">Professional Profile</TabsTrigger>
+                      <TabsTrigger value="mentoring" className="text-sm">Mentoring Approach</TabsTrigger>
+                    </TabsList>
+                    
+                    <TabsContent value="profile" className="space-y-4 pt-2">
+                      <div>
+                        <Label htmlFor="techOrg" className="text-indigo-700">Organization/Company</Label>
+                        <Input
+                          id="techOrg"
+                          name="techOrg"
+                          value={form.techOrg}
+                          onChange={handleChange}
+                          placeholder="Your organization or company name"
+                          className="mt-1"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="techRole" className="text-indigo-700">Professional Role</Label>
+                        <Input
+                          id="techRole"
+                          name="techRole"
+                          value={form.techRole}
+                          onChange={handleChange}
+                          placeholder="Your role (e.g., Software Engineer, Tech Lead)"
+                          className="mt-1"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="highestEducation" className="text-indigo-700">Highest Education</Label>
+                        <Input
+                          id="highestEducation"
+                          name="highestEducation"
+                          value={form.highestEducation}
+                          onChange={handleChange}
+                          placeholder="Your highest education qualification"
+                          className="mt-1"
+                          required
+                        />
+                      </div>
+                    </TabsContent>
+                    
+                    <TabsContent value="mentoring" className="space-y-4 pt-2">
+                      <div>
+                        <Label htmlFor="odrLabPurpose" className="text-indigo-700">
+                          Mentoring Philosophy & Expertise
+                        </Label>
+                        <Textarea
+                          id="odrLabPurpose"
+                          name="odrLabPurpose"
+                          value={form.odrLabPurpose}
+                          onChange={handleChange}
+                          placeholder="Please describe your technical expertise, mentoring experience, and how you plan to guide student innovators through the ODR Lab."
+                          rows={6}
+                          className="mt-1"
+                        />
+                        <p className="text-xs text-gray-500 mt-2">
+                          Your mentorship will be invaluable in helping students develop effective technological solutions.
+                        </p>
+                      </div>
+                    </TabsContent>
+                  </Tabs>
                 </motion.div>
               </motion.div>
             )}
 
+            {/* Law Enthusiast Mentor */}
             {form.userType === "law" && (
               <motion.div
                 initial="hidden"
                 animate="visible"
                 variants={staggerContainer}>
-                <motion.div
-                  className="space-y-4"
-                  variants={fadeInUp}>
-                  <div>
-                    <Label htmlFor="lawFirm">Law Firm/Organization</Label>
-                    <Input
-                      id="lawFirm"
-                      name="lawFirm"
-                      value={form.lawFirm}
-                      onChange={handleChange}
-                      placeholder="Your law firm or organization"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="highestEducation">Legal Education</Label>
-                    <Input
-                      id="highestEducation"
-                      name="highestEducation"
-                      value={form.highestEducation}
-                      onChange={handleChange}
-                      placeholder="Your legal education (e.g., LLB, JD)"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="odrLabPurpose">
-                      How do you plan to use ODR Lab?
-                    </Label>
-                    <Textarea
-                      id="odrLabPurpose"
-                      name="odrLabPurpose"
-                      value={form.odrLabPurpose}
-                      onChange={handleChange}
-                      placeholder="How will you use ODR Lab in your legal practice?"
-                      rows={4}
-                    />
-                  </div>
+                <motion.div variants={fadeInUp} className="mb-6">
+                  <h3 className="text-lg font-medium text-indigo-800 mb-4">Law Enthusiast Mentor</h3>
+                  <p className="text-sm text-gray-600 mb-6">
+                    As a legal mentor, you&apos;ll provide guidance on legal and regulatory aspects of student innovations.
+                  </p>
+                  
+                  <Tabs defaultValue="profile" className="w-full">
+                    <TabsList className="grid w-full grid-cols-2 mb-6">
+                      <TabsTrigger value="profile" className="text-sm">Professional Profile</TabsTrigger>
+                      <TabsTrigger value="mentoring" className="text-sm">Mentoring Approach</TabsTrigger>
+                    </TabsList>
+                    
+                    <TabsContent value="profile" className="space-y-4 pt-2">
+                      <div>
+                        <Label htmlFor="lawFirm" className="text-indigo-700">Law Firm/Organization</Label>
+                        <Input
+                          id="lawFirm"
+                          name="lawFirm"
+                          value={form.lawFirm}
+                          onChange={handleChange}
+                          placeholder="Your law firm or organization name"
+                          className="mt-1"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="highestEducation" className="text-indigo-700">Legal Education</Label>
+                        <Input
+                          id="highestEducation"
+                          name="highestEducation"
+                          value={form.highestEducation}
+                          onChange={handleChange}
+                          placeholder="Your legal education (e.g., LLB, JD)"
+                          className="mt-1"
+                          required
+                        />
+                      </div>
+                    </TabsContent>
+                    
+                    <TabsContent value="mentoring" className="space-y-4 pt-2">
+                      <div>
+                        <Label htmlFor="odrLabPurpose" className="text-indigo-700">
+                          Legal Expertise & Mentoring Approach
+                        </Label>
+                        <Textarea
+                          id="odrLabPurpose"
+                          name="odrLabPurpose"
+                          value={form.odrLabPurpose}
+                          onChange={handleChange}
+                          placeholder="Please describe your legal expertise, experience in ODR or innovation-related legal matters, and how you plan to mentor students through legal challenges."
+                          rows={6}
+                          className="mt-1"
+                        />
+                        <p className="text-xs text-gray-500 mt-2">
+                          Your legal guidance will help students navigate regulatory challenges in their innovation journey.
+                        </p>
+                      </div>
+                    </TabsContent>
+                  </Tabs>
                 </motion.div>
               </motion.div>
             )}
@@ -793,7 +1041,14 @@ const SignUpPage = () => {
                   </div>
                   <div>
                     <span className="font-medium">User Type:</span>{" "}
-                    {form.userType}
+                    {form.mainUserType === "innovator" 
+                      ? "Student Innovator"
+                      : form.mainUserType === "mentor"
+                      ? `${form.mentorType === "tech" ? "Technical Enthusiast" : "Law Enthusiast"} Mentor`
+                      : form.mainUserType === "faculty"
+                      ? "Faculty"
+                      : "Other"
+                    }
                   </div>
 
                   <h4 className="font-medium text-[#0a1e42] border-b pb-1 mt-3">
