@@ -33,9 +33,49 @@ const MentorDetailModal: React.FC<MentorDetailModalProps> = ({
 
   const placeholderImage = `https://ui-avatars.com/api/?name=${encodeURIComponent(mentor.name || 'Mentor')}&background=0D8ABC&color=fff&size=256&bold=true`;
   
+  // Try loading mentor profile image from different possible sources/extensions
+  const getMentorImageSrc = () => {
+    // We'll use a path in the public folder: /mentor/{id}.{extension}
+    // The image loading will try this path first, and if it fails,
+    // the onError handler will progressively try other formats
+    
+    // Check if the mentor id exists
+    if (!mentor.id) return placeholderImage;
+    
+    // Start with jpg format by default - we'll handle fallbacks in the onError handler
+    // Our error handler will try: jpg -> png -> jpeg -> placeholder
+    return `/mentor/${mentor.id}.jpg`;
+  };
+  
+  // Function to handle image error and fall back to placeholder
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const target = e.currentTarget;
+    
+    // If current source is JPG, try PNG before falling back to placeholder
+    if (target.src.endsWith('.jpg')) {
+      const pngSrc = target.src.replace('.jpg', '.png');
+      target.src = pngSrc;
+    } 
+    // If current source is PNG, try JPEG before falling back to placeholder
+    else if (target.src.endsWith('.png')) {
+      const jpegSrc = target.src.replace('.png', '.jpeg');
+      target.src = jpegSrc;
+    }
+    // Otherwise, fall back to placeholder
+    else {
+      target.src = placeholderImage;
+    }
+    
+    // Add a one-time error handler to catch if the alternate format also fails
+    target.onerror = () => {
+      target.src = placeholderImage;
+      target.onerror = null; // Remove the error handler after fallback
+    };
+  };
+  
   return (
     <Dialog open={isOpen} onOpenChange={() => onClose()}>
-      <DialogContent className="max-w-4xl max-h-[90vh] p-6 bg-gradient-to-b from-white to-blue-50">
+      <DialogContent className="max-w-6xl max-h-[90vh] p-6 bg-gradient-to-b from-white to-blue-50">
         <DialogHeader className="pb-4 border-b border-blue-100">
           <DialogTitle className="text-2xl font-bold flex items-center text-blue-800">
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-sky-500">
@@ -60,12 +100,13 @@ const MentorDetailModal: React.FC<MentorDetailModalProps> = ({
             <div className="w-full md:w-1/3 flex flex-col items-center">
               <div className="relative w-44 h-44 rounded-full overflow-hidden mb-5 border-4 border-sky-300 shadow-lg">
                 <Image 
-                  src={placeholderImage}
+                  src={getMentorImageSrc()}
                   alt={mentor.name || 'Mentor'} 
                   fill
                   sizes="(max-width: 768px) 100vw, 33vw"
                   className="object-cover"
                   priority
+                  onError={handleImageError}
                 />
               </div>
               
