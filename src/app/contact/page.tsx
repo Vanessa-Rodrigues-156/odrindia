@@ -64,11 +64,9 @@ export default function ContactPage() {
         <motion.section
           className="relative bg-[#0a1e42] py-20 text-white overflow-hidden"
           style={{
-            backgroundImage: "url('/contact-hero.jpg')",
+            backgroundImage: "linear-gradient(rgba(10, 30, 66, 0.85), rgba(10, 30, 66, 0.9)), url('/contact-hero.jpg')",
             backgroundSize: "cover",
             backgroundPosition: "center",
-            backgroundBlendMode: "overlay",
-            backgroundColor: "rgba(10, 30, 66, 0.85)",
           }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -91,6 +89,14 @@ export default function ContactPage() {
             }}
             transition={{ duration: 6, repeat: Infinity }}
           />
+          <motion.div 
+            className="absolute top-40 right-20 w-40 h-40 rounded-full bg-indigo-200/10"
+            animate={{ 
+              scale: [1, 1.3, 1],
+              opacity: [0.15, 0.25, 0.15]
+            }}
+            transition={{ duration: 7, repeat: Infinity, delay: 1 }}
+          />
           
           <div className="container mx-auto px-4 relative z-10">
             <motion.div 
@@ -99,8 +105,18 @@ export default function ContactPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
+              <motion.div
+                className="inline-block mb-6"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ type: "spring", stiffness: 100, delay: 0.1 }}
+              >
+                <div className="p-3 bg-blue-500/20 rounded-full">
+                  <Mail className="h-8 w-8 text-blue-200" />
+                </div>
+              </motion.div>
               <motion.h1 
-                className="text-4xl md:text-5xl font-bold mb-4"
+                className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-200"
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
@@ -115,6 +131,21 @@ export default function ContactPage() {
               >
                 Have questions about ODR India? Reach out to our team and we&apos;ll get back to you shortly.
               </motion.p>
+              
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.5 }}
+              >
+                <Button 
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-6 h-auto rounded-md text-lg transition-all shadow-md hover:shadow-lg"
+                  onClick={() => {
+                    document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                >
+                  Contact Us Now
+                </Button>
+              </motion.div>
             </motion.div>
           </div>
         </motion.section>
@@ -141,68 +172,63 @@ export default function ContactPage() {
                   className="grid grid-cols-1 md:grid-cols-2 gap-4"
                   variants={fadeInUp}
                 >
-                  <Card>
-                    <CardContent className="p-6 flex items-start gap-4">
-                      <div className="bg-blue-50 p-2 rounded-full">
+                  <Card className="overflow-hidden group hover:shadow-md transition-all duration-300">
+                    <CardContent className="p-6 flex items-start gap-4 relative">
+                      <div className="absolute -top-10 -right-10 w-24 h-24 bg-blue-50 rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+                      <div className="bg-blue-50 p-2 rounded-full group-hover:bg-blue-100 transition-colors duration-300">
                         <Mail className="h-6 w-6 text-[#0a1e42]" />
                       </div>
                       <div>
-                        <h3 className="font-medium text-gray-900 mb-1">Email</h3>
-                        <p className="text-gray-600">info@odrindia.org</p>
+                        <h3 className="font-medium text-gray-900 mb-1">Student Ambassadors</h3>
+                        <p className="text-gray-600">contact@odrlab.com</p>
+                        <p className="text-xs text-gray-500 mt-2">For student inquiries and general questions</p>
                       </div>
                     </CardContent>
                   </Card>
                   
-                  <Card>
-                    <CardContent className="p-6 flex items-start gap-4">
-                      <div className="bg-blue-50 p-2 rounded-full">
-                        <Phone className="h-6 w-6 text-[#0a1e42]" />
+                  <Card className="overflow-hidden group hover:shadow-md transition-all duration-300">
+                    <CardContent className="p-6 flex items-start gap-4 relative">
+                      <div className="absolute -top-10 -right-10 w-24 h-24 bg-blue-50 rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+                      <div className="bg-blue-50 p-2 rounded-full group-hover:bg-blue-100 transition-colors duration-300">
+                        <Mail className="h-6 w-6 text-[#0a1e42]" />
                       </div>
                       <div>
-                        <h3 className="font-medium text-gray-900 mb-1">Phone</h3>
-                        <p className="text-gray-600">+91 98765 43210</p>
+                        <h3 className="font-medium text-gray-900 mb-1">Mentor Admin</h3>
+                        <p className="text-gray-600">suman@odrlab.com</p>
+                        <p className="text-xs text-gray-500 mt-2">For mentorship program inquiries</p>
                       </div>
                     </CardContent>
                   </Card>
-                </motion.div>
-
-                <motion.div variants={fadeInUp}>
-                  <Card>
-                    <CardContent className="p-6 flex items-start gap-4">
-                      <div className="bg-blue-50 p-2 rounded-full">
-                        <MapPin className="h-6 w-6 text-[#0a1e42]" />
+                  
+                  <Card className="overflow-hidden group hover:shadow-md transition-all duration-300">
+                    <CardContent className="p-6 flex items-start gap-4 relative">
+                      <div className="absolute -top-10 -right-10 w-24 h-24 bg-blue-50 rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+                      <div className="bg-blue-50 p-2 rounded-full group-hover:bg-blue-100 transition-colors duration-300">
+                        <Mail className="h-6 w-6 text-[#0a1e42]" />
                       </div>
                       <div>
-                        <h3 className="font-medium text-gray-900 mb-1">Address</h3>
-                        <p className="text-gray-600">
-                          ODR India Foundation<br />
-                          123, Tech Park<br />
-                          Bandra Kurla Complex<br />
-                          Mumbai, Maharashtra 400051<br />
-                          India
-                        </p>
+                        <h3 className="font-medium text-gray-900 mb-1">Mentor Admin</h3>
+                        <p className="text-gray-600">chittu@odrlab.com</p>
+                        <p className="text-xs text-gray-500 mt-2">For mentorship program support</p>
                       </div>
                     </CardContent>
                   </Card>
-                </motion.div>
-
-                <motion.div variants={fadeInUp}>
-                  <Card>
-                    <CardContent className="p-6 flex items-start gap-4">
-                      <div className="bg-blue-50 p-2 rounded-full">
+                  
+                  <Card className="overflow-hidden group hover:shadow-md transition-all duration-300">
+                    <CardContent className="p-6 flex items-start gap-4 relative">
+                      <div className="absolute -top-10 -right-10 w-24 h-24 bg-blue-50 rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+                      <div className="bg-blue-50 p-2 rounded-full group-hover:bg-blue-100 transition-colors duration-300">
                         <Building className="h-6 w-6 text-[#0a1e42]" />
                       </div>
                       <div>
-                        <h3 className="font-medium text-gray-900 mb-1">Working Hours</h3>
-                        <p className="text-gray-600">
-                          Monday - Friday: 9:00 AM - 6:00 PM<br />
-                          Saturday: 10:00 AM - 2:00 PM<br />
-                          Sunday: Closed
-                        </p>
+                        <h3 className="font-medium text-gray-900 mb-1">Partnerships</h3>
+                        <p className="text-gray-600">partnerships@odrlab.com</p>
+                        <p className="text-xs text-gray-500 mt-2">For collaboration and partnership opportunities</p>
                       </div>
                     </CardContent>
                   </Card>
                 </motion.div>
+
               </motion.div>
 
               {/* Contact Form */}
@@ -210,6 +236,7 @@ export default function ContactPage() {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
+                id="contact-form"
               >
                 <motion.h2 
                   className="text-3xl font-bold text-[#0a1e42] mb-6"
@@ -220,7 +247,8 @@ export default function ContactPage() {
                   Send Us a Message
                 </motion.h2>
 
-                <Card>
+                <Card className="border border-blue-100 shadow-md overflow-hidden">
+                  <div className="h-2 bg-gradient-to-r from-blue-500 to-indigo-600"></div>
                   <CardContent className="p-6 pt-6">
                     {formStatus === "submitted" ? (
                       <motion.div 
@@ -317,8 +345,8 @@ export default function ContactPage() {
           </div>
         </section>
 
-        {/* FAQ Section */}
-        <section className="py-16 bg-gray-50">
+        {/* FAQ Coming Soon Section */}
+        <section className="py-16 bg-gradient-to-b from-blue-50 to-white">
           <div className="container mx-auto px-4">
             <motion.div 
               className="max-w-4xl mx-auto"
@@ -328,7 +356,7 @@ export default function ContactPage() {
               viewport={{ once: true }}
             >
               <motion.div 
-                className="text-center mb-12"
+                className="text-center mb-10"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
@@ -346,9 +374,6 @@ export default function ContactPage() {
                 <h2 className="text-3xl font-bold text-[#0a1e42] mb-3">
                   Frequently Asked Questions
                 </h2>
-                <p className="text-gray-600">
-                  Find quick answers to common questions about ODR India.
-                </p>
               </motion.div>
 
               <motion.div 
@@ -356,49 +381,33 @@ export default function ContactPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
                 viewport={{ once: true }}
+                className="max-w-lg mx-auto"
               >
-                <Accordion type="single" collapsible className="w-full">
-                  <AccordionItem value="item-1">
-                    <AccordionTrigger className="text-left font-medium">
-                      What is Online Dispute Resolution (ODR)?
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      Online Dispute Resolution (ODR) is the use of technology to facilitate the resolution of disputes between parties. It integrates traditional Alternative Dispute Resolution (ADR) methods with modern digital tools, making the process more accessible, efficient, and affordable.
-                    </AccordionContent>
-                  </AccordionItem>
-                  <AccordionItem value="item-2">
-                    <AccordionTrigger className="text-left font-medium">
-                      How can I get involved with ODRLab?
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      You can get involved with ODRLab by joining our community, participating in workshops and conferences, contributing to research, or partnering with us on projects. Please contact us through this form or send an email to info@ODRLab.org to explore collaboration opportunities.
-                    </AccordionContent>
-                  </AccordionItem>
-                  <AccordionItem value="item-3">
-                    <AccordionTrigger className="text-left font-medium">
-                      What services does ODRLab provide?
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      ODRLab provides a range of services including ODR platform development, training for mediators and arbitrators in online tools, research on ODR best practices, policy advocacy, and educational resources on effective dispute resolution techniques in the digital environment.
-                    </AccordionContent>
-                  </AccordionItem>
-                  <AccordionItem value="item-4">
-                    <AccordionTrigger className="text-left font-medium">
-                      Is ODR legally binding inLab?
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      The legal status of ODR outcomes depends on the method used. Arbitration awards from ODR processes are generally enforceable under the Arbitration and Conciliation Act. Mediation settlements can be made binding through proper documentation. The Indian judiciary has been increasingly supportive of ODR initiatives to reduce court backlogs.
-                    </AccordionContent>
-                  </AccordionItem>
-                  <AccordionItem value="item-5">
-                    <AccordionTrigger className="text-left font-medium">
-                      How secure is the ODR process?
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      Security is a top priority in ODR. Our recommended platforms use encryption, secure authentication, and data protection measures compliant with privacy regulations. We advocate for platforms that maintain confidentiality throughout the dispute resolution process and implement secure document handling procedures.
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
+                <div className="bg-white rounded-xl border border-blue-100 shadow-lg overflow-hidden">
+                  <div className="p-8 relative">
+                    {/* Decorative elements */}
+                    <div className="absolute -top-4 -right-4 w-20 h-20 bg-blue-100 rounded-full opacity-40"></div>
+                    <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-indigo-100 rounded-full opacity-30"></div>
+                    
+                    <div className="relative z-10 text-center">
+                      <div className="mx-auto w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mb-6">
+                        <HelpCircle className="h-8 w-8 text-blue-600" />
+                      </div>
+                      <h3 className="text-2xl font-bold text-blue-800 mb-4">FAQs Coming Soon</h3>
+                      <p className="text-gray-600 mb-6 leading-relaxed">
+                        We're currently compiling a comprehensive list of frequently asked questions about ODR India and our services.
+                      </p>
+                      <div className="pt-2">
+                        <Button 
+                          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md text-base transition-all shadow-sm hover:shadow"
+                          onClick={() => window.location.href = '#contact-form'}
+                        >
+                          Ask a Question
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </motion.div>
             </motion.div>
           </div>

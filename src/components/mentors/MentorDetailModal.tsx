@@ -86,7 +86,7 @@ const MentorDetailModal: React.FC<MentorDetailModalProps> = ({
               onClick={onClose}
               aria-label="Close dialog"
             >
-              <X size={22} />
+              {/* <X size={22} /> */}
             </button>
           </DialogTitle>
           <DialogDescription className="text-blue-600">
