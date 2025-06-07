@@ -129,7 +129,7 @@ export default function ContactPage() {
                 animate={{ opacity: 0.9 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
               >
-                Have questions about ODR India? Reach out to our team and we&apos;ll get back to you shortly.
+                Have questions about ODR? Reach out to our team and we&apos;ll get back to you shortly.
               </motion.p>
               
               <motion.div
@@ -169,64 +169,64 @@ export default function ContactPage() {
                 </motion.h2>
 
                 <motion.div 
-                  className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                  className="grid grid-cols-1 md:grid-cols-2 gap-5"
                   variants={fadeInUp}
                 >
-                  <Card className="overflow-hidden group hover:shadow-md transition-all duration-300">
-                    <CardContent className="p-6 flex items-start gap-4 relative">
-                      <div className="absolute -top-10 -right-10 w-24 h-24 bg-blue-50 rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
-                      <div className="bg-blue-50 p-2 rounded-full group-hover:bg-blue-100 transition-colors duration-300">
-                        <Mail className="h-6 w-6 text-[#0a1e42]" />
+                  <div className="bg-gradient-to-br from-white to-blue-50/30 rounded-xl p-5 group hover:shadow-lg hover:shadow-blue-100/50 transition-all duration-300 backdrop-blur-sm">
+                    <div className="flex items-start gap-4 relative">
+                      <div className="absolute -top-10 -right-10 w-32 h-32 bg-blue-50/50 rounded-full opacity-0 group-hover:opacity-30 transition-opacity duration-500 blur-xl"></div>
+                      <div className="bg-blue-100/80 p-3 rounded-full group-hover:bg-blue-200/80 transition-colors duration-300 shadow-sm">
+                        <Mail className="h-6 w-6 text-blue-700" />
                       </div>
-                      <div>
-                        <h3 className="font-medium text-gray-900 mb-1">Student Ambassadors</h3>
-                        <p className="text-gray-600">contact@odrlab.com</p>
-                        <p className="text-xs text-gray-500 mt-2">For student inquiries and general questions</p>
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-gray-800 mb-1.5 group-hover:text-blue-800 transition-colors">Student Ambassadors</h3>
+                        <p className="text-gray-700 font-medium">contact@odrlab.com</p>
+                        <p className="text-sm text-gray-500 mt-2 italic">For student inquiries and general questions</p>
                       </div>
-                    </CardContent>
-                  </Card>
+                    </div>
+                  </div>
                   
-                  <Card className="overflow-hidden group hover:shadow-md transition-all duration-300">
-                    <CardContent className="p-6 flex items-start gap-4 relative">
-                      <div className="absolute -top-10 -right-10 w-24 h-24 bg-blue-50 rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
-                      <div className="bg-blue-50 p-2 rounded-full group-hover:bg-blue-100 transition-colors duration-300">
-                        <Mail className="h-6 w-6 text-[#0a1e42]" />
+                  <div className="bg-gradient-to-br from-white to-blue-50/30 rounded-xl p-5 group hover:shadow-lg hover:shadow-blue-100/50 transition-all duration-300 backdrop-blur-sm">
+                    <div className="flex items-start gap-4 relative">
+                      <div className="absolute -top-10 -right-10 w-32 h-32 bg-blue-50/50 rounded-full opacity-0 group-hover:opacity-30 transition-opacity duration-500 blur-xl"></div>
+                      <div className="bg-blue-100/80 p-3 rounded-full group-hover:bg-blue-200/80 transition-colors duration-300 shadow-sm">
+                        <Mail className="h-6 w-6 text-blue-700" />
                       </div>
-                      <div>
-                        <h3 className="font-medium text-gray-900 mb-1">Mentor Admin</h3>
-                        <p className="text-gray-600">suman@odrlab.com</p>
-                        <p className="text-xs text-gray-500 mt-2">For mentorship program inquiries</p>
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-gray-800 mb-1.5 group-hover:text-blue-800 transition-colors">Mentor Admin</h3>
+                        <p className="text-gray-700 font-medium">suman@odrlab.com</p>
+                        <p className="text-sm text-gray-500 mt-2 italic">For mentorship program inquiries</p>
                       </div>
-                    </CardContent>
-                  </Card>
+                    </div>
+                  </div>
                   
-                  <Card className="overflow-hidden group hover:shadow-md transition-all duration-300">
-                    <CardContent className="p-6 flex items-start gap-4 relative">
-                      <div className="absolute -top-10 -right-10 w-24 h-24 bg-blue-50 rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
-                      <div className="bg-blue-50 p-2 rounded-full group-hover:bg-blue-100 transition-colors duration-300">
-                        <Mail className="h-6 w-6 text-[#0a1e42]" />
+                  <div className="bg-gradient-to-br from-white to-blue-50/30 rounded-xl p-5 group hover:shadow-lg hover:shadow-blue-100/50 transition-all duration-300 backdrop-blur-sm">
+                    <div className="flex items-start gap-4 relative">
+                      <div className="absolute -top-10 -right-10 w-32 h-32 bg-blue-50/50 rounded-full opacity-0 group-hover:opacity-30 transition-opacity duration-500 blur-xl"></div>
+                      <div className="bg-blue-100/80 p-3 rounded-full group-hover:bg-blue-200/80 transition-colors duration-300 shadow-sm">
+                        <Mail className="h-6 w-6 text-blue-700" />
                       </div>
-                      <div>
-                        <h3 className="font-medium text-gray-900 mb-1">Mentor Admin</h3>
-                        <p className="text-gray-600">chittu@odrlab.com</p>
-                        <p className="text-xs text-gray-500 mt-2">For mentorship program support</p>
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-gray-800 mb-1.5 group-hover:text-blue-800 transition-colors">Mentor Admin</h3>
+                        <p className="text-gray-700 font-medium">chittu@odrlab.com</p>
+                        <p className="text-sm text-gray-500 mt-2 italic">For mentorship program support</p>
                       </div>
-                    </CardContent>
-                  </Card>
+                    </div>
+                  </div>
                   
-                  <Card className="overflow-hidden group hover:shadow-md transition-all duration-300">
-                    <CardContent className="p-6 flex items-start gap-4 relative">
-                      <div className="absolute -top-10 -right-10 w-24 h-24 bg-blue-50 rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
-                      <div className="bg-blue-50 p-2 rounded-full group-hover:bg-blue-100 transition-colors duration-300">
-                        <Building className="h-6 w-6 text-[#0a1e42]" />
+                  <div className="bg-gradient-to-br from-white to-blue-50/30 rounded-xl p-5 group hover:shadow-lg hover:shadow-blue-100/50 transition-all duration-300 backdrop-blur-sm">
+                    <div className="flex items-start gap-4 relative">
+                      <div className="absolute -top-10 -right-10 w-32 h-32 bg-blue-50/50 rounded-full opacity-0 group-hover:opacity-30 transition-opacity duration-500 blur-xl"></div>
+                      <div className="bg-blue-100/80 p-3 rounded-full group-hover:bg-blue-200/80 transition-colors duration-300 shadow-sm">
+                        <Building className="h-6 w-6 text-blue-700" />
                       </div>
-                      <div>
-                        <h3 className="font-medium text-gray-900 mb-1">Partnerships</h3>
-                        <p className="text-gray-600">partnerships@odrlab.com</p>
-                        <p className="text-xs text-gray-500 mt-2">For collaboration and partnership opportunities</p>
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-gray-800 mb-1.5 group-hover:text-blue-800 transition-colors">Partnerships</h3>
+                        <p className="text-gray-700 font-medium">partnerships@odrlab.com</p>
+                        <p className="text-sm text-gray-500 mt-2 italic">For collaboration and partnership opportunities</p>
                       </div>
-                    </CardContent>
-                  </Card>
+                    </div>
+                  </div>
                 </motion.div>
 
               </motion.div>
@@ -395,7 +395,7 @@ export default function ContactPage() {
                       </div>
                       <h3 className="text-2xl font-bold text-blue-800 mb-4">FAQs Coming Soon</h3>
                       <p className="text-gray-600 mb-6 leading-relaxed">
-                        We're currently compiling a comprehensive list of frequently asked questions about ODR India and our services.
+                        We&apos;re currently compiling a comprehensive list of frequently asked questions about ODR India and our services.
                       </p>
                       <div className="pt-2">
                         <Button 
