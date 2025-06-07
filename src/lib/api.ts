@@ -1,4 +1,4 @@
-export const API_BASE_URL = "https://odrlab.com/backend/api";
+export const API_BASE_URL = "https://13.233.201.37";
 
 //process.env.NEXT_PUBLIC_API_BASE_URL || 
 export async function apiFetch(path: string, options: RequestInit = {}) {
