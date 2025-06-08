@@ -1,6 +1,6 @@
-export const API_BASE_URL = "https://odrlab.com/backend/api";
-
-//process.env.NEXT_PUBLIC_API_BASE_URL || 
+// export const API_BASE_URL = "https://13.233.201.37";
+//const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+export const API_BASE_URL = "http://localhost:4000/api";
 export async function apiFetch(path: string, options: RequestInit = {}) {
   const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
 

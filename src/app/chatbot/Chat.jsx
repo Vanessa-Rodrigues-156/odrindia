@@ -1,33 +1,67 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { apiFetch } from "../../lib/api";
 
 const Chat = () => {
     const [message, setMessage] = useState("");
     const [chatHistory, setChatHistory] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [sessionId, setSessionId] = useState("");
     const chatContainerRef = useRef(null);
     
-    // Function to interact with Python FastAPI backend
-    async function sendChatMessage(message) {
+    // Initialize session ID on component mount
+    useEffect(() => {
+        const newSessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        setSessionId(newSessionId);
+    }, []);
+    
+    // Function to interact with backend API
+    async function sendChatMessage(message, detail = false) {
         try {
-            const response = await fetch('https://odrlab.com/chat/', {
+            const response = await apiFetch('/chat', {  
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message })
+                body: JSON.stringify({ 
+                    message,
+                    sessionId, // Make sure to include sessionId
+                    detail
+                })
             });
             
             if (!response.ok) {
-                throw new Error(`Error: ${response.status}`);
+                const errorData = await response.json();
+                throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
             }
             
             const data = await response.json();
-            return data.response || data.error;
+            return data;
         } catch (error) {
             console.error('Error calling chat API:', error);
             throw error;
         }
     }
+
+    // Handle expand/detail request
+    const handleExpandResponse = async (originalMessage) => {
+        try {
+            setLoading(true);
+            const data = await sendChatMessage(originalMessage, true);
+            
+            // Add detailed response to chat history
+            const botMessage = { 
+                sender: "bot", 
+                text: data.response,
+                timestamp: new Date().toISOString(),
+                sessionId,
+                isDetailed: true
+            };
+            setChatHistory((prev) => [...prev, botMessage]);
+        } catch (error) {
+            console.error("Error expanding response:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
     
     // Auto-scroll to bottom when messages are added
     useEffect(() => {
@@ -39,7 +73,12 @@ const Chat = () => {
     const handleSendMessage = async () => {
         if (!message.trim()) return;
 
-        const userMessage = { sender: "user", text: message };
+        const userMessage = { 
+            sender: "user", 
+            text: message,
+            timestamp: new Date().toISOString(),
+            sessionId
+        };
         setChatHistory((prev) => [...prev, userMessage]);
         const userQuery = message;
         setMessage("");
@@ -47,13 +86,22 @@ const Chat = () => {
         try {
             setLoading(true);
             
-            // Call the Python FastAPI backend
-            const aiResponse = await sendChatMessage(userQuery);
+            // Call backend API route
+            const data = await sendChatMessage(userQuery);
+            
+            // Update sessionId if backend provides new one
+            if (data.sessionId && data.sessionId !== sessionId) {
+                setSessionId(data.sessionId);
+            }
             
             // Add AI response to chat history
             const botMessage = { 
                 sender: "bot", 
-                text: aiResponse
+                text: data.response,
+                timestamp: new Date().toISOString(),
+                sessionId: data.sessionId || sessionId,
+                canExpand: data.canExpand,
+                originalQuery: userQuery
             };
             setChatHistory((prev) => [...prev, botMessage]);
             
@@ -61,7 +109,11 @@ const Chat = () => {
             console.error("Error sending message:", error);
             const errorMessage = {
                 sender: "bot",
-                text: "Sorry, I'm having trouble connecting to the AI model. Please try again later.",
+                text: error.message.includes("Rate limit") 
+                    ? "I'm receiving a lot of requests right now. Please wait a moment and try again."
+                    : "Sorry, I'm having trouble connecting to the AI model. Please try again later.",
+                timestamp: new Date().toISOString(),
+                sessionId
             };
             setChatHistory((prev) => [...prev, errorMessage]);
         } finally {
@@ -231,35 +283,60 @@ const Chat = () => {
                 ) : (
                     <>
                         {chatHistory.map((chat, index) => (
-                            <div
-                                key={index}
-                                style={{
-                                    alignSelf: chat.sender === "user" ? "flex-end" : "flex-start",
-                                    backgroundColor: chat.sender === "user" ? "#2563eb" : "white",
-                                    color: chat.sender === "user" ? "white" : "#333",
-                                    padding: "14px 18px",
-                                    borderRadius:
-                                        chat.sender === "user"
-                                            ? "20px 20px 4px 20px"
-                                            : "20px 20px 20px 4px",
-                                    maxWidth: "70%",
-                                    boxShadow: "0 2px 4px rgba(0,0,0,0.06)",
-                                    wordBreak: "break-word",
-                                    lineHeight: "1.6",
-                                    fontSize: "15px",
-                                    border: chat.sender === "user" ? "none" : "1px solid #f0f0f0",
-                                    animation: "fadeSlideIn 0.3s ease-out forwards",
-                                }}>
-                                {chat.text}
+                            <div key={index}>
                                 <div
                                     style={{
-                                        fontSize: "11px",
-                                        marginTop: "6px",
-                                        opacity: "0.7",
-                                        textAlign: chat.sender === "user" ? "right" : "left",
+                                        alignSelf: chat.sender === "user" ? "flex-end" : "flex-start",
+                                        backgroundColor: chat.sender === "user" ? "#2563eb" : "white",
+                                        color: chat.sender === "user" ? "white" : "#333",
+                                        padding: "14px 18px",
+                                        borderRadius:
+                                            chat.sender === "user"
+                                                ? "20px 20px 4px 20px"
+                                                : "20px 20px 20px 4px",
+                                        maxWidth: "70%",
+                                        boxShadow: "0 2px 4px rgba(0,0,0,0.06)",
+                                        wordBreak: "break-word",
+                                        lineHeight: "1.6",
+                                        fontSize: "15px",
+                                        border: chat.sender === "user" ? "none" : "1px solid #f0f0f0",
+                                        animation: "fadeSlideIn 0.3s ease-out forwards",
                                     }}>
-                                    {chat.sender === "user" ? "You" : "Legal Assistant"}
+                                    {chat.text}
+                                    <div
+                                        style={{
+                                            fontSize: "11px",
+                                            marginTop: "6px",
+                                            opacity: "0.7",
+                                            textAlign: chat.sender === "user" ? "right" : "left",
+                                        }}>
+                                        {chat.sender === "user" ? "You" : "Legal Assistant"}
+                                        {chat.isDetailed && " (Detailed)"}
+                                    </div>
                                 </div>
+                                
+                                {/* Expand button for bot responses */}
+                                {chat.sender === "bot" && chat.canExpand && !chat.isDetailed && (
+                                    <div style={{ alignSelf: "flex-start", marginTop: "8px" }}>
+                                        <button
+                                            onClick={() => handleExpandResponse(chat.originalQuery)}
+                                            style={{
+                                                backgroundColor: "#f3f4f6",
+                                                border: "1px solid #d1d5db",
+                                                borderRadius: "8px",
+                                                padding: "6px 12px",
+                                                fontSize: "12px",
+                                                color: "#374151",
+                                                cursor: "pointer",
+                                                transition: "background-color 0.15s",
+                                            }}
+                                            onMouseEnter={(e) => e.target.style.backgroundColor = "#e5e7eb"}
+                                            onMouseLeave={(e) => e.target.style.backgroundColor = "#f3f4f6"}
+                                        >
+                                            📖 Explain More
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                         ))}
                         {loading && (
