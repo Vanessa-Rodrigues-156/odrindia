@@ -1,10 +1,11 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion"; // Added AnimatePresence
 import { useAuth } from "@/lib/auth";
 import { apiFetch } from "@/lib/api";
+import { initializeGoogleAuth, renderGoogleButton, GoogleUser } from "@/lib/google-auth";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -112,8 +113,118 @@ const SignUpPage = () => {
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(0);
   const [form, setForm] = useState(initialForm);
+  const [googleScriptLoaded, setGoogleScriptLoaded] = useState(false);
   const router = useRouter();
-  const { login } = useAuth();
+  const { login, signInWithGoogle } = useAuth();
+
+  useEffect(() => {
+    const loadGoogleScript = () => {
+      if (typeof window !== 'undefined' && window.google && !googleScriptLoaded) {
+        setGoogleScriptLoaded(true);
+        
+        // Initialize Google Identity Services
+        window.google.accounts.id.initialize({
+          client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "",
+          callback: handleGoogleCallback,
+          auto_select: false,
+          cancel_on_tap_outside: true
+        });
+
+        // Render the button
+        const buttonContainer = document.getElementById("google-signin-container");
+        if (buttonContainer) {
+          window.google.accounts.id.renderButton(buttonContainer, {
+            theme: "outline",
+            size: "large",
+            width: buttonContainer.offsetWidth,
+            text: "signup_with"
+          });
+        }
+
+        // Optional: Display the One Tap UI
+        window.google.accounts.id.prompt();
+      }
+    };
+
+    // Check if the script is already loaded
+    if (typeof window !== 'undefined') {
+      if (window.google) {
+        loadGoogleScript();
+      } else {
+        // Script load callback from script element
+        window.handleGoogleScriptLoad = loadGoogleScript;
+      }
+    }
+  }, [googleScriptLoaded]);
+
+  // Google Sign-In callback handler
+  const handleGoogleCallback = async (response: any) => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      if (!response.credential) {
+        throw new Error("No credential returned from Google");
+      }
+
+      // Decode the JWT token to get user info
+      const payload = parseJwt(response.credential);
+
+      if (!payload || !payload.email) {
+        throw new Error("Invalid Google user data");
+      }
+
+      const googleUser = {
+        email: payload.email,
+        name: payload.name,
+        picture: payload.picture
+      };
+
+      const result = await signInWithGoogle(googleUser);
+      
+      if (result.needsProfileCompletion) {
+        // Redirect to profile completion page
+        const params = new URLSearchParams({
+          email: googleUser.email,
+          name: googleUser.name,
+          image: googleUser.picture || "",
+          fromGoogle: "true"
+        });
+        router.push(`/complete-profile?${params.toString()}`);
+      } else {
+        // User has complete profile, redirect to home
+        router.push("/home");
+      }
+    } catch (error) {
+      console.error("Google sign-in error:", error);
+      setError(error instanceof Error ? error.message : "Google sign-in failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Parse JWT token
+  const parseJwt = (token: string) => {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map((c) => {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+      return JSON.parse(jsonPayload);
+    } catch (e) {
+      console.error("Error parsing JWT:", e);
+      return null;
+    }
+  };
+
+  // Handle Google Sign Up - simplified to work with the auto-initialized button
+  const handleGoogleSignUp = () => {
+    if (typeof window === 'undefined' || !window.google) {
+      setError("Google Sign-In is not available. Please try again later or use email signup.");
+    }
+    // The actual sign-in is handled by the callback configured in initialization
+  };
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -319,11 +430,11 @@ const SignUpPage = () => {
           }
         }
         // Always trigger login to update auth context and user state
-        if (login) {
-          await login(form.email, form.password);
+        if (login && data.token) {
+          login(data.user, data.token);
         }
         setTimeout(() => {
-          router.push("/");
+          router.push("/home");
         }, 3000);
       } else {
         setError(data.error || "Registration failed");
@@ -1237,6 +1348,47 @@ const SignUpPage = () => {
               transition={{ duration: 0.5, delay: 0.2 }}>
               Create Your Account
             </motion.h1>
+
+            {step === 0 && (
+              <motion.div
+                className="mb-6"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}>
+                {/* Google Sign In Button Container */}
+                <div 
+                  id="google-signin-container" 
+                  className="w-full h-12 mb-4"
+                  onClick={handleGoogleSignUp}
+                >
+                  {/* Google button will be rendered here by the Google API */}
+                  {!googleScriptLoaded && (
+                    <Button
+                      type="button"
+                      onClick={() => {}} // No-op as it will be replaced
+                      disabled={loading}
+                      className="w-full h-12 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 font-medium transition-all duration-200 flex items-center justify-center space-x-3 mb-4">
+                      <svg className="w-5 h-5" viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                      </svg>
+                      <span>Sign up with Google</span>
+                    </Button>
+                  )}
+                </div>
+                
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-gray-300"></div>
+                  </div>
+                  <div className="relative flex justify-center text-sm">
+                    <span className="px-2 bg-white text-gray-500">Or create account with email</span>
+                  </div>
+                </div>
+              </motion.div>
+            )}
 
             <motion.div
               className="mb-6 flex justify-center"

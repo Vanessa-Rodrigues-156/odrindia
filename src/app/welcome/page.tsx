@@ -1,12 +1,68 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import dynamic from "next/dynamic"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Scale, Users, Lightbulb, MessageSquare, BarChart3 } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 
+// Create a client-only component for particles
+const AnimatedParticles = dynamic(
+  () => Promise.resolve(() => {
+    const particles = Array.from({ length: 50 }, (_, i) => ({
+      id: i,
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      delay: Math.random() * 3,
+      duration: 2 + Math.random() * 2,
+      size: i < 25 ? 1 : 2,
+    }));
+
+    return (
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {particles.map((particle) => (
+          <div
+            key={particle.id}
+            className={`absolute bg-[#f6ece3] rounded-full animate-shimmer opacity-60 ${
+              particle.size === 1 ? 'w-1 h-1' : 'w-2 h-2'
+            }`}
+            style={{
+              left: `${particle.left}%`,
+              top: `${particle.top}%`,
+              animationDelay: `${particle.delay}s`,
+              animationDuration: `${particle.duration}s`,
+            }}
+          />
+        ))}
+      </div>
+    );
+  }),
+  { ssr: false } // This prevents server-side rendering
+);
+
 export default function WelcomePage() {
+  const [isClient, setIsClient] = useState(false);
+  const [particles, setParticles] = useState<any[]>([]);
+
+  // Function to generate particles with consistent properties
+  const generateParticles = (count: number) => {
+    return Array.from({ length: count }, (_, i) => ({
+      id: i,
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      delay: Math.random() * 3,
+      duration: 2 + Math.random() * 2,
+      size: i < 25 ? 1 : 2,
+    }));
+  };
+
+  // Only generate particles on client to avoid hydration mismatch
+  useEffect(() => {
+    setIsClient(true);
+    setParticles(generateParticles(50)); // Generate 50 particles with consistent seed
+  }, []);
+
   const [isVisible, setIsVisible] = useState(false)
   const [currentStep, setCurrentStep] = useState(0)
   const [splashTimer, setSplashTimer] = useState(10)
@@ -51,28 +107,17 @@ export default function WelcomePage() {
       <div className="min-h-screen bg-gradient-to-br from-black via-[#486581] to-[#b7a7a9] flex items-center justify-center overflow-hidden">
         {/* Animated Background Particles */}
         <div className="absolute inset-0">
-          {[...Array(30)].map((_, i) => (
+          {particles.map((particle) => (
             <div
-              key={i}
-              className="absolute w-1 h-1 bg-[#f6ece3] rounded-full animate-shimmer opacity-60"
+              key={particle.id}
+              className={`absolute bg-[#f6ece3] rounded-full animate-shimmer opacity-60 ${
+                particle.size === 1 ? 'w-1 h-1' : 'w-2 h-2'
+              }`}
               style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 3}s`,
-                animationDuration: `${2 + Math.random() * 2}s`,
-              }}
-            />
-          ))}
-          {/* Additional shimmer particles */}
-          {[...Array(15)].map((_, i) => (
-            <div
-              key={`shimmer-${i}`}
-              className="absolute w-2 h-2 bg-gradient-to-r from-[#f6ece3] via-white to-[#f6ece3] rounded-full animate-shimmer-glow opacity-40"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 4}s`,
-                animationDuration: `${3 + Math.random() * 2}s`,
+                left: `${particle.left}%`,
+                top: `${particle.top}%`,
+                animationDelay: `${particle.delay}s`,
+                animationDuration: `${particle.duration}s`,
               }}
             />
           ))}
@@ -124,26 +169,11 @@ export default function WelcomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-white overflow-hidden">
-      {/* Animated Background */}
-      <div className="fixed inset-0 opacity-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-black via-[#486581] to-[#b7a7a9]" />
-        <div className="absolute inset-0">
-          {[...Array(20)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute w-2 h-2 bg-[#f6ece3] rounded-full animate-pulse"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 3}s`,
-                animationDuration: `${2 + Math.random() * 2}s`,
-              }}
-            />
-          ))}
-        </div>
-      </div>
-      {/* Main Content */}
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 relative overflow-hidden">
+      {/* Animated background particles - client-only */}
+      <AnimatedParticles />
+
+      {/* Rest of your existing JSX */}
       <main className="relative z-10 flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] px-4 pt-4">
         {/* Launch Announcement */}
         <div
@@ -250,59 +280,42 @@ export default function WelcomePage() {
       {/* Custom CSS for animations */}
       <style jsx>{`
         @keyframes orbit {
-          from {
-            transform: translate(-50%, -50%) rotate(0deg) translateY(-80px);
-          }
-          to {
-            transform: translate(-50%, -50%) rotate(360deg) translateY(-80px);
-          }
-        }
-        
-        @keyframes spin-slow {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(360deg);
-          }
-        }
-        
-        @keyframes shimmer {
+        @keyframes shimmer {m: translate(-50%, -50%) rotate(0deg) translateY(-80px);
           0%, 100% {
             opacity: 0.3;
-            transform: scale(1);
+            transform: scale(1); transform: translate(-50%, -50%) rotate(360deg) translateY(-80px);
           }
           50% {
             opacity: 1;
-            transform: scale(1.2);
-          }
-        }
+            transform: scale(1.2);yframes spin-slow {
+          } from {
+        }    transform: rotate(0deg);
         
         @keyframes shimmer-glow {
-          0%, 100% {
+          0%, 100% {tate(360deg);
             opacity: 0.2;
             transform: scale(1);
             box-shadow: 0 0 0 rgba(246, 236, 227, 0);
-          }
+          }mes shimmer {
           50% {
             opacity: 0.8;
             transform: scale(1.5);
             box-shadow: 0 0 20px rgba(246, 236, 227, 0.6);
-          }
-        }
-        
+          } 50% {
+        }    opacity: 1;
+        (1.2);
         .animate-spin-slow {
           animation: spin-slow 8s linear infinite;
         }
-        
+        -glow {
         .animate-shimmer {
-          animation: shimmer 2s ease-in-out infinite;
-        }
-        
+          animation: shimmer 2s ease-in-out infinite;   opacity: 0.2;
+        }    transform: scale(1);
+        gba(246, 236, 227, 0);
         .animate-shimmer-glow {
-          animation: shimmer-glow 3s ease-in-out infinite;
-        }
-      `}</style>
+          animation: shimmer-glow 3s ease-in-out infinite; 50% {
+        }ity: 0.8;
+      `}</style> 
     </div>
   )
 }

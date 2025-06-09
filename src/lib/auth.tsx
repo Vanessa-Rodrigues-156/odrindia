@@ -1,4 +1,5 @@
 "use client";
+
 import React, {
   createContext,
   useContext,
@@ -9,39 +10,50 @@ import React, {
   useRef,
 } from "react";
 import { useRouter } from "next/navigation";
-import { apiFetch } from "./api";
 
-export interface User {
+// Remove trailing slash to prevent double slashes in URLs
+const API_BASE_URL = (process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3001").replace(/\/$/, "");
+
+interface User {
   id: string;
   name: string;
   email: string;
-  userRole: "INNOVATOR" | "MENTOR" | "ADMIN" | "OTHER";
+  userRole: string;
   contactNumber?: string;
   city?: string;
   country?: string;
   institution?: string;
   highestEducation?: string;
   odrLabUsage?: string;
+  imageAvatar?: string;
   createdAt: string;
+}
+
+// This interface represents the API response structure
+interface GoogleSignInResponse {
+  user: User;
+  needsProfileCompletion: boolean; // This is calculated by the backend, not stored
+  token?: string; // Optional token - only present when profile is complete
+  message: string;
 }
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  error: string | null;
-  login: (email: string, password: string) => Promise<boolean>;
+  login: (userData: User, token: string) => void;
   logout: () => void;
+  signup: (userData: any) => Promise<any>;
+  signInWithGoogle: (googleUser: any) => Promise<GoogleSignInResponse>;
   refreshUser: () => Promise<void>;
-  accessToken: string | null; // Add accessToken to context type
+  completeProfile: (profileData: any) => Promise<any>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [accessToken, setAccessToken] = useState<string | null>(null); // Add accessToken state
+  const [accessToken, setAccessToken] = useState<string | null>(null);
   const router = useRouter();
 
   const refreshPromiseRef = useRef<Promise<void> | null>(null);
@@ -62,36 +74,33 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // Create and store the refresh promise
     refreshPromiseRef.current = (async () => {
       try {
-        const response = await apiFetch("/auth/session", {
-          method: "GET",
-          credentials: "include",
+        const token = localStorage.getItem("token");
+        if (!token) {
+          setUser(null);
+          setLoading(false);
+          return;
+        }
+
+        const response = await fetch(`${API_BASE_URL}/api/auth/session`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
 
-        if (!response.ok) {
-          // Don't set error on 401, just clear the user
-          if (response.status === 401) {
-            setUser(null);
-            setAccessToken(null); // Clear access token on 401
-            return null;
-          }
-          throw new Error("Failed to refresh session");
-        }
-
-        const data = await response.json();
-        if (data.authenticated && data.user) {
+        if (response.ok) {
+          const data = await response.json();
           setUser(data.user);
-          // Store token from response or localStorage
-          setAccessToken(data.token || localStorage.getItem("token")); 
-          return data.user;
+          setAccessToken(token);
         } else {
+          localStorage.removeItem("token");
           setUser(null);
           setAccessToken(null);
-          return null;
         }
-      } catch (err) {
-        console.error("Session refresh error:", err);
+      } catch (error) {
+        console.error("Session refresh failed:", error);
+        localStorage.removeItem("token");
         setUser(null);
-        return null;
+        setAccessToken(null);
       } finally {
         // Reset the promise reference after a short delay to prevent immediate subsequent calls
         refreshTimeoutRef.current = setTimeout(() => {
@@ -104,102 +113,152 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return refreshPromiseRef.current;
   }, []);
 
-  // Only run on mount
+  // Initialize auth state
   useEffect(() => {
     refreshUser();
-    // eslint-disable-next-line
+  }, [refreshUser]);
+
+  const login = useCallback((userData: User, token: string) => {
+    localStorage.setItem("token", token);
+    setUser(userData);
+    setAccessToken(token);
+    setLoading(false);
   }, []);
 
-  const login = async (email: string, password: string) => {
-    setLoading(true);
-    setError(null);
+  const logout = useCallback(() => {
+    localStorage.removeItem("token");
+    setUser(null);
+    setAccessToken(null);
 
-    try {
-      // Add request timeout to avoid hanging requests
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000);
+    // Clear any pending refresh
+    if (refreshTimeoutRef.current) {
+      clearTimeout(refreshTimeoutRef.current);
+      refreshTimeoutRef.current = null;
+    }
 
-      const response = await apiFetch("/auth/login", {
+    router.push("/signin");
+  }, [router]);
+
+  const signup = useCallback(
+    async (userData: any) => {
+      const response = await fetch(`${API_BASE_URL}/api/auth/signup`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-        credentials: "include",
-        signal: controller.signal,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
       });
-
-      clearTimeout(timeoutId);
 
       const data = await response.json();
 
       if (!response.ok) {
-        // Log more detailed error information for debugging
-        console.error("Login error response:", response.status, data);
-        throw new Error(data.error || "Authentication failed");
+        throw new Error(data.error || "Signup failed");
       }
 
-      setUser(data.user);
-      // Store the token in both state and localStorage
-      if (data.token) {
-        setAccessToken(data.token);
-        localStorage.setItem("token", data.token);
-      }
       return data;
-    } catch (err: unknown) {
-      console.error("Login error:", err);
-      if (err instanceof Error) {
-        if (err.name === "AbortError") {
-          setError("Login request timed out. Please try again.");
-        } else {
-          setError(err.message || "Failed to login. Please check your credentials.");
+    },
+    []
+  );
+
+  const signInWithGoogle = useCallback(
+    async (googleUser: any): Promise<GoogleSignInResponse> => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/auth/google-signin`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: googleUser.email,
+            name: googleUser.name,
+            image: googleUser.picture,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Google sign-in failed");
         }
-      } else {
-        setError("Failed to login. Please check your credentials.");
+
+        const data: GoogleSignInResponse = await response.json();
+
+        // Always set user in context
+        setUser(data.user);
+
+        // If user doesn't need profile completion and we have a token, log them in
+        if (!data.needsProfileCompletion && data.token) {
+          localStorage.setItem("token", data.token);
+          setAccessToken(data.token);
+        }
+
+        return data;
+      } catch (error) {
+        console.error("Google sign-in error:", error);
+        throw error;
       }
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    []
+  );
 
-  const logout = () => {
-    localStorage.removeItem("token");
-    setUser(null);
-    setAccessToken(null); // Clear access token on logout
-    router.push("/signin");
-  };
+  // Add a profile completion function
+  const completeProfile = useCallback(
+    async (profileData: any) => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/auth/complete-profile`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(profileData),
+        });
 
-  // On mount, check for token in localStorage
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      setAccessToken(token);
-    }
-  }, []);
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({ error: "Profile completion failed" }));
+          throw new Error(errorData.error || "Profile completion failed");
+        }
 
-  const contextValue = {
+        const data = await response.json();
+
+        // Update user data and set token
+        if (data.user && data.token) {
+          localStorage.setItem("token", data.token);
+          setUser(data.user);
+          setAccessToken(data.token);
+        }
+
+        return data;
+      } catch (error) {
+        console.error("Profile completion error:", error);
+        throw error;
+      }
+    },
+    []
+  );
+
+  const value = {
     user,
     loading,
-    error,
     login,
     logout,
+    signup,
+    signInWithGoogle,
     refreshUser,
-    accessToken, // Include accessToken in context
+    completeProfile,
   };
 
   return (
-    <AuthContext.Provider value={contextValue}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
-};
+}
 
-export const useAuth = () => {
+export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
-};
+}
 
 // Route protection HOC
 export const withAuth = (Component: React.ComponentType<unknown>) => {
@@ -211,7 +270,7 @@ export const withAuth = (Component: React.ComponentType<unknown>) => {
       if (!loading && !user) {
         const currentPath = window.location.pathname;
         // Prevent infinite loops - don't redirect if we're already at /signin
-        if (currentPath !== '/signin') {
+        if (currentPath !== "/signin") {
           router.push(`/signin?redirect=${encodeURIComponent(currentPath)}`);
         }
       }

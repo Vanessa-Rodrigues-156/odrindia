@@ -310,7 +310,7 @@ export default function Navbar() {
 										className="h-8 w-8 border-2 border-white shadow-sm transition-all"
 									>
 										<AvatarImage
-											src={`https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(
+											src={currentUser.imageAvatar || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(
 												currentUser.name
 											)}`}
 											alt={currentUser.name}
@@ -356,7 +356,7 @@ export default function Navbar() {
 												<div className="flex items-center gap-3">
 													<Avatar className="h-10 w-10 border-2 border-blue-100">
 														<AvatarImage
-															src={`https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(
+															src={currentUser.imageAvatar || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(
 																currentUser.name
 															)}`}
 															alt={currentUser.name}
@@ -593,7 +593,7 @@ export default function Navbar() {
 											<div className="flex items-center gap-3 p-3 rounded-xl bg-slate-50">
 												<Avatar className="h-10 w-10 border-2 border-white shadow-sm">
 													<AvatarImage
-														src={`https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(
+														src={currentUser.imageAvatar || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(
 															currentUser.name
 														)}`}
 														alt={currentUser.name}

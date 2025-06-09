@@ -1,42 +1,41 @@
 import type { Metadata } from "next";
-import { GeistSans } from "geist/font/sans";
-import { GeistMono } from "geist/font/mono";
+import { Inter } from "next/font/google";
 import "./globals.css";
-import { ToastProvider } from '@/components/ui/use-toast'
-import Navbar from "@/components/navbar";
-import Footer from "@/components/footer";
-import { AuthProvider } from '@/lib/auth';
+import { AuthProvider } from "@/lib/auth";
+import Script from "next/script";
 
-// Configure Geist fonts
-const geistSans = GeistSans;
-const geistMono = GeistMono;
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "ODR - Online Dispute Resolution",
-  description: "Providing innovative online solutions for Alternative Dispute Resolution (ADR) practices and justice.",
+  title: "ODR India",
+  description: "Online Dispute Resolution Platform for India",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.className} ${geistMono.variable} font-sans antialiased  flex flex-col`}
-      >
+      <head>
+        {/* Google OAuth Script - with proper callback */}
+        <Script
+          src="https://accounts.google.com/gsi/client"
+          strategy="afterInteractive"
+          onLoad={() => {
+            if (typeof window !== 'undefined' && window.handleGoogleScriptLoad) {
+              window.handleGoogleScriptLoad();
+            }
+          }}
+        />
+      </head>
+      <body className={inter.className}>
         <AuthProvider>
-          <ToastProvider>
-            <Navbar />
-            <main className="flex-1">
-              {children}
-            </main>
-            <Footer />
-          </ToastProvider>
+          {children}
         </AuthProvider>
       </body>
     </html>
   );
 }
-      
+
