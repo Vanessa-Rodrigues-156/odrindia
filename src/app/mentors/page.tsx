@@ -44,8 +44,8 @@ export default function MentorsPage() {
     (mentor.country && mentor.country.toLowerCase().includes(searchTerm.toLowerCase()))
   );
   
-  // Check if user is logged in and has mentors to show
-  const showLoginMessage = !user && mentors.length > 0 && searchTerm.length === 0;
+  // Show login message by default for non-authenticated users
+  const showLoginMessage = !user;
   
   const handleMentorClick = (mentor: MentorWithIdeas) => {
     setSelectedMentor(mentor);
@@ -113,6 +113,7 @@ export default function MentorsPage() {
         </motion.div>
         
         {/* Mentors grid */}
+        {/* First, check if loading */}
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {[...Array(8)].map((_, i) => (
@@ -127,30 +128,34 @@ export default function MentorsPage() {
               </div>
             ))}
           </div>
-        ) : showLoginMessage ? (
+        ) : 
+        /* Next, prioritize login message for non-authenticated users */
+        showLoginMessage ? (
           <motion.div 
             className="text-center py-16"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="max-w-md mx-auto bg-gradient-to-b from-blue-50 to-white p-8 rounded-xl border border-blue-100 shadow-md">
-              <div className="mb-6 text-blue-600">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="max-w-lg mx-auto bg-gradient-to-b from-blue-50 to-white p-8 rounded-xl border border-blue-100 shadow-lg">
+              <div className="mb-6 text-blue-600 relative">
+                <div className="absolute -top-4 -right-4 w-20 h-20 bg-blue-100 rounded-full opacity-40"></div>
+                <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-indigo-100 rounded-full opacity-30"></div>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-20 w-20 mx-auto relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
               </div>
               <h3 className="text-2xl font-bold text-blue-800 mb-4">Login to know more about the mentors of the ODR Lab</h3>
-              <p className="text-gray-600 mb-6">Connect with expert mentors who can guide you through your innovation journey</p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <p className="text-gray-600 mb-8 leading-relaxed">Connect with our expert mentors who can guide you through your innovation journey and help you realize your ideas</p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button 
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md text-lg transition-all"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-md text-lg transition-all shadow-sm hover:shadow"
                   onClick={() => window.location.href = '/signup'}
                 >
                   Sign Up
                 </Button>
                 <Button 
-                  className="bg-white hover:bg-gray-50 text-blue-600 border border-blue-200 px-6 py-2 rounded-md text-lg transition-all"
+                  className="bg-white hover:bg-gray-50 text-blue-600 border border-blue-200 px-8 py-3 rounded-md text-lg transition-all shadow-sm hover:shadow"
                   onClick={() => window.location.href = '/signin'}
                 >
                   Log In
@@ -158,7 +163,9 @@ export default function MentorsPage() {
               </div>
             </div>
           </motion.div>
-        ) : filteredMentors.length > 0 ? (
+        ) : 
+        /* For authenticated users, show mentor cards or "no results" message */
+        filteredMentors.length > 0 ? (
           <motion.div 
             className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
             variants={containerAnimation}

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -19,7 +19,6 @@ export default function CommentForm({
   onSubmitComment,
 }: CommentFormProps) {
   const [commentContent, setCommentContent] = useState("");
-  const { toast } = useToast();
 
   const handleSubmitComment = async () => {
     if (!commentContent.trim()) return;
@@ -29,7 +28,7 @@ export default function CommentForm({
       setCommentContent("");
     } catch (error) {
       console.error("Error submitting comment:", error);
-      toast({ title: "Error", description: "Failed to post comment." });
+      toast.error("Failed to post comment.");
     }
   };
   console.log("idea", ideaId);

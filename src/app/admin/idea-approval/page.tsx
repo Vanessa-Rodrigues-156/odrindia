@@ -33,7 +33,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { format, formatDistanceToNow } from "date-fns";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { apiFetch } from "@/lib/api";
 
 interface User {
@@ -68,7 +68,6 @@ export default function AdminPage() {
 }
 
 function AdminIdeaApprovalContent() {
-  const { toast } = useToast();
   const [submissions, setSubmissions] = useState<IdeaSubmission[]>([]);
   const [filteredSubmissions, setFilteredSubmissions] = useState<
     IdeaSubmission[]
@@ -104,15 +103,11 @@ function AdminIdeaApprovalContent() {
       setFilteredSubmissions(data);
     } catch (error) {
       console.error("Error fetching submissions:", error);
-      toast({
-        title: "Error",
-        description: "Failed to load idea submissions. Please try again.",
-        variant: "destructive",
-      });
+      toast.error("Failed to load idea submissions. Please try again.");
     } finally {
       setLoading(false);
     }
-  }, [toast]);
+  }, []);
 
   useEffect(() => {
     fetchSubmissions();
@@ -192,22 +187,10 @@ function AdminIdeaApprovalContent() {
         closeDetailsDialog();
       }
 
-      toast({
-        title: "Idea approved!",
-        description:
-          "The idea has been approved and is now live on the ODR Lab page.",
-        variant: "default",
-      });
+      toast.success("The idea has been approved and is now live on the ODR Lab page.");
     } catch (error) {
       console.error("Error approving idea:", error);
-      toast({
-        title: "Approval failed",
-        description:
-          error instanceof Error
-            ? error.message
-            : "Failed to approve idea. Please try again.",
-        variant: "destructive",
-      });
+      toast.error(error instanceof Error ? error.message : "Failed to approve idea. Please try again.");
     } finally {
       setApproving(null);
     }

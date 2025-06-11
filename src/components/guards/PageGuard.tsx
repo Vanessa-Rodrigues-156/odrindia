@@ -2,11 +2,8 @@
 
 import { ReactNode, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
-import { AlertCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
-
 interface PageGuardProps {
   children: ReactNode;
   requiredRole?: "ADMIN" | "MENTOR" | "INNOVATOR" | "OTHER";
@@ -26,7 +23,6 @@ export default function PageGuard({
 }: PageGuardProps) {
   const { user, loading, refreshUser } = useAuth();
   const router = useRouter();
-  const { toast } = useToast();
 
   useEffect(() => {
     // Only perform checks if not loading and we're certain about authentication status
@@ -50,11 +46,7 @@ export default function PageGuard({
           router.push(`${redirectTo}?redirect=${encodeURIComponent(currentPath)}`);
           
           // Display a toast notification
-          toast({
-            title: "Authentication Required",
-            description: "Please log in to access this page",
-            variant: "default"
-          });
+          toast.info("Please log in to access this page");
         }
       }
       // Case 2: Specific role required but user doesn't have it
@@ -62,22 +54,14 @@ export default function PageGuard({
         console.log(`PageGuard - Required role ${requiredRole} not met, user has ${user.userRole}`);
         router.push("/");
         
-        toast({
-          title: "Access Restricted",
-          description: "You don't have permission to access this page",
-          variant: "destructive"
-        });
+        toast.error("You don't have permission to access this page");
       }
       // Case 3: Allowed roles specified but user's role not included
       else if (allowedRoles && allowedRoles.length > 0 && user && !allowedRoles.includes(user.userRole)) {
         console.log(`PageGuard - User role ${user.userRole} not in allowed roles:`, allowedRoles);
         router.push("/");
         
-        toast({
-          title: "Access Restricted",
-          description: "You don't have permission to access this page",
-          variant: "destructive"
-        });
+        toast.error("You don't have permission to access this page");
       }
       // Case 4: Custom permission check fails
       else if (checkPermission && user) {
@@ -86,15 +70,11 @@ export default function PageGuard({
           console.log(`PageGuard - Custom permission check failed`);
           router.push("/");
           
-          toast({
-            title: "Access Restricted",
-            description: "You don't have permission to access this page",
-            variant: "destructive"
-          });
+          toast.error("You don't have permission to access this page");
         }
       }
     }
-  }, [user, loading, router, requireAuth, requiredRole, redirectTo, allowedRoles, checkPermission, toast]);
+  }, [user, loading, router, requireAuth, requiredRole, redirectTo, allowedRoles, checkPermission]);
 
   if (
     loading ||

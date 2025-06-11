@@ -38,9 +38,9 @@ const navItems = [
 			},
 			{
 				title: "Mediate",
-				href: "https://odrindia.org/",
+				href: "https://mediate.com/",
 				description:
-					"ODR India is a community of ODR professionals, practitioners, and enthusiasts in India. It aims to promote the use of ODR in India and provide resources and support for ODR practitioners.",
+					"Leading resource for mediation news, training, and professionals. Features articles, directories, and resources for advancing peaceful conflict resolution.",
 				icon: Users,
 			},
 			{
@@ -86,16 +86,22 @@ export default function Navbar() {
 	const [profileDropdown, setProfileDropdown] = useState(false)
 	const { user: currentUser, loading, logout, refreshUser } = useAuth()
 
-	// Force refresh user data when component mounts - use useCallback to prevent race conditions
+	// Force refresh user data when component mounts
 	useEffect(() => {
 		refreshUser();
-	}, [refreshUser]); // Add refreshUser as dependency since it's from context and should be stable
+	}, [refreshUser]);
 	
 	// Handle user logout
 	const handleLogout = () => {
 		logout()
 		setProfileDropdown(false)
 	}
+	
+	// Handle external link navigation
+	const handleExternalLinkClick = () => {
+		// Close any open dropdowns when navigating to external site
+		setActiveDropdown(null);
+	};
 
 	// Close dropdown when clicking outside
 	useEffect(() => {
@@ -126,9 +132,25 @@ export default function Navbar() {
 		}
 	}, [activeDropdown, profileDropdown])
 
+	// Improved dropdown toggle function
 	const toggleDropdown = (title: string) => {
-		setActiveDropdown(activeDropdown === title ? null : title)
+		// Always toggle regardless of current state
+		// This ensures it works even when coming back from external sites
+		setActiveDropdown(prev => prev === title ? null : title);
 	}
+
+	// Reset dropdown state when window regains focus (returning from external site)
+	useEffect(() => {
+		const handleFocus = () => {
+			// Reset dropdown state on focus return
+			setActiveDropdown(null);
+		};
+
+		window.addEventListener('focus', handleFocus);
+		return () => {
+			window.removeEventListener('focus', handleFocus);
+		};
+	}, []);
 
 	return (
 		<header className="sticky top-0 z-50 w-full border-b bg-white">
@@ -162,6 +184,10 @@ export default function Navbar() {
 													activeDropdown === item.title && "text-blue-600 bg-blue-50"
 												)}
 												onClick={() => toggleDropdown(item.title)}
+												// Ensure this button can be used to open/close dropdown even after returning
+												type="button"
+												aria-expanded={activeDropdown === item.title}
+												aria-controls={`dropdown-${item.title}`}
 											>
 												{item.icon && (
 													<div className={cn(
@@ -185,12 +211,16 @@ export default function Navbar() {
 										<AnimatePresence>
 											{activeDropdown === item.title && (
 												<PopoverContent
+													id={`dropdown-${item.title}`}
 													side="bottom"
 													align="start"
 													sideOffset={8}
-													className="w-[400px] p-0 border border-slate-200 rounded-xl shadow-lg"
+													className="w-[550px] p-0 border border-slate-200 rounded-xl shadow-lg"
 													forceMount
 													asChild
+													ref={(node) => {
+														if (node) dropdownRefs.current[item.title] = node;
+													}}
 												>
 													<motion.div
 														initial={{ opacity: 0, y: 10 }}
@@ -198,13 +228,18 @@ export default function Navbar() {
 														exit={{ opacity: 0, y: 10 }}
 														transition={{ duration: 0.2 }}
 													>
-														<div className="grid grid-cols-1 md:grid-cols-2 gap-2 p-2 bg-white rounded-xl overflow-hidden">
+														<div className="grid grid-cols-1 gap-3 p-3 bg-white rounded-xl overflow-hidden">
 															{item.children.map((child, index) => (
 																<Link
 																	key={index}
 																	href={child.href}
-																	onClick={() => setActiveDropdown(null)}
-																	className="flex gap-3 p-4 rounded-lg hover:bg-blue-50 transition-colors group"
+																	onClick={() => {
+																		setActiveDropdown(null);
+																		if (child.href.startsWith('http')) {
+																			handleExternalLinkClick();
+																		}
+																	}}
+																	className="flex gap-3 p-5 rounded-lg hover:bg-blue-50 transition-colors group"
 																	target={child.href.startsWith('http') ? "_blank" : undefined}
 																	rel={child.href.startsWith('http') ? "noopener noreferrer" : undefined}
 																>
@@ -222,7 +257,8 @@ export default function Navbar() {
 																				<ExternalLink size={14} className="text-slate-400 group-hover:text-blue-500" />
 																			)}
 																		</div>
-																		<p className="text-sm text-slate-600 line-clamp-2 mt-1">
+																		<p className="text-sm text-slate-600 mt-1.5 pr-1 leading-relaxed">
+																			<span className="text-blue-600 font-medium">{child.title}: </span>
 																			{child.description}
 																		</p>
 																	</div>
@@ -274,7 +310,7 @@ export default function Navbar() {
 										className="h-8 w-8 border-2 border-white shadow-sm transition-all"
 									>
 										<AvatarImage
-											src={`https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(
+											src={currentUser.imageAvatar || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(
 												currentUser.name
 											)}`}
 											alt={currentUser.name}
@@ -320,7 +356,7 @@ export default function Navbar() {
 												<div className="flex items-center gap-3">
 													<Avatar className="h-10 w-10 border-2 border-blue-100">
 														<AvatarImage
-															src={`https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(
+															src={currentUser.imageAvatar || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(
 																currentUser.name
 															)}`}
 															alt={currentUser.name}
@@ -474,7 +510,11 @@ export default function Navbar() {
 											<div key={item.title} className="mb-1">
 												{item.children ? (
 													<div className="mb-1">
-														<div className="flex justify-between items-center py-2 px-3 rounded-md hover:bg-slate-50 transition-colors">
+														<button
+															className="flex justify-between items-center py-2 px-3 w-full rounded-md hover:bg-slate-50 transition-colors"
+															onClick={() => toggleDropdown(item.title)}
+															type="button"
+														>
 															<div className="flex items-center gap-2">
 																{item.icon && React.createElement(item.icon, { 
 																	size: 18,
@@ -485,28 +525,40 @@ export default function Navbar() {
 																</span>
 															</div>
 															<ChevronDown size={16} className="text-slate-400" />
-														</div>
-														<div className="mt-2 ml-3 flex flex-col space-y-2 border-l-2 border-slate-100 pl-3">
-															{item.children.map((child) => (
-																<Link
-																	key={child.title}
-																	href={child.href}
-																	className="py-2.5 px-3 text-sm flex items-center gap-2.5 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
-																	onClick={() => setIsOpen(false)}
-																	target={child.href.startsWith('http') ? "_blank" : undefined}
-																	rel={child.href.startsWith('http') ? "noopener noreferrer" : undefined}
-																>
-																	{child.icon && React.createElement(child.icon, { 
-																		size: 18,
-																		className: "text-blue-500" 
-																	})}
-																	<span>{child.title}</span>
-																	{child.href.startsWith('http') && (
-																		<ExternalLink size={12} className="text-slate-400 ml-auto" />
-																	)}
-																</Link>
-															))}
-														</div>
+														</button>
+														{activeDropdown === item.title && (
+															<div className="mt-2 ml-3 flex flex-col space-y-4 border-l-2 border-slate-100 pl-3">
+																{item.children.map((child) => (
+																	<div key={child.title} className="flex flex-col">
+																		<Link
+																			href={child.href}
+																			className="py-2.5 px-3 text-sm flex items-center gap-2.5 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
+																			onClick={() => {
+																				setIsOpen(false);
+																				if (child.href.startsWith('http')) {
+																					handleExternalLinkClick();
+																				}
+																			}}
+																			target={child.href.startsWith('http') ? "_blank" : undefined}
+																			rel={child.href.startsWith('http') ? "noopener noreferrer" : undefined}
+																		>
+																			{child.icon && React.createElement(child.icon, { 
+																				size: 18,
+																				className: "text-blue-500" 
+																			})}
+																			<span>{child.title}</span>
+																			{child.href.startsWith('http') && (
+																				<ExternalLink size={12} className="text-slate-400 ml-auto" />
+																			)}
+																		</Link>
+																		<p className="text-xs text-slate-500 ml-10 mt-1 pr-3 mb-2 leading-relaxed">
+																			<span className="text-blue-600 font-medium">{child.title}: </span>
+																			{child.description}
+																		</p>
+																	</div>
+																))}
+															</div>
+														)}
 													</div>
 												) : (
 													<Link
@@ -541,7 +593,7 @@ export default function Navbar() {
 											<div className="flex items-center gap-3 p-3 rounded-xl bg-slate-50">
 												<Avatar className="h-10 w-10 border-2 border-white shadow-sm">
 													<AvatarImage
-														src={`https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(
+														src={currentUser.imageAvatar || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(
 															currentUser.name
 														)}`}
 														alt={currentUser.name}

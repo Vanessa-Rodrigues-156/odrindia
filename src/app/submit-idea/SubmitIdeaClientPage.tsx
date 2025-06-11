@@ -1,9 +1,10 @@
 "use client";
 import { LightbulbIcon, CheckCircle2, ArrowRight, Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion"; // Added framer-motion import
+import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/lib/auth";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -16,7 +17,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/components/ui/use-toast";
 import { ideaSubmissionSchema } from "./ideaSchema";
 import { saveSubmissionRecord } from "@/lib/utils";
 import { apiFetch } from "@/lib/api";
@@ -42,15 +42,14 @@ const staggerContainer = {
 };
 
 export default function SubmitIdeaClientPage() {
-  const { toast } = useToast();
   const { user, loading } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
-    idea_caption: "", // Frontend form field name
+    idea_caption: "",
     description: "",
-    odr_experience: "", // Frontend form field name
+    odr_experience: "",
     consent: false,
   });
   const [formErrors, setFormErrors] = useState<Record<string, string[]>>({});
@@ -96,10 +95,8 @@ export default function SubmitIdeaClientPage() {
     const parsed = ideaSubmissionSchema.safeParse(formData);
     if (!parsed.success) {
       setFormErrors(parsed.error.flatten().fieldErrors);
-      toast({
-        title: "Validation Error",
+      toast.error("Validation Error", {
         description: "Please correct the highlighted fields.",
-        variant: "destructive",
       });
       return;
     } else {
@@ -111,10 +108,8 @@ export default function SubmitIdeaClientPage() {
     try {
       // Make sure user is logged in
       if (!user || !user.id) {
-        toast({
-          title: "Authentication Required",
+        toast.error("Authentication Required", {
           description: "Please sign in to submit an idea.",
-          variant: "destructive",
         });
         return;
       }
@@ -140,10 +135,8 @@ export default function SubmitIdeaClientPage() {
         // Check for validation errors from the server
         if (response.status === 400 && responseData.errors) {
           setFormErrors(responseData.errors);
-          toast({
-            title: "Validation Error",
+          toast.error("Validation Error", {
             description: "Please correct the highlighted fields.",
-            variant: "destructive",
           });
           return;
         }
@@ -159,8 +152,7 @@ export default function SubmitIdeaClientPage() {
         saveSubmissionRecord("ideas", responseData.ideaId);
       }
 
-      toast({
-        title: "Idea submitted successfully!",
+      toast.success("Idea submitted successfully!", {
         description: "We'll review your submission and get back to you soon.",
       });
 
@@ -177,13 +169,11 @@ export default function SubmitIdeaClientPage() {
       }, 3000); // Increased to 3 seconds to give users more time to see the success message
     } catch (error) {
       console.error("Error submitting form:", error);
-      toast({
-        title: "Submission failed",
+      toast.error("Submission failed", {
         description:
           error instanceof Error
             ? error.message
             : "There was a problem submitting your idea. Please try again.",
-        variant: "destructive",
       });
     } finally {
       setIsSubmitting(false);

@@ -1,7 +1,6 @@
 "use client"
-
 import { useState, useEffect } from "react"
-import { useToast } from "@/components/ui/use-toast"
+import { toast } from "sonner"
 import { useAuth } from "@/lib/auth"
 
 // Import components
@@ -28,7 +27,6 @@ interface DiscussionClientProps {
 }
 
 export default function DiscussionClient({ idea: initialIdea, initialComments }: DiscussionClientProps) {
-  const { toast } = useToast()
   const { user, accessToken } = useAuth()
   const [idea, setIdea] = useState<Idea>(initialIdea)
   const [comments, setComments] = useState<Comment[]>(initialComments)
@@ -47,7 +45,7 @@ export default function DiscussionClient({ idea: initialIdea, initialComments }:
         setComments(data)
       } catch (error) {
         console.error("Failed to load comments:", error)
-        toast({ title: "Error", description: "Failed to load comments." })
+        toast.error("Failed to load comments.")
       }
     }
     
@@ -75,7 +73,7 @@ export default function DiscussionClient({ idea: initialIdea, initialComments }:
       
       checkLikeStatus()
     }
-  }, [idea.id, user?.id, toast, accessToken])
+  }, [idea.id, user?.id, accessToken])
 
   // Handler for updating collaborator/mentor status
   const handleCollaborationUpdated = async () => {
@@ -90,7 +88,7 @@ export default function DiscussionClient({ idea: initialIdea, initialComments }:
   // Handler for liking/unliking an idea
   const handleLikeIdea = async () => {
     if (!user) {
-      toast({ title: "Authentication Required", description: "Please sign in to like ideas." })
+      toast.error("Please sign in to like ideas.")
       return
     }
     
@@ -100,14 +98,14 @@ export default function DiscussionClient({ idea: initialIdea, initialComments }:
       setIdeaLikes(data.likes)
       setHasLiked(!hasLiked)
     } catch (error) {
-      toast({ title: "Error", description: "Failed to update like." })
+      toast.error("Failed to update like.")
     }
   }
   
   // Handler for liking/unliking a comment
   const handleLikeComment = async (commentId: string) => {
     if (!user) {
-      toast({ title: "Authentication Required", description: "Please sign in to like comments." })
+      toast.error("Please sign in to like comments.")
       return
     }
     
@@ -120,7 +118,7 @@ export default function DiscussionClient({ idea: initialIdea, initialComments }:
         c.id === commentId ? { ...c, likes: data.likes } : c
       ))
     } catch (error) {
-      toast({ title: "Error", description: "Failed to update comment like." })
+      toast.error("Failed to update comment like.")
     }
   }
 
@@ -132,23 +130,23 @@ export default function DiscussionClient({ idea: initialIdea, initialComments }:
   // Handler for submitting a new comment
   const handleSubmitComment = async (content: string) => {
     if (!user) {
-      toast({ title: "Authentication Required", description: "Please sign in to post comments." })
+      toast.error("Please sign in to post comments.")
       return
     }
     
     try {
       const newComment = await postComment(idea.id, user.id, content, undefined, accessToken)
       setComments((prev) => [...prev, { ...newComment, replies: [] }])
-      toast({ title: "Comment posted", description: "Your comment has been added to the discussion." })
+      toast.success("Your comment has been added to the discussion.")
     } catch (error) {
-      toast({ title: "Error", description: "Failed to post comment." })
+      toast.error("Failed to post comment.")
     }
   }
 
   // Handler for submitting a reply to a comment
   const handleSubmitReply = async (parentId: string, content: string) => {
     if (!user) {
-      toast({ title: "Authentication Required", description: "Please sign in to post replies." })
+      toast.error("Please sign in to post replies.")
       return
     }
     
@@ -179,9 +177,9 @@ export default function DiscussionClient({ idea: initialIdea, initialComments }:
         
       setComments(prev => addReply(prev))
       setReplyingTo(null)
-      toast({ title: "Reply posted", description: "Your reply has been added to the discussion." })
+      toast.success("Your reply has been added to the discussion.")
     } catch (error) {
-      toast({ title: "Error", description: "Failed to post reply." })
+      toast.error("Failed to post reply.")
     }
   }
   
