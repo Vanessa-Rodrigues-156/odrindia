@@ -1,6 +1,6 @@
 import { Idea, Comment } from "./types";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4000';
 
 // Helper function to create authenticated headers
 const createAuthHeaders = (accessToken?: string | null): HeadersInit => {
@@ -18,7 +18,7 @@ export async function fetchIdeaDetails(ideaId: string | null, accessToken?: stri
   }
   
   try {
-    const res = await fetch(`${API_URL}/api/ideas/${ideaId}`, { 
+    const res = await fetch(`${API_URL}/ideas/${ideaId}`, { 
       headers: createAuthHeaders(accessToken) 
     });
     
@@ -44,7 +44,7 @@ export async function fetchComments(ideaId: string | null, accessToken?: string 
   }
   
   try {
-    const res = await fetch(`${API_URL}/api/ideas/${ideaId}/comments`, { 
+    const res = await fetch(`${API_URL}/ideas/${ideaId}/comments`, { 
       headers: createAuthHeaders(accessToken) 
     });
     
@@ -65,7 +65,7 @@ export async function fetchComments(ideaId: string | null, accessToken?: string 
 // Check if user has liked an idea
 export async function checkIdeaLikeStatus(ideaId: string, userId: string, accessToken?: string | null): Promise<boolean> {
   try {
-    const res = await fetch(`${API_URL}/api/ideas/${ideaId}/likes/check?userId=${userId}`, { 
+    const res = await fetch(`${API_URL}/ideas/${ideaId}/likes/check?userId=${userId}`, { 
       headers: createAuthHeaders(accessToken) 
     });
     
@@ -87,7 +87,7 @@ export async function checkIdeaLikeStatus(ideaId: string, userId: string, access
 // Fetch comments liked by user
 export async function fetchLikedComments(ideaId: string, userId: string, accessToken?: string | null): Promise<string[]> {
   try {
-    const res = await fetch(`${API_URL}/api/ideas/${ideaId}/comments/liked?userId=${userId}`, { 
+    const res = await fetch(`${API_URL}/ideas/${ideaId}/comments/liked?userId=${userId}`, { 
       headers: createAuthHeaders(accessToken) 
     });
     
@@ -109,7 +109,7 @@ export async function fetchLikedComments(ideaId: string, userId: string, accessT
 // Like or unlike an idea
 export async function likeIdea(ideaId: string, userId: string, action: 'like' | 'unlike', accessToken?: string | null) {
   try {
-    const res = await fetch(`${API_URL}/api/ideas/${ideaId}/likes`, {
+    const res = await fetch(`${API_URL}/ideas/${ideaId}/likes`, {
       method: 'POST',
       headers: createAuthHeaders(accessToken),
       body: JSON.stringify({ userId, action })
@@ -132,7 +132,7 @@ export async function likeIdea(ideaId: string, userId: string, action: 'like' | 
 // Like or unlike a comment
 export async function likeComment(ideaId: string, commentId: string, userId: string, action: 'like' | 'unlike', accessToken?: string | null) {
   try {
-    const res = await fetch(`${API_URL}/api/ideas/${ideaId}/comments/${commentId}/likes`, {
+    const res = await fetch(`${API_URL}/ideas/${ideaId}/comments/${commentId}/likes`, {
       method: 'POST',
       headers: createAuthHeaders(accessToken),
       body: JSON.stringify({ userId, action })
@@ -155,7 +155,7 @@ export async function likeComment(ideaId: string, commentId: string, userId: str
 // Post a comment
 export async function postComment(ideaId: string, userId: string, content: string, parentId?: string, accessToken?: string | null) {
   try {
-    const res = await fetch(`${API_URL}/api/ideas/${ideaId}/comments`, {
+    const res = await fetch(`${API_URL}/ideas/${ideaId}/comments`, {
       method: 'POST',
       headers: createAuthHeaders(accessToken),
       body: JSON.stringify({ userId, content, parentId })
