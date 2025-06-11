@@ -82,7 +82,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           return;
         }
 
-        const response = await fetch(`${API_BASE_URL}/api/auth/session`, {
+        const response = await fetch(`${API_BASE_URL}/auth/session`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -142,7 +142,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signup = useCallback(
     async (userData: any) => {
-      const response = await fetch(`${API_BASE_URL}/api/auth/signup`, {
+      const response = await fetch(`${API_BASE_URL}/auth/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -164,7 +164,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signInWithGoogle = useCallback(
     async (googleUser: any): Promise<GoogleSignInResponse> => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/auth/google-signin`, {
+        const response = await fetch(`${API_BASE_URL}/auth/google-signin`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -204,7 +204,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const completeProfile = useCallback(
     async (profileData: any) => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/auth/complete-profile`, {
+        const response = await fetch(`${API_BASE_URL}/auth/complete-profile`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
