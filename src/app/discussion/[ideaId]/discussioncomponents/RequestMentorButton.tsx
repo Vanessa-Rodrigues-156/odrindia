@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { BookOpen, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { apiFetch } from "@/lib/api";
 import { User } from "./types";
 
@@ -22,34 +22,21 @@ export default function RequestMentorButton({
   isMentor,
   onRequested,
 }: RequestMentorButtonProps) {
-  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleRequestMentor = async () => {
     if (!user) {
-      toast({
-        title: "Authentication Required",
-        description: "Please sign in to request to be a mentor.",
-        variant: "destructive",
-      });
+      toast.error("Please sign in to request to be a mentor.");
       return;
     }
 
     if (user.userRole !== "MENTOR") {
-      toast({
-        title: "Permission Denied",
-        description: "Only users with MENTOR role can become mentors.",
-        variant: "destructive",
-      });
+      toast.error("Only users with MENTOR role can become mentors.");
       return;
     }
 
     if (isOwner) {
-      toast({
-        title: "Cannot Mentor",
-        description: "You are already the owner of this idea.",
-        variant: "destructive",
-      });
+      toast.error("You are already the owner of this idea.");
       return;
     }
 
@@ -64,20 +51,12 @@ export default function RequestMentorButton({
         throw new Error(data.error || "Failed to request mentor role");
       }
 
-      toast({
-        title: "Success!",
-        description: "You are now a mentor for this idea.",
-        variant: "default",
-      });
+      toast.success("You are now a mentor for this idea.");
       
       onRequested();
     } catch (error) {
       console.error("Error requesting mentor role:", error);
-      toast({
-        title: "Request Failed",
-        description: error instanceof Error ? error.message : "An error occurred",
-        variant: "destructive",
-      });
+      toast.error(error instanceof Error ? error.message : "An error occurred");
     } finally {
       setIsLoading(false);
     }
@@ -97,20 +76,12 @@ export default function RequestMentorButton({
         throw new Error(data.error || "Failed to leave mentorship");
       }
 
-      toast({
-        title: "Left Mentorship",
-        description: "You have left the mentorship role.",
-        variant: "default",
-      });
+      toast.success("You have left the mentorship role.");
       
       onRequested();
     } catch (error) {
       console.error("Error leaving mentorship:", error);
-      toast({
-        title: "Failed to Leave",
-        description: error instanceof Error ? error.message : "An error occurred",
-        variant: "destructive",
-      });
+      toast.error(error instanceof Error ? error.message : "An error occurred");
     } finally {
       setIsLoading(false);
     }

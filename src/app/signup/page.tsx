@@ -2,11 +2,9 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion"; // Added AnimatePresence
+import { motion, AnimatePresence } from "framer-motion"; 
 import { useAuth } from "@/lib/auth";
 import { apiFetch } from "@/lib/api";
-import { initializeGoogleAuth, renderGoogleButton, GoogleUser } from "@/lib/google-auth";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

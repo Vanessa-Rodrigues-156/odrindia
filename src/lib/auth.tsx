@@ -18,7 +18,7 @@ interface User {
   id: string;
   name: string;
   email: string;
-  userRole: string;
+  userRole: "INNOVATOR" | "MENTOR" | "ADMIN" | "OTHER"; // <-- Restrict to allowed values
   contactNumber?: string;
   city?: string;
   country?: string;
@@ -33,13 +33,14 @@ interface User {
 interface GoogleSignInResponse {
   user: User;
   needsProfileCompletion: boolean; // This is calculated by the backend, not stored
-  token?: string; // Optional token - only present when profile is complete
+  token?: string; 
   message: string;
 }
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
+  accessToken: string | null; // 
   login: (userData: User, token: string) => void;
   logout: () => void;
   signup: (userData: any) => Promise<any>;
@@ -237,6 +238,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const value = {
     user,
     loading,
+    accessToken, // <-- Add this line
     login,
     logout,
     signup,

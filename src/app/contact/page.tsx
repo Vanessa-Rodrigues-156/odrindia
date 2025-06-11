@@ -5,12 +5,7 @@ import { ArrowRight, Building, Check, HelpCircle, Mail, MapPin, Phone } from "lu
 import { motion } from "framer-motion" // Added framer-motion import
 
 import { Button } from "@/components/ui/button"
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion"
+
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"

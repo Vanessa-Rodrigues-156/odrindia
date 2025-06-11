@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -31,7 +31,7 @@ const staggerContainer = {
   },
 };
 
-const SignInPage = () => {
+function SignInClient() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -398,6 +398,16 @@ const SignInPage = () => {
       </motion.div>
     </div>
   );
-};
+}
 
-export default SignInPage;
+export default function SignInPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="w-12 h-12 rounded-full border-4 border-blue-500 border-t-transparent animate-spin"></div>
+      </div>
+    }>
+      <SignInClient />
+    </Suspense>
+  );
+}

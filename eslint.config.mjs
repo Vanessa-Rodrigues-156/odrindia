@@ -17,6 +17,7 @@ const eslintConfig = [
       "@typescript-eslint/no-unused-vars": "off",
       // Or set to warn only
       // "@typescript-eslint/no-unused-vars": "warn"
+      "@typescript-eslint/no-explicit-any":"off",
     }
   }
 ];

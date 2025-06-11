@@ -3,7 +3,7 @@
 import { useAuth } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import { useEffect, ReactNode } from "react";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 
 export default function AdminGuard({
   children,
@@ -14,7 +14,6 @@ export default function AdminGuard({
 }) {
   const { user, loading, refreshUser } = useAuth();
   const router = useRouter();
-  const { toast } = useToast();
 
   useEffect(() => {
     // First - if we're not in a loading state, check for admin access
@@ -33,22 +32,14 @@ export default function AdminGuard({
         if (currentPath !== redirectTo) {
           router.push(`${redirectTo}?redirect=${encodeURIComponent(currentPath)}`);
           
-          toast({
-            title: "Authentication Required",
-            description: "Please login to access the admin area",
-            variant: "default"
-          });
+          toast.info("Please login to access the admin area");
         }
       } else if (user.userRole !== "ADMIN") {
         // Authenticated but not admin - redirect to home
         console.log(`AdminGuard - User role ${user.userRole} is not ADMIN, redirecting to home`);
         router.push("/");
         
-        toast({
-          title: "Access Denied",
-          description: "You need administrator privileges to access this area",
-          variant: "destructive"
-        });
+        toast.error("You need administrator privileges to access this area");
       } else {
         // Everything good - refresh user data to ensure we have latest permissions
         console.log("AdminGuard - Admin access confirmed");
@@ -57,7 +48,7 @@ export default function AdminGuard({
         });
       }
     }
-  }, [user, loading, router, redirectTo, toast, refreshUser]);
+  }, [user, loading, router, redirectTo, refreshUser]);
 
   // Show loading state
   if (loading) {

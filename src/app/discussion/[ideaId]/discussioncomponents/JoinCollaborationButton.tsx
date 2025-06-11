@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Users, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { apiFetch } from "@/lib/api";
 import { User } from "./types";
 
@@ -22,25 +22,16 @@ export default function JoinCollaborationButton({
   isCollaborator,
   onJoined,
 }: JoinCollaborationButtonProps) {
-  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleJoinCollaboration = async () => {
     if (!user) {
-      toast({
-        title: "Authentication Required",
-        description: "Please sign in to join as a collaborator.",
-        variant: "destructive",
-      });
+      toast.error("Please sign in to join as a collaborator.");
       return;
     }
 
     if (isOwner) {
-      toast({
-        title: "Cannot Join",
-        description: "You are already the owner of this idea.",
-        variant: "destructive",
-      });
+      toast.error("You are already the owner of this idea.");
       return;
     }
 
@@ -55,20 +46,12 @@ export default function JoinCollaborationButton({
         throw new Error(data.error || "Failed to join as collaborator");
       }
 
-      toast({
-        title: "Success!",
-        description: "You have joined as a collaborator.",
-        variant: "default",
-      });
+      toast.success("You have joined as a collaborator.");
       
       onJoined();
     } catch (error) {
       console.error("Error joining collaboration:", error);
-      toast({
-        title: "Failed to Join",
-        description: error instanceof Error ? error.message : "An error occurred",
-        variant: "destructive",
-      });
+      toast.error(error instanceof Error ? error.message : "An error occurred");
     } finally {
       setIsLoading(false);
     }
@@ -88,20 +71,12 @@ export default function JoinCollaborationButton({
         throw new Error(data.error || "Failed to leave collaboration");
       }
 
-      toast({
-        title: "Left Collaboration",
-        description: "You have left the collaboration.",
-        variant: "default",
-      });
+      toast.success("You have left the collaboration.");
       
       onJoined();
     } catch (error) {
       console.error("Error leaving collaboration:", error);
-      toast({
-        title: "Failed to Leave",
-        description: error instanceof Error ? error.message : "An error occurred",
-        variant: "destructive",
-      });
+      toast.error(error instanceof Error ? error.message : "An error occurred");
     } finally {
       setIsLoading(false);
     }

@@ -4,13 +4,13 @@ import { useState } from "react";
 import Link from "next/link";
 import { format } from "date-fns";
 import { ThumbsUp, MessageSquare, ChevronUp, ChevronDown } from "lucide-react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Comment, User } from "./types";
 import { getInitials } from "./utils";
-import { useToast } from "@/components/ui/use-toast";
 
 interface CommentThreadProps {
   comment: Comment;
@@ -41,7 +41,6 @@ export default function CommentThread({
   onToggleExpand,
   replyingTo,
 }: CommentThreadProps) {
-  const { toast } = useToast();
   const [replyContent, setReplyContent] = useState("");
   const isExpanded = expandedComments[comment.id] !== false; // Default to expanded
 
@@ -53,7 +52,7 @@ export default function CommentThread({
       setReplyContent("");
     } catch (error) {
       console.error("Error submitting reply:", error);
-      toast({ title: "Error", description: "Failed to post reply." });
+      toast.error("Failed to post reply.");
     }
   };
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { User, Mail} from "lucide-react";
 import  {toast}  from "sonner";
-export default function CompleteProfilePage() {
+
+function CompleteProfileClient() {
   const { user, completeProfile, loading } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -252,8 +253,8 @@ export default function CompleteProfilePage() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="high-school">High School</SelectItem>
-                    <SelectItem value="bachelors">Bachelor's Degree</SelectItem>
-                    <SelectItem value="masters">Master's Degree</SelectItem>
+                    <SelectItem value="bachelors">Bachelor&apos;s Degree</SelectItem>
+                    <SelectItem value="masters">Master&apos;s Degree</SelectItem>
                     <SelectItem value="phd">PhD</SelectItem>
                     <SelectItem value="other">Other</SelectItem>
                   </SelectContent>
@@ -292,5 +293,17 @@ export default function CompleteProfilePage() {
         </Card>
       </div>
     </div>
+  );
+}
+
+export default function CompleteProfilePage() {
+  return (
+    <Suspense fallback={
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="w-12 h-12 rounded-full border-4 border-blue-500 border-t-transparent animate-spin"></div>
+      </div>
+    }>
+      <CompleteProfileClient />
+    </Suspense>
   );
 }
