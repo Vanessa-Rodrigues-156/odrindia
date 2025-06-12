@@ -77,8 +77,8 @@ export default function MeetingDetailPage() {
   const { user } = useAuth();
   const router = useRouter();
   const params = useParams();
-  const meetingId = params.meetingId as string;
-  const ideaId = params.ideaId as string;
+  const meetingId = params?.meetingId as string;
+  const ideaId = params?.ideaId as string;
 
   const [meeting, setMeeting] = useState<Meeting | null>(null);
   const [loading, setLoading] = useState(true);

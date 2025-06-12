@@ -27,7 +27,7 @@ export default function WorkplacePage() {
   const { user, loading } = useAuth();
   const router = useRouter();
   const params = useParams();
-  const ideaId = params.ideaId as string;
+  const ideaId = params?.ideaId as string;
   const [fullscreenMode, setFullscreenMode] = useState("");
   const [ideaDetails, setIdeaDetails] = useState<{
     name: string;

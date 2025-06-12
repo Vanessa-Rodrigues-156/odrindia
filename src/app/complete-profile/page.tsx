@@ -37,22 +37,21 @@ function CompleteProfileClient() {
     odrLabUsage: "",
   });
 
+  // --- FIX: Always show the form if Google OAuth params are present, even if user is null ---
   useEffect(() => {
-    // Set user display data from URL params (Google OAuth) or auth context
+    if (!searchParams) return;
     const emailFromParams = searchParams.get("email");
     const nameFromParams = searchParams.get("name");
     const imageFromParams = searchParams.get("image");
     const fromGoogle = searchParams.get("fromGoogle");
 
     if (fromGoogle === "true" && emailFromParams) {
-      // Data from Google OAuth flow
       setUserDisplayData({
         name: nameFromParams || "",
         email: emailFromParams,
         image: imageFromParams || ""
       });
     } else if (user) {
-      // Data from auth context
       setUserDisplayData({
         name: user.name,
         email: user.email,
@@ -60,14 +59,21 @@ function CompleteProfileClient() {
       });
     }
 
-    // Redirect if user is already fully authenticated
-    if (!loading && user && localStorage.getItem("token") && 
-        user.contactNumber && user.city && user.country) {
+    // Only redirect to home if user is fully authenticated and NOT in Google OAuth flow
+    if (
+      !loading &&
+      user &&
+      localStorage.getItem("token") &&
+      user.contactNumber &&
+      user.city &&
+      user.country &&
+      fromGoogle !== "true"
+    ) {
       router.push("/home");
       return;
     }
 
-    // Redirect to sign-in if no user found and no Google OAuth params
+    // Only redirect to sign-in if no user and not in Google OAuth flow
     if (!loading && !user && !emailFromParams) {
       router.push("/signin");
       return;
@@ -116,7 +122,7 @@ function CompleteProfileClient() {
       });
 
       // Redirect to intended page or home
-      const redirectTo = searchParams.get("redirect") || "/home";
+      const redirectTo = searchParams?.get("redirect") || "/home";
       setTimeout(() => {
         router.push(redirectTo);
       }, 1500);
@@ -129,6 +135,7 @@ function CompleteProfileClient() {
     }
   };
 
+  // --- FIX: Only block rendering if loading, not if user is null and Google params exist ---
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -137,8 +144,10 @@ function CompleteProfileClient() {
     );
   }
 
-  if (!user) {
-    return null; // User is not authenticated, handled by useAuth hook
+  // Only block rendering if neither user nor Google params are present
+  const emailFromParams = searchParams?.get("email");
+  if (!user && !emailFromParams) {
+    return null;
   }
 
   return (

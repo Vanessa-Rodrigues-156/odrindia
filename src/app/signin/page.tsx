@@ -1,5 +1,5 @@
 "use client";
-import React, { Suspense, useState } from "react";
+import React, { Suspense, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -39,6 +39,91 @@ function SignInClient() {
   const { login, signInWithGoogle } = useAuth();
 
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
+
+  // Render Google button only once on mount (for fallback UX)
+  useEffect(() => {
+    const googleButtonContainer = document.getElementById("google-signin-container");
+    if (googleButtonContainer) {
+      renderGoogleButton(googleButtonContainer, "signin_with");
+    }
+  }, []);
+
+  // If you need to load an external script, do it like this:
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://accounts.google.com/gsi/client";
+    script.async = true;
+    script.onload = () => {
+      // Google API loaded, render the Google button if needed
+      const container = document.getElementById("google-signin-container");
+      if (window.google && window.google.accounts && container) {
+        window.google.accounts.id.initialize({
+          client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "",
+          callback: async (response: any) => {
+            // Decode the JWT credential from Google
+            const credential = response.credential;
+            if (!credential) return;
+
+            // Decode JWT to get user info (email, name, picture)
+            const base64Url = credential.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(
+              atob(base64)
+                .split('')
+                .map(function(c) {
+                  return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                })
+                .join('')
+            );
+            const payload = JSON.parse(jsonPayload);
+
+            // Send user info to backend for sign-in/up
+            try {
+              const res = await fetch(`${API_BASE_URL}/auth/google-signin`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  email: payload.email,
+                  name: payload.name,
+                  picture: payload.picture,
+                }),
+              });
+              const data = await res.json();
+              if (!res.ok) throw new Error(data.error || "Google sign-in failed");
+
+              // Use the auth context login function to store user data and token
+              if (data.token) {
+                login(data.user, data.token);
+                router.push("/home");
+              } else if (data.needsProfileCompletion) {
+                const params = new URLSearchParams({
+                  email: payload.email,
+                  name: payload.name,
+                  image: payload.picture || "",
+                  fromGoogle: "true"
+                });
+                router.push(`/complete-profile?${params.toString()}`);
+              }
+            } catch (err: any) {
+              setError(err.message || "Google sign-in failed");
+            }
+          },
+        });
+        window.google.accounts.id.renderButton(container, {
+          theme: "outline",
+          size: "large",
+          text: "signin_with",
+        });
+      }
+    };
+    document.body.appendChild(script);
+    return () => {
+      // Only remove if the script is still present in the DOM
+      if (script.parentNode) {
+        script.parentNode.removeChild(script);
+      }
+    };
+  }, []);
 
   // Handle form submission for email/password login
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -90,26 +175,21 @@ function SignInClient() {
     try {
       setLoading(true);
       setError(null);
-      
-      // First render the button (for fallback UX)
-      renderGoogleButton("google-signin-container", () => {
-        console.log("Google sign-in button clicked");
-      });
-      
-      // Then initialize Google Auth
+
+      // Initialize Google Auth
       await initializeGoogleAuth(async (googleUser: GoogleUser) => {
         try {
           // Validate email and name
           if (!googleUser.email || !googleUser.name) {
             throw new Error("Incomplete user information from Google");
           }
-          
+
           const result = await signInWithGoogle({
             email: googleUser.email,
             name: googleUser.name,
             picture: googleUser.picture || ""
           });
-          
+
           if (result.needsProfileCompletion) {
             // Redirect to profile completion page with proper user data
             const params = new URLSearchParams({

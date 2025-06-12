@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion"; 
@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { initializeGoogleAuth, GoogleUser } from "@/lib/google-auth";
 
 // Animation variants
 const fadeInUp = {
@@ -112,117 +113,108 @@ const SignUpPage = () => {
   const [step, setStep] = useState(0);
   const [form, setForm] = useState(initialForm);
   const [googleScriptLoaded, setGoogleScriptLoaded] = useState(false);
+  const googleButtonRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { login, signInWithGoogle } = useAuth();
 
+  // Google Sign-In: load script and render button, handle callback
   useEffect(() => {
-    const loadGoogleScript = () => {
-      if (typeof window !== 'undefined' && window.google && !googleScriptLoaded) {
-        setGoogleScriptLoaded(true);
-        
-        // Initialize Google Identity Services
-        window.google.accounts.id.initialize({
-          client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "",
-          callback: handleGoogleCallback,
-          auto_select: false,
-          cancel_on_tap_outside: true
-        });
+    // Dynamically load Google script if not present
+    let script: HTMLScriptElement | null = null;
+    if (typeof window !== "undefined" && !window.google) {
+      script = document.createElement("script");
+      script.src = "https://accounts.google.com/gsi/client";
+      script.async = true;
+      script.onload = () => setGoogleScriptLoaded(true);
+      document.body.appendChild(script);
+    } else if (window.google) {
+      setGoogleScriptLoaded(true);
+    }
 
-        // Render the button
-        const buttonContainer = document.getElementById("google-signin-container");
-        if (buttonContainer) {
-          window.google.accounts.id.renderButton(buttonContainer, {
-            theme: "outline",
-            size: "large",
-            width: buttonContainer.offsetWidth,
-            text: "signup_with"
-          });
-        }
-
-        // Optional: Display the One Tap UI
-        window.google.accounts.id.prompt();
+    return () => {
+      if (script && script.parentNode) {
+        script.parentNode.removeChild(script);
       }
     };
+  }, []);
 
-    // Check if the script is already loaded
-    if (typeof window !== 'undefined') {
-      if (window.google) {
-        loadGoogleScript();
-      } else {
-        // Script load callback from script element
-        window.handleGoogleScriptLoad = loadGoogleScript;
-      }
+  useEffect(() => {
+    if (!googleScriptLoaded) return;
+
+    if (window.google && window.google.accounts && googleButtonRef.current) {
+      window.google.accounts.id.initialize({
+        client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "",
+        callback: async (response: any) => {
+          // Decode the JWT credential from Google
+          const credential = response.credential;
+          if (!credential) return;
+
+          // Decode JWT to get user info (email, name, picture)
+          const base64Url = credential.split('.')[1];
+          const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+          const jsonPayload = decodeURIComponent(
+            atob(base64)
+              .split('')
+              .map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+              })
+              .join('')
+          );
+          const payload = JSON.parse(jsonPayload);
+
+          // Send user info to backend for sign-in/up
+          try {
+            setLoading(true);
+            setError(null);
+            const res = await fetch(
+              `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000"}/auth/google-signin`,
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  email: payload.email,
+                  name: payload.name,
+                  picture: payload.picture,
+                }),
+              }
+            );
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Google sign-up failed");
+
+            // Use the auth context login function to store user data and token
+            if (data.token) {
+              login(data.user, data.token);
+              router.push("/home");
+            } else if (data.needsProfileCompletion) {
+              const params = new URLSearchParams({
+                email: payload.email,
+                name: payload.name,
+                image: payload.picture || "",
+                fromGoogle: "true"
+              });
+              router.push(`/complete-profile?${params.toString()}`);
+            }
+          } catch (err: any) {
+            setError(err.message || "Google sign-up failed");
+          } finally {
+            setLoading(false);
+          }
+        },
+        auto_select: false,
+        cancel_on_tap_outside: true,
+      });
+
+      window.google.accounts.id.renderButton(googleButtonRef.current, {
+        theme: "outline",
+        size: "large",
+        width: googleButtonRef.current.offsetWidth,
+        text: "signup_with",
+      });
+
+      // Optionally show One Tap
+      window.google.accounts.id.prompt();
     }
-  }, [googleScriptLoaded]);
-
-  // Google Sign-In callback handler
-  const handleGoogleCallback = async (response: any) => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      if (!response.credential) {
-        throw new Error("No credential returned from Google");
-      }
-
-      // Decode the JWT token to get user info
-      const payload = parseJwt(response.credential);
-
-      if (!payload || !payload.email) {
-        throw new Error("Invalid Google user data");
-      }
-
-      const googleUser = {
-        email: payload.email,
-        name: payload.name,
-        picture: payload.picture
-      };
-
-      const result = await signInWithGoogle(googleUser);
-      
-      if (result.needsProfileCompletion) {
-        // Redirect to profile completion page
-        const params = new URLSearchParams({
-          email: googleUser.email,
-          name: googleUser.name,
-          image: googleUser.picture || "",
-          fromGoogle: "true"
-        });
-        router.push(`/complete-profile?${params.toString()}`);
-      } else {
-        // User has complete profile, redirect to home
-        router.push("/home");
-      }
-    } catch (error) {
-      console.error("Google sign-in error:", error);
-      setError(error instanceof Error ? error.message : "Google sign-in failed. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Parse JWT token
-  const parseJwt = (token: string) => {
-    try {
-      const base64Url = token.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(atob(base64).split('').map((c) => {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-      }).join(''));
-      return JSON.parse(jsonPayload);
-    } catch (e) {
-      console.error("Error parsing JWT:", e);
-      return null;
-    }
-  };
-
-  // Handle Google Sign Up - simplified to work with the auto-initialized button
-  const handleGoogleSignUp = () => {
-    if (typeof window === 'undefined' || !window.google) {
-      setError("Google Sign-In is not available. Please try again later or use email signup.");
-    }
-    // The actual sign-in is handled by the callback configured in initialization
-  };
+  }, [googleScriptLoaded, login, router]);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -1353,17 +1345,16 @@ const SignUpPage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.3 }}>
-                {/* Google Sign In Button Container */}
+                {/* Google Sign In Button Container - with ref */}
                 <div 
                   id="google-signin-container" 
+                  ref={googleButtonRef}
                   className="w-full h-12 mb-4"
-                  onClick={handleGoogleSignUp}
                 >
                   {/* Google button will be rendered here by the Google API */}
                   {!googleScriptLoaded && (
                     <Button
                       type="button"
-                      onClick={() => {}} // No-op as it will be replaced
                       disabled={loading}
                       className="w-full h-12 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 font-medium transition-all duration-200 flex items-center justify-center space-x-3 mb-4">
                       <svg className="w-5 h-5" viewBox="0 0 24 24">
