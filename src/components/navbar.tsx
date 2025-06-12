@@ -40,7 +40,7 @@ const navItems = [
 				title: "Mediate",
 				href: "https://mediate.com/",
 				description:
-					"Leading resource for mediation news, training, and professionals. Features articles, directories, and resources for advancing peaceful conflict resolution.",
+					"Global source for insightful mediation resources and trusted mediator  connections.",
 				icon: Users,
 			},
 			{
