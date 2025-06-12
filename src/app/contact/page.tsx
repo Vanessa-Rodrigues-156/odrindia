@@ -133,7 +133,7 @@ export default function ContactPage() {
                 transition={{ duration: 0.5, delay: 0.5 }}
               >
                 <Button 
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-6 h-auto rounded-md text-lg transition-all shadow-md hover:shadow-lg"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-4 h-auto rounded-md text-lg transition-all shadow-md hover:shadow-lg"
                   onClick={() => {
                     document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
                   }}
@@ -174,54 +174,38 @@ export default function ContactPage() {
                         <Mail className="h-6 w-6 text-blue-700" />
                       </div>
                       <div className="flex-1">
+                        <h3 className="font-semibold text-gray-800 mb-1.5 group-hover:text-blue-800 transition-colors">Facilitator</h3>
+                        <p className="text-gray-700 font-medium">chittu@odrlab.com</p>
+                        <p className="text-sm text-gray-500 mt-2 italic">Connect for Mentor / Student/ Institution Collaborations</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-gradient-to-br from-white to-blue-50/30 rounded-xl p-5 group hover:shadow-lg hover:shadow-blue-100/50 transition-all duration-300 backdrop-blur-sm">
+                    <div className="flex items-start gap-4 relative">
+                      <div className="absolute -top-10 -right-10 w-32 h-32 bg-blue-50/50 rounded-full opacity-0 group-hover:opacity-30 transition-opacity duration-500 blur-xl"></div>
+                      <div className="bg-blue-100/80 p-3 rounded-full group-hover:bg-blue-200/80 transition-colors duration-300 shadow-sm">
+                        <Mail className="h-6 w-6 text-blue-700" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-gray-800 mb-1.5 group-hover:text-blue-800 transition-colors">Facilitator</h3>
+                        <p className="text-gray-700 font-medium">suman@odrlab.com</p>
+                        <p className="text-sm text-gray-500 mt-2 italic">Connect for Mentor / Student/ Institution Collaborations</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="md:col-span-2 bg-gradient-to-br from-white to-blue-50/30 rounded-xl p-5 group hover:shadow-lg hover:shadow-blue-100/50 transition-all duration-300 backdrop-blur-sm">
+                    <div className="flex items-start gap-4 relative">
+                      <div className="absolute -top-10 -right-10 w-32 h-32 bg-blue-50/50 rounded-full opacity-0 group-hover:opacity-30 transition-opacity duration-500 blur-xl"></div>
+                      <div className="bg-blue-100/80 p-3 rounded-full group-hover:bg-blue-200/80 transition-colors duration-300 shadow-sm">
+                        <Mail className="h-6 w-6 text-blue-700" />
+                      </div>
+                      <div className="flex-1">
                         <h3 className="font-semibold text-gray-800 mb-1.5 group-hover:text-blue-800 transition-colors">Student Ambassadors</h3>
                         <p className="text-gray-700 font-medium">contact@odrlab.com</p>
                         <p className="text-sm text-gray-500 mt-2 italic">For student inquiries and general questions</p>
                       </div>
                     </div>
-                  </div>
-                  
-                  <div className="bg-gradient-to-br from-white to-blue-50/30 rounded-xl p-5 group hover:shadow-lg hover:shadow-blue-100/50 transition-all duration-300 backdrop-blur-sm">
-                    <div className="flex items-start gap-4 relative">
-                      <div className="absolute -top-10 -right-10 w-32 h-32 bg-blue-50/50 rounded-full opacity-0 group-hover:opacity-30 transition-opacity duration-500 blur-xl"></div>
-                      <div className="bg-blue-100/80 p-3 rounded-full group-hover:bg-blue-200/80 transition-colors duration-300 shadow-sm">
-                        <Mail className="h-6 w-6 text-blue-700" />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-gray-800 mb-1.5 group-hover:text-blue-800 transition-colors">Mentor Admin</h3>
-                        <p className="text-gray-700 font-medium">suman@odrlab.com</p>
-                        <p className="text-sm text-gray-500 mt-2 italic">For mentorship program inquiries</p>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="bg-gradient-to-br from-white to-blue-50/30 rounded-xl p-5 group hover:shadow-lg hover:shadow-blue-100/50 transition-all duration-300 backdrop-blur-sm">
-                    <div className="flex items-start gap-4 relative">
-                      <div className="absolute -top-10 -right-10 w-32 h-32 bg-blue-50/50 rounded-full opacity-0 group-hover:opacity-30 transition-opacity duration-500 blur-xl"></div>
-                      <div className="bg-blue-100/80 p-3 rounded-full group-hover:bg-blue-200/80 transition-colors duration-300 shadow-sm">
-                        <Mail className="h-6 w-6 text-blue-700" />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-gray-800 mb-1.5 group-hover:text-blue-800 transition-colors">Mentor Admin</h3>
-                        <p className="text-gray-700 font-medium">chittu@odrlab.com</p>
-                        <p className="text-sm text-gray-500 mt-2 italic">For mentorship program support</p>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="bg-gradient-to-br from-white to-blue-50/30 rounded-xl p-5 group hover:shadow-lg hover:shadow-blue-100/50 transition-all duration-300 backdrop-blur-sm">
-                    <div className="flex items-start gap-4 relative">
-                      <div className="absolute -top-10 -right-10 w-32 h-32 bg-blue-50/50 rounded-full opacity-0 group-hover:opacity-30 transition-opacity duration-500 blur-xl"></div>
-                      <div className="bg-blue-100/80 p-3 rounded-full group-hover:bg-blue-200/80 transition-colors duration-300 shadow-sm">
-                        <Building className="h-6 w-6 text-blue-700" />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-gray-800 mb-1.5 group-hover:text-blue-800 transition-colors">Partnerships</h3>
-                        <p className="text-gray-700 font-medium">partnerships@odrlab.com</p>
-                        <p className="text-sm text-gray-500 mt-2 italic">For collaboration and partnership opportunities</p>
-                      </div>
-                    </div>
-                  </div>
+                  </div>                
                 </motion.div>
 
               </motion.div>

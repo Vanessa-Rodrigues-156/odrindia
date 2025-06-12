@@ -6,15 +6,14 @@ import { Button } from "@/components/ui/button"
 export default function Footer() {
   return (
     <footer className="bg-[#0a1e42] text-white">
-      <div className="container mx-auto px-4 py-4">
+      <div className="container mx-auto px-4 py-2">
         <div className="grid gap-10 items-stretch md:grid-cols-3 lg:grid-cols-3">
           <div className="space-y-4">
             <h3 className="text-xl font-bold">ODR</h3>
             <p className="text-gray-300">
-              Online Dispute Resolution for ADR practices and Justice. Making dispute resolution accessible, efficient,
-              and effective.
+              Online Dispute Resolution (ODR) leverages technology—automated, augmented, or assisted—to design innovative systems that simplify conflict resolution, facilitate dialogue, streamline processes, and provide both human and AI-driven support, customized to the needs of each dispute.
             </p>
-            <div className="flex space-x-4">
+            {/* <div className="flex space-x-4">
               <Link href="https://twitter.com" target="_blank" rel="noopener noreferrer">
                 <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
                   <Twitter className="h-4 w-4" />
@@ -39,7 +38,7 @@ export default function Footer() {
                   <span className="sr-only">Instagram</span>
                 </Button>
               </Link>
-            </div>
+            </div> */}
           </div>
 
           <div className="space-y-2 w-fit">

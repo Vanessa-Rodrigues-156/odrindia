@@ -166,68 +166,7 @@ function SignInClient() {
         </div>
       </motion.div>
 
-      {/* Left side - Branding/Welcome section (desktop only) */}
-      <motion.div
-        className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#0a1e42] to-[#162d5a] px-8 py-12 xl:px-16 flex-col justify-center relative overflow-hidden"
-        initial={{ opacity: 0, x: -50 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.8 }}>
-        
-        {/* Background decorative elements */}
-        <motion.div
-          className="absolute top-20 right-20 w-32 h-32 rounded-full bg-white/10"
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.1, 0.3, 0.1],
-          }}
-          transition={{ duration: 6, repeat: Infinity }}
-        />
-        <motion.div
-          className="absolute bottom-32 left-16 w-24 h-24 rounded-full bg-sky-400/20"
-          animate={{
-            scale: [1, 1.1, 1],
-            rotate: [0, 180, 360],
-          }}
-          transition={{ duration: 8, repeat: Infinity }}
-        />
-        
-        <div className="relative z-10 max-w-lg m-auto">
-          <motion.div
-            className="mb-8"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}>
-            <h1 className="text-3xl xl:text-4xl font-bold text-white mb-4">
-              Welcome Back to ODR
-            </h1>
-            <p className="text-lg xl:text-xl text-blue-100 leading-relaxed">
-              Online Dispute Resolution for ADR practices and Justice. 
-              Sign in to continue your journey towards accessible and efficient dispute resolution.
-            </p>
-          </motion.div>
-          
-          <motion.div
-            className="space-y-4"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}>
-            <div className="flex items-center space-x-3">
-              <div className="w-2 h-2 bg-sky-400 rounded-full flex-shrink-0"></div>
-              <span className="text-blue-100 text-sm xl:text-base">Secure authentication system</span>
-            </div>
-            <div className="flex items-center space-x-3">
-              <div className="w-2 h-2 bg-sky-400 rounded-full flex-shrink-0"></div>
-              <span className="text-blue-100 text-sm xl:text-base">Access to collaborative tools</span>
-            </div>
-            <div className="flex items-center space-x-3">
-              <div className="w-2 h-2 bg-sky-400 rounded-full flex-shrink-0"></div>
-              <span className="text-blue-100 text-sm xl:text-base">Connect with mentors and peers</span>
-            </div>
-          </motion.div>
-        </div>
-      </motion.div>
-
-      {/* Right side - Sign in form */}
+      {/* Sign in form */}
       <motion.div
         className="flex-1 lg:w-1/2 bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center px-4 py-6 sm:py-8 lg:px-12 xl:px-16 relative"
         initial={{ opacity: 0, x: 50 }}
@@ -236,7 +175,7 @@ function SignInClient() {
         
         {/* Background animation elements */}
         <motion.div
-          className="absolute top-8 left-4 w-20 h-20 sm:w-24 sm:h-24 lg:w-32 lg:h-32 rounded-full bg-blue-500/5"
+          className="absolute top-8 left-24 w-20 h-20 sm:w-24 sm:h-24 lg:w-32 lg:h-32 rounded-full bg-blue-500/20"
           animate={{
             scale: [1, 1.2, 1],
             opacity: [0.2, 0.4, 0.2],
@@ -244,7 +183,7 @@ function SignInClient() {
           transition={{ duration: 8, repeat: Infinity }}
         />
         <motion.div
-          className="absolute bottom-8 right-4 w-24 h-24 sm:w-32 sm:h-32 lg:w-40 lg:h-40 rounded-full bg-sky-400/5"
+          className="absolute bottom-8 right-24 w-24 h-24 sm:w-32 sm:h-32 lg:w-40 lg:h-40 rounded-full bg-sky-400/15"
           animate={{
             scale: [1, 1.1, 1],
             opacity: [0.1, 0.3, 0.1],
