@@ -156,7 +156,7 @@ const Chat = () => {
                         <line x1="12" y1="16" x2="12" y2="12"></line>
                         <line x1="12" y1="8" x2="12.01" y2="8"></line>
                     </svg>
-                    Legal Assistant
+                    Curio - Ai Assistant
                 </div>
             </header>
 
@@ -225,7 +225,7 @@ const Chat = () => {
                                     fontSize: "20px",
                                     color: "#1f2937",
                                 }}>
-                                Welcome to the Legal Assistant
+                                Chat with Curio
                             </h3>
                             <p
                                 style={{
@@ -234,8 +234,7 @@ const Chat = () => {
                                     color: "#6b7280",
                                     marginBottom: "24px",
                                 }}>
-                                Ask any questions about legal matters or online dispute
-                                resolution services
+                                Curio is an AI chatbot designed to simplify your Online Dispute Resolution queries.
                             </p>
                             <div
                                 style={{
