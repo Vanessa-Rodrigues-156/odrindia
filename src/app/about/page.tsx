@@ -41,8 +41,7 @@ export default function AboutPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-gray-600">
-                  To democratize access to justice by delivering innovative online dispute resolution technologies and services—making conflict prevention and resolution more accessible, efficient, and affordable for all, regardless of location or economic status.
-                  </p>
+                  ODR Lab&apos;s mission is to foster a global network of legal tech innovators and thought leaders committed to designing Online Dispute Resolution,  Prevention and Management, Systems adapted to specific contexts and cases—making such ODR systems   more accessible, effective, and inclusive.</p>
                 </CardContent>
               </Card>
 

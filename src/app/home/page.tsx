@@ -185,7 +185,7 @@ export default function Home() {
                       viewport={{ once: true }}
                     >
                       We&apos;re constantly looking for innovative approaches to improve ODR. Share your ideas, research, or
-                      technology to help us advance the field and make justice more accessible to all.
+                      technology to help us advance the field and make dispute resolution more accessible to all.
                     </motion.p>
                     <motion.ul 
                       className="ml-6 list-disc space-y-2"

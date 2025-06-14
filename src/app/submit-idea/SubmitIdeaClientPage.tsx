@@ -212,7 +212,7 @@ export default function SubmitIdeaClientPage() {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.3 }}>
                 Got an idea for a better, <br className="hidden md:block" />{" "}
-                tech-enabled justice system?
+                tech-enabled dispute resolution system?
               </motion.h1>
               <motion.p
                 className="text-lg text-gray-200"
@@ -541,7 +541,7 @@ export default function SubmitIdeaClientPage() {
                       </h4>
                       <p className="text-gray-600 text-sm">
                         Develop your idea into a working solution that can make
-                        a real difference in the justice system.
+                        a real difference in the dispute resolution system.
                       </p>
                     </div>
                   </motion.div>
