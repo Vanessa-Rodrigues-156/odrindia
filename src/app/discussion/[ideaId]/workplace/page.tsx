@@ -5,13 +5,10 @@ import { useState } from "react";
 import {
   ArrowLeft,
   Video,
-  Calendar,
-  CheckSquare,
   StickyNote,
   Maximize,
   Minimize,
   Settings,
-  FileText,
   AlertCircle,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
@@ -21,7 +18,7 @@ import { apiFetch } from "@/lib/api";
 
 import { Button } from "@/components/ui/button";
 import { JitsiMeetContainer } from "@/components/workplace/JitsiMeetContainer";
-import { MeetingLogs } from "@/components/workplace/MeetingLogs";
+import TeamDetails from "../TeamDetails";
 
 export default function WorkplacePage() {
   const { user, loading } = useAuth();
@@ -152,13 +149,13 @@ export default function WorkplacePage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#f8f9fa]">
-      <header className="bg-[#0a1e42] py-4 text-white sticky top-0 z-10">
+    <div className="flex min-h-screen flex-col bg-gradient-to-b from-blue-50 to-white">
+      <header className="bg-gradient-to-r from-blue-900 to-indigo-900 py-4 text-white sticky top-0 z-10 shadow-md">
         <div className="container mx-auto px-4 flex items-center justify-between">
           <div className="flex items-center">
             <Link
               href={`/discussion/${ideaId}`}
-              className="mr-4 hover:text-gray-200 flex items-center">
+              className="mr-4 hover:text-blue-200 flex items-center transition-all duration-300 rounded-md px-2 py-1 hover:bg-white/10">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Discussion
             </Link>
@@ -173,7 +170,7 @@ export default function WorkplacePage() {
             <Button
               variant="outline"
               size="sm"
-              className="text-white border-white hover:bg-white/20 hover:text-white">
+              className="text-white border-white hover:bg-white/20 hover:text-white transition-all duration-300">
               <Settings className="h-4 w-4 mr-2" />
               Settings
             </Button>
@@ -187,30 +184,29 @@ export default function WorkplacePage() {
             variant="outline"
             size="sm"
             onClick={() => toggleFullscreen("")}
-            className="self-end mb-2">
+            className="self-end mb-2 bg-white/80 hover:bg-white transition-all duration-300">
             <Minimize className="h-4 w-4 mr-2" /> Exit Fullscreen
           </Button>
 
           {fullscreenMode === "meeting" && (
-            <div className="flex-1">
+            <div className="flex-1 rounded-xl overflow-hidden shadow-lg border border-blue-100">
               <JitsiMeetContainer
                 roomName={`idea-${ideaId}`}
                 userName={user.name}
                 userEmail={user.email}
-                // General workspace room without specific meetingId
               />
             </div>
           )}
 
           {fullscreenMode === "meetingnotes" && (
             <div className="flex-1">
-              <div className="bg-white rounded-lg shadow p-4 h-full">
-                <h3 className="text-xl font-semibold text-[#0a1e42] mb-4 flex items-center">
+              <div className="bg-white rounded-xl shadow-lg p-6 h-full border border-blue-100">
+                <h3 className="text-xl font-semibold text-blue-900 mb-4 flex items-center">
                   <StickyNote className="h-5 w-5 mr-2" />
                   Meeting Notes
                 </h3>
                 <div className="flex flex-col justify-center items-center h-[calc(100%-50px)]">
-                  <StickyNote className="h-16 w-16 mx-auto mb-4 text-gray-400" />
+                  <StickyNote className="h-16 w-16 mx-auto mb-4 text-blue-400" />
                   <h4 className="text-xl font-medium mb-2 text-gray-700">
                     Meeting-Specific Notes
                   </h4>
@@ -219,34 +215,26 @@ export default function WorkplacePage() {
                     specific meeting from the Meeting Logs section to view and
                     add notes related to that meeting.
                   </p>
-                  <Button
-                    variant="outline"
-                    onClick={() => toggleFullscreen("meetinglogs")}
-                    className="text-[#0a1e42] border-[#0a1e42]">
-                    <FileText className="h-4 w-4 mr-2" />
-                    View Meeting Logs
-                  </Button>
                 </div>
               </div>
             </div>
           )}
 
-          {fullscreenMode === "meetinglogs" && (
+          {fullscreenMode === "teamdetails" && (
             <div className="flex-1">
-              <div className="bg-white rounded-lg shadow p-4 h-full">
-                <h3 className="text-xl font-semibold text-[#0a1e42] mb-4 flex items-center">
-                  <FileText className="h-5 w-5 mr-2" />
-                  Meeting Logs
+              <div className="bg-white/40 backdrop-blur-sm rounded-xl shadow-lg p-6 h-full">
+                <h3 className="text-xl font-semibold text-blue-900 mb-4">
+                  Team Details
                 </h3>
-                <MeetingLogs ideaId={ideaId} />
+                <TeamDetails ideaId={ideaId} />
               </div>
             </div>
           )}
         </div>
       ) : (
         <main className="flex-1 container mx-auto px-4 py-8">
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold text-[#0a1e42] mb-2">
+          <div className="mb-6 bg-white/60 backdrop-blur-sm p-5 rounded-xl shadow-sm border border-blue-100">
+            <h2 className="text-2xl font-bold text-blue-900 mb-2">
               {ideaDetails?.name || "Idea Workplace"}
             </h2>
             {ideaDetails?.description && (
@@ -256,44 +244,46 @@ export default function WorkplacePage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">
-              <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
+              <div className="bg-white rounded-xl shadow-sm p-5 mb-6 border border-blue-100 transition-all duration-300 hover:shadow-md">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-[#0a1e42] flex items-center">
-                    <Video className="h-5 w-5 mr-2" />
+                  <h3 className="text-lg font-semibold text-blue-900 flex items-center">
+                    <Video className="h-5 w-5 mr-2 text-blue-700" />
                     Video Meeting
                   </h3>
                   <Button
                     variant="ghost"
                     size="sm"
+                    className="hover:bg-blue-50 transition-colors duration-300"
                     onClick={() => toggleFullscreen("meeting")}>
                     <Maximize className="h-4 w-4" />
                   </Button>
                 </div>
-                <JitsiMeetContainer
-                  roomName={`idea-${ideaId}`}
-                  userName={user.name}
-                  userEmail={user.email}
-                  // This is a general workspace room without a specific meetingId
-                  // The unique room name will be generated on the server side
-                />
+                <div className="rounded-lg overflow-hidden border border-blue-100">
+                  <JitsiMeetContainer
+                    roomName={`idea-${ideaId}`}
+                    userName={user.name}
+                    userEmail={user.email}
+                  />
+                </div>
               </div>
 
-              <div className="bg-white rounded-lg shadow-sm p-4 h-[500px]">
+              <div className="bg-white rounded-xl shadow-sm p-5 h-[500px] border border-blue-100 transition-all duration-300 hover:shadow-md">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-[#0a1e42] flex items-center">
-                    <StickyNote className="h-5 w-5 mr-2" />
+                  <h3 className="text-lg font-semibold text-blue-900 flex items-center">
+                    <StickyNote className="h-5 w-5 mr-2 text-blue-700" />
                     Meeting Notes
                   </h3>
                   <Button
                     variant="ghost"
-                    size="sm"
+                    size="sm" 
+                    className="hover:bg-blue-50 transition-colors duration-300"
                     onClick={() => toggleFullscreen("meetingnotes")}>
                     <Maximize className="h-4 w-4" />
                   </Button>
                 </div>
                 <div className="h-[calc(100%-40px)] flex flex-col justify-center items-center">
                   <div className="p-4 text-center">
-                    <StickyNote className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                    <StickyNote className="h-12 w-12 mx-auto mb-4 text-blue-400" />
                     <h4 className="text-lg font-medium mb-2 text-gray-700">
                       Meeting-Specific Notes
                     </h4>
@@ -301,49 +291,26 @@ export default function WorkplacePage() {
                       Notes are now connected to specific meetings for better
                       organization
                     </p>
-                    <div className="mt-4">
-                      <Button
-                        variant="outline"
-                        onClick={() => toggleFullscreen("meetinglogs")}
-                        className="text-[#0a1e42] border-[#0a1e42]">
-                        View Meeting Logs
-                      </Button>
-                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
             <div className="space-y-6">
-              <div className="bg-white rounded-lg shadow-sm p-4">
+              <div className="bg-white/60 backdrop-blur-sm rounded-xl shadow-sm p-5 border border-blue-100 transition-all duration-300 hover:shadow-md">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-[#0a1e42] flex items-center">
-                    <FileText className="h-5 w-5 mr-2" />
-                    Meeting Logs
+                  <h3 className="text-lg font-semibold text-blue-900">
+                    Team Details
                   </h3>
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => toggleFullscreen("meetinglogs")}>
+                    className="hover:bg-blue-50 transition-colors duration-300"
+                    onClick={() => toggleFullscreen("teamdetails")}>
                     <Maximize className="h-4 w-4" />
                   </Button>
                 </div>
-                <MeetingLogs ideaId={ideaId} />
-              </div>
-
-              <div className="bg-white rounded-lg shadow-sm p-4 h-[400px]">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-[#0a1e42] flex items-center">
-                    <CheckSquare className="h-5 w-5 mr-2" />
-                    Todo List
-                  </h3>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => toggleFullscreen("todo")}>
-                    <Maximize className="h-4 w-4" />
-                  </Button>
-                </div>
+                <TeamDetails ideaId={ideaId} />
               </div>
             </div>
           </div>
