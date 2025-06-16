@@ -38,7 +38,7 @@ function SignInClient() {
   const searchParams = useSearchParams();
   const { login, signInWithGoogle } = useAuth();
 
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000/api";
 
   // Render Google button only once on mount (for fallback UX)
   useEffect(() => {
