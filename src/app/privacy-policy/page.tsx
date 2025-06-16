@@ -22,8 +22,8 @@ export default function PrivacyPolicy() {
                         </p>
                         
                         <p>
-                            Your Google account data is handled in accordance with Google's API Services User Data Policy, 
-                            including the Limited Use requirements. By using Google Sign-In, you also agree to Google's own privacy 
+                            Your Google account data is handled in accordance with Google&apos;s API Services User Data Policy, 
+                            including the Limited Use requirements. By using Google Sign-In, you also agree to Google&apos;s own privacy 
                             practices, which can be reviewed at{' '}
                             <a 
                                 href="https://policies.google.com/privacy" 
