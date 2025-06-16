@@ -14,19 +14,20 @@ interface MentorCardProps {
 
 const MentorCard: React.FC<MentorCardProps> = ({ mentor, onClick }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const [imgSrc, setImgSrc] = useState<string>(`/mentor/${mentor.id}.png`);
+  const [imgError, setImgError] = useState(false);
   const ideaCount = mentor.mentoringIdeas.length;
   
   // Generate placeholder image based on mentor's name
   const placeholderImage = `https://ui-avatars.com/api/?name=${encodeURIComponent(mentor.name)}&background=0D8ABC&color=fff&size=256`;
   
-  // If PNG fails, try JPG, else fallback to placeholder
+  // Get mentor image with proper fallback
+  const getMentorImage = () => {
+    if (imgError) return placeholderImage;
+    return mentor.id ? `/mentor/${mentor.id}.png` : placeholderImage;
+  };
+  
   const handleImgError = () => {
-    if (imgSrc === `/mentor/${mentor.id}.png`) {
-      setImgSrc(`/mentor/${mentor.id}.jpg`);
-    } else {
-      setImgSrc(placeholderImage);
-    }
+    setImgError(true);
   };
   
   return (
@@ -44,7 +45,7 @@ const MentorCard: React.FC<MentorCardProps> = ({ mentor, onClick }) => {
           <div className="flex flex-col items-center">
             <div className="relative w-32 h-32 mb-4 rounded-full overflow-hidden">
               <Image 
-                src={imgSrc}
+                src={getMentorImage()}
                 alt={mentor.name} 
                 fill
                 className="object-cover"
@@ -71,9 +72,12 @@ const MentorCard: React.FC<MentorCardProps> = ({ mentor, onClick }) => {
               >
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <p className="text-gray-600 mb-1 truncate w-full">
-                      <span className="font-medium text-gray-800">Email:</span> {mentor.email}
-                    </p>
+                    <div className="flex flex-col gap-1 w-full">
+                      <p className="text-gray-600 text-center mb-1">
+                      <span className="font-medium text-gray-800">Email:</span>{' '}
+                      <span className="text-sm truncate block">{mentor.email}</span>
+                      </p>
+                    </div>
                   </TooltipTrigger>
                   <TooltipContent>
                     <p>{mentor.email}</p>
@@ -88,10 +92,12 @@ const MentorCard: React.FC<MentorCardProps> = ({ mentor, onClick }) => {
                 )}
                 
                 {mentor.highestEducation && (
-                  <p className="text-gray-600 mb-1 text-center truncate w-full">
+                    <p className="text-gray-600 mb-1 text-center">
                     <span className="font-medium text-gray-800">Education:</span>{' '}
-                    {mentor.highestEducation}
-                  </p>
+                    <span className="block text-sm break-words" style={{ wordBreak: 'break-word' }}>
+                      {mentor.highestEducation}
+                    </span>
+                    </p>
                 )}
               </motion.div>
             )}

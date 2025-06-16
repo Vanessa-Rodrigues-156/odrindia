@@ -36,8 +36,8 @@ const ambassadors: StudentAmbassador[] = [
   {
     name: "Samarth Jain",
     image: "/samarth.png",
-    institution: "Legal tech undergraduate from OP Jindal college of Law",
-    description: "Contributing to research and legal requirements of ODR solutions. Bringing legal expertise to ensure compliance and effective dispute resolution methodologies.",
+    institution: "Fourth Year Student from OP Jindal Global University",
+    description: "Contributing to research and legal requirements of ODR solutions. Bringing legal knowledge to ensure compliance and effective dispute resolution methodologies.",
     responsibility: "Legal Ambassador",
     socialLinks: [
       { platform: "email", url: "mailto:22jgls-ssjain@jgu.edu.in" }
@@ -73,10 +73,7 @@ export default function StudentAmbassadorSection() {
           className="mb-12 text-center"
         >
           <h2 className="text-4xl font-bold text-[#0a1e42] mb-4">Student Ambassadors</h2>
-          <p className="mx-auto max-w-2xl text-lg text-gray-600">
-            Meet our talented student ambassadors who are driving innovation in the field 
-            of Online Dispute Resolution through their expertise and passion.
-          </p>
+          <p className="mx-auto max-w-2xl text-lg text-gray-600"> Meet our dynamic student ambassadors—emerging leaders bringing passion, creativity, and commitment to the advancement of Online Dispute Resolution.</p>
         </motion.div>
         
         {/* Search and filter */}

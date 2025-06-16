@@ -1,10 +1,10 @@
 # Authentication Testing Guide
 
-This guide helps test and troubleshoot the authentication flow in the ODR India platform, including both token-based auth and integrations like Jitsi Meet.
+This guide helps test and troubleshoot the authentication flow in the ODR LAB platform, including both token-based auth and integrations like Jitsi Meet.
 
 ## Authentication System Overview
 
-The ODR India platform uses JWT (JSON Web Token) based authentication:
+The ODR LAB platform uses JWT (JSON Web Token) based authentication:
 
 - Tokens are stored in browser's localStorage
 - API requests use Bearer token authentication

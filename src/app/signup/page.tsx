@@ -10,16 +10,20 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Textarea } from "@/components/ui/textarea";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { initializeGoogleAuth, GoogleUser } from "@/lib/google-auth";
 
 // Animation variants
 const fadeInUp = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 15 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5 },
+    transition: { 
+      duration: 0.2,
+      ease: [0.25, 0.1, 0.25, 1], // Fast easing function
+      when: "beforeChildren",
+      staggerChildren: 0.05
+    },
   },
 };
 
@@ -47,28 +51,14 @@ const pageTransition = {
   },
 };
 
-// Main user types for initial categorization
-const mainUserTypes = [
-  { value: "innovator", label: "Student Innovator" },
-  { value: "mentor", label: "Mentor" },
-  { value: "faculty", label: "Faculty" },
-  { value: "other", label: "Other" },
-];
-
-// Subtypes for mentors
 const mentorTypes = [
-  { value: "tech", label: "Technical Enthusiast" },
-  { value: "law", label: "Law Enthusiast" },
+  { value: "tech", label: "Technical Expert" },
+  { value: "law", label: "Legal Expert" },
+  { value: "odr", label: "ODR Expert" },
+  { value: "conflict", label: "Conflict Resolution Expert" }
 ];
 
-// Legacy userTypes kept for compatibility with backend
-const userTypes = [
-  { value: "student", label: "Ideator" },
-  { value: "faculty", label: "Faculty" },
-  { value: "tech", label: "Tech Enthusiast" },
-  { value: "law", label: "Law Enthusiast" },
-  { value: "other", label: "Other" },
-];
+
 
 const initialForm = {
   name: "",
@@ -94,6 +84,7 @@ const initialForm = {
   // Tech Enthusiast
   techOrg: "",
   techRole: "",
+  odrLabUsageDescription:"",
   // Law Enthusiast
   lawFirm: "",
   // Other
@@ -167,7 +158,7 @@ const SignUpPage = () => {
             setLoading(true);
             setError(null);
             const res = await fetch(
-              `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000"}/auth/google-signin`,
+              `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000/api"}/auth/google-signin`,
               {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -317,6 +308,18 @@ const SignUpPage = () => {
           return;
         }
       }
+      if (form.userType === "odr") {
+        if (!form.otherWorkplace || !form.highestEducation) {
+          setError("Please fill all required ODR expert fields.");
+          return;
+        }
+      }
+      if (form.userType === "conflict") {
+        if (!form.otherWorkplace || !form.highestEducation) {
+          setError("Please fill all required conflict resolution expert fields.");
+          return;
+        }
+      }
       if (form.userType === "other") {
         if (!form.otherRole || !form.otherWorkplace) {
           setError("Please fill all required fields for Other.");
@@ -356,7 +359,7 @@ const SignUpPage = () => {
         break;
       case "tech":
         odrLabUsageDescription = `As a ${form.techRole} at ${form.techOrg}. ${
-          form.odrLabPurpose || ""
+          form.odrLabUsageDescription || ""
         }`;
         break;
       case "law":
@@ -381,6 +384,7 @@ const SignUpPage = () => {
           
         },
         body: JSON.stringify({
+          // Basic user info
           name: form.name,
           email: form.email,
           password: form.password,
@@ -406,6 +410,38 @@ const SignUpPage = () => {
             undefined,
           highestEducation: form.highestEducation || undefined,
           odrLabUsage: odrLabUsageDescription,
+          
+          // Include all form fields for detailed metadata storage
+          // Student fields
+          studentInstitute: form.studentInstitute,
+          courseStatus: form.courseStatus,
+          courseName: form.courseName,
+          
+          // Faculty fields
+          facultyInstitute: form.facultyInstitute,
+          facultyRole: form.facultyRole,
+          facultyExpertise: form.facultyExpertise,
+          facultyCourse: form.facultyCourse,
+          facultyMentor: form.facultyMentor,
+          
+          // Tech mentor fields
+          techOrg: form.techOrg,
+          techRole: form.techRole,
+          
+          // Law mentor fields
+          lawFirm: form.lawFirm,
+          
+          // Other fields
+          otherRole: form.otherRole,
+          otherWorkplace: form.otherWorkplace,
+          
+          // Selected user types
+          mainUserType: form.mainUserType,
+          userType: form.userType,
+          mentorType: form.mentorType,
+          
+          // Purpose and additional info
+          odrLabPurpose: form.odrLabPurpose
         }),
       });
 
@@ -591,19 +627,19 @@ const SignUpPage = () => {
                   whileHover={{ scale: 1.02 }}
                   className={`border p-5 rounded-lg cursor-pointer transition-all shadow-sm hover:shadow-md ${
                     form.mainUserType === "mentor"
-                      ? "bg-indigo-50 border-indigo-500 ring-2 ring-indigo-200"
-                      : "border-gray-300 hover:border-indigo-300"
+                      ? "bg-purple-50 border-purple-500 ring-2 ring-purple-200"
+                      : "border-gray-300 hover:border-purple-300"
                   }`}
                   onClick={() =>
                     setForm((prev) => ({ ...prev, mainUserType: "mentor" }))
                   }>
                   <div className="flex flex-col items-center text-center">
-                    <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center mb-3">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                       </svg>
                     </div>
-                    <div className="font-bold text-lg text-indigo-800">Mentor</div>
+                    <div className="font-bold text-lg text-purple-800">Mentor</div>
                     <p className="text-sm text-gray-600 mt-2">
                       Join as a mentor to guide and support student innovations
                     </p>
@@ -679,38 +715,93 @@ const SignUpPage = () => {
                   transition={{ duration: 0.3 }}
                   className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
                   <h4 className="font-medium text-indigo-800 mb-4">Please select your mentor type:</h4>
-                  
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {mentorTypes.map((type) => (
-                      <motion.div
+                        <motion.div
                         key={type.value}
                         variants={fadeInUp}
-                        whileHover={{ scale: 1.02 }}
-                        className={`border p-4 rounded cursor-pointer transition-all ${
+                        initial={{ opacity: 1, y: 0 }} // Start visible immediately
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.1 }} // Very fast transition
+                        whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
+                        whileTap={{ scale: 0.98 }}
+                        className={`border-2 p-4 rounded-lg cursor-pointer transition-all shadow-sm hover:shadow-md ${
                           form.mentorType === type.value
-                            ? "bg-indigo-100 border-indigo-400"
-                            : "border-gray-300 hover:border-indigo-300"
+                          ? type.value === "tech" 
+                            ? "bg-blue-100 border-blue-500 ring-2 ring-blue-300" 
+                            : type.value === "law" 
+                            ? "bg-amber-100 border-amber-500 ring-2 ring-amber-300"
+                            : type.value === "odr" 
+                            ? "bg-emerald-100 border-emerald-500 ring-2 ring-emerald-300"
+                            : "bg-purple-100 border-purple-500 ring-2 ring-purple-300"
+                          : "border-gray-300 hover:border-indigo-300"
                         }`}
                         onClick={() =>
                           setForm((prev) => ({ ...prev, mentorType: type.value }))
                         }>
-                        <div className="font-medium">
-                          {type.label}
+                        <motion.div 
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ duration: 0.3 }}
+                          className="font-medium">
+                          
+                          <div className={`text-lg mb-2 font-bold ${
+                            type.value === "tech" ? "text-blue-700" : 
+                            type.value === "law" ? "text-amber-700" :
+                            type.value === "odr" ? "text-emerald-700" :
+                            "text-purple-700"
+                          }`}>
+                            {type.label}
+                          </div>
+                          
                           {type.value === "tech" && (
-                            <p className="text-xs text-gray-600 mt-1">For technical professionals who can guide innovative tech projects</p>
+                            <motion.p 
+                              initial={{ y: 5, opacity: 0 }}
+                              animate={{ y: 0, opacity: 1 }}
+                              transition={{ delay: 0.1, duration: 0.2 }}
+                              className="text-sm text-gray-600 mt-1">
+                              For technical professionals who can guide innovative tech projects
+                            </motion.p>
                           )}
                           {type.value === "law" && (
-                            <p className="text-xs text-gray-600 mt-1">For legal professionals who can provide expertise on regulatory aspects</p>
+                            <motion.p 
+                              initial={{ y: 5, opacity: 0 }}
+                              animate={{ y: 0, opacity: 1 }}
+                              transition={{ delay: 0.1, duration: 0.2 }}
+                              className="text-sm text-gray-600 mt-1">
+                              For legal professionals who can provide expertise on regulatory aspects
+                            </motion.p>
                           )}
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
+                          {type.value === "odr" && (
+                            <motion.p 
+                              initial={{ y: 5, opacity: 0 }}
+                              animate={{ y: 0, opacity: 1 }}
+                              transition={{ delay: 0.1, duration: 0.2 }}
+                              className="text-sm text-gray-600 mt-1">
+                              For professionals specialized in Online Dispute Resolution systems
+                            </motion.p>
+                          )}
+                          {type.value === "conflict" && (
+                            <motion.p 
+                              initial={{ y: 5, opacity: 0 }}
+                              animate={{ y: 0, opacity: 1 }}
+                              transition={{ delay: 0.1, duration: 0.2 }}
+                              className="text-sm text-gray-600 mt-1">
+                              For professionals with expertise in conflict management techniques
+                            </motion.p>
+                          )}
+                        
+                        </motion.div>
+                  </motion.div>  
+                    ))}    
+                  </div>      
                 </motion.div>
               )}
             </motion.div>
           </motion.div>
-        );
+      );
+    
+      // the info step 
       case 2:
         return (
           <motion.div
@@ -722,7 +813,7 @@ const SignUpPage = () => {
             className="space-y-6">
             {/* Render fields based on user type */}
             {form.userType === "student" && (
-              <motion.div
+                <motion.div
                 initial="hidden"
                 animate="visible"
                 variants={staggerContainer}>
@@ -730,89 +821,79 @@ const SignUpPage = () => {
                   <h3 className="text-lg font-medium text-blue-800 mb-4">Student Innovator Information</h3>
                   <p className="text-sm text-gray-600 mb-6">Please provide your academic details to help us customize your experience</p>
                   
-                  <Tabs defaultValue="education" className="w-full">
-                    <TabsList className="grid w-full grid-cols-2 mb-6">
-                      <TabsTrigger value="education" className="text-sm">Academic Details</TabsTrigger>
-                      <TabsTrigger value="purpose" className="text-sm">Purpose & Goals</TabsTrigger>
-                    </TabsList>
-                    
-                    <TabsContent value="education" className="space-y-4 pt-2">
-                      <div>
-                        <Label htmlFor="highestEducation" className="text-blue-700">Highest Education</Label>
-                        <Input
-                          id="highestEducation"
-                          name="highestEducation"
-                          value={form.highestEducation}
-                          onChange={handleChange}
-                          placeholder="Your highest education qualification"
-                          className="mt-1"
-                          required
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="studentInstitute" className="text-blue-700">Institute</Label>
-                        <Input
-                          id="studentInstitute"
-                          name="studentInstitute"
-                          value={form.studentInstitute}
-                          onChange={handleChange}
-                          placeholder="Your institute or university name"
-                          className="mt-1"
-                          required
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="courseName" className="text-blue-700">Course/Program Name</Label>
-                        <Input
-                          id="courseName"
-                          name="courseName"
-                          value={form.courseName}
-                          onChange={handleChange}
-                          placeholder="Your course or program name"
-                          className="mt-1"
-                          required
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="courseStatus" className="text-blue-700">Course Status</Label>
-                        <select
-                          id="courseStatus"
-                          name="courseStatus"
-                          className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 mt-1"
-                          value={form.courseStatus}
-                          onChange={handleChange}
-                          required>
-                          <option value="">Select status</option>
-                          <option value="ongoing">Ongoing</option>
-                          <option value="completed">Completed</option>
-                        </select>
-                      </div>
-                    </TabsContent>
-                    
-                    <TabsContent value="purpose" className="space-y-4 pt-2">
-                      <div>
-                        <Label htmlFor="odrLabPurpose" className="text-blue-700">
-                          Purpose for joining ODR Lab
-                        </Label>
-                        <Textarea
-                          id="odrLabPurpose"
-                          name="odrLabPurpose"
-                          value={form.odrLabPurpose}
-                          onChange={handleChange}
-                          placeholder="Why do you want to join the ODR Lab? What are your innovation goals? How will this platform help your academic or personal growth?"
-                          rows={6}
-                          className="mt-1"
-                        />
-                        <p className="text-xs text-gray-500 mt-2">
-                          Your response helps us understand your goals and how we can better support your innovation journey.
-                        </p>
-                      </div>
-                    </TabsContent>
-                  </Tabs>
+                  <div className="space-y-4 pt-2">
+                  <div>
+                    <Label htmlFor="highestEducation" className="text-blue-700">Highest Education</Label>
+                    <Input
+                    id="highestEducation"
+                    name="highestEducation"
+                    value={form.highestEducation}
+                    onChange={handleChange}
+                    placeholder="Your highest education qualification"
+                    className="mt-1"
+                    required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="studentInstitute" className="text-blue-700">Institute</Label>
+                    <Input
+                    id="studentInstitute"
+                    name="studentInstitute"
+                    value={form.studentInstitute}
+                    onChange={handleChange}
+                    placeholder="Your institute or university name"
+                    className="mt-1"
+                    required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="courseName" className="text-blue-700">Course/Program Name</Label>
+                    <Input
+                    id="courseName"
+                    name="courseName"
+                    value={form.courseName}
+                    onChange={handleChange}
+                    placeholder="Your course or program name"
+                    className="mt-1"
+                    required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="courseStatus" className="text-blue-700">Course Status</Label>
+                    <select
+                    id="courseStatus"
+                    name="courseStatus"
+                    className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 mt-1"
+                    value={form.courseStatus}
+                    onChange={handleChange}
+                    required>
+                    <option value="">Select status</option>
+                    <option value="ongoing">Ongoing</option>
+                    <option value="completed">Completed</option>
+                    </select>
+                  </div>
+                  <div>
+                    <Label htmlFor="odrLabPurpose" className="text-blue-700">
+                    Purpose for joining ODR Lab
+                    </Label>
+                    <Textarea
+                    id="odrLabPurpose"
+                    name="odrLabPurpose"
+                    value={form.odrLabPurpose}
+                    onChange={handleChange}
+                    placeholder="Why do you want to join the ODR Lab? What are your innovation goals? How will this platform help your academic or personal growth?"
+                    rows={6}
+                    className="mt-1"
+                    />
+                    <p className="text-xs text-gray-500 mt-2">
+                    Your response helps us understand your goals and how we can better support your innovation journey.
+                    </p>
+                  </div>
+                  </div>
                 </motion.div>
-              </motion.div>
+                </motion.div>
             )}
-
+            {/* Faculty Mentor */}
             {form.userType === "faculty" && (
               <motion.div
                 initial="hidden"
@@ -910,144 +991,230 @@ const SignUpPage = () => {
                     As a technical mentor, you&apos;ll guide students in developing innovative technology solutions.
                   </p>
                   
-                  <Tabs defaultValue="profile" className="w-full">
-                    <TabsList className="grid w-full grid-cols-2 mb-6">
-                      <TabsTrigger value="profile" className="text-sm">Professional Profile</TabsTrigger>
-                      <TabsTrigger value="mentoring" className="text-sm">Mentoring Approach</TabsTrigger>
-                    </TabsList>
-                    
-                    <TabsContent value="profile" className="space-y-4 pt-2">
-                      <div>
-                        <Label htmlFor="techOrg" className="text-indigo-700">Organization/Company</Label>
-                        <Input
-                          id="techOrg"
-                          name="techOrg"
-                          value={form.techOrg}
-                          onChange={handleChange}
-                          placeholder="Your organization or company name"
-                          className="mt-1"
-                          required
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="techRole" className="text-indigo-700">Professional Role</Label>
-                        <Input
-                          id="techRole"
-                          name="techRole"
-                          value={form.techRole}
-                          onChange={handleChange}
-                          placeholder="Your role (e.g., Software Engineer, Tech Lead)"
-                          className="mt-1"
-                          required
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="highestEducation" className="text-indigo-700">Highest Education</Label>
-                        <Input
-                          id="highestEducation"
-                          name="highestEducation"
-                          value={form.highestEducation}
-                          onChange={handleChange}
-                          placeholder="Your highest education qualification"
-                          className="mt-1"
-                          required
-                        />
-                      </div>
-                    </TabsContent>
-                    
-                    <TabsContent value="mentoring" className="space-y-4 pt-2">
-                      <div>
-                        <Label htmlFor="odrLabPurpose" className="text-indigo-700">
-                          Mentoring Philosophy & Expertise
-                        </Label>
-                        <Textarea
-                          id="odrLabPurpose"
-                          name="odrLabPurpose"
-                          value={form.odrLabPurpose}
-                          onChange={handleChange}
-                          placeholder="Please describe your technical expertise, mentoring experience, and how you plan to guide student innovators through the ODR Lab."
-                          rows={6}
-                          className="mt-1"
-                        />
-                        <p className="text-xs text-gray-500 mt-2">
-                          Your mentorship will be invaluable in helping students develop effective technological solutions.
-                        </p>
-                      </div>
-                    </TabsContent>
-                  </Tabs>
+                  <div className="space-y-4 pt-2">
+                    <div>
+                      <Label htmlFor="techOrg" className="text-indigo-700">Organization/Company</Label>
+                      <Input
+                        id="techOrg"
+                        name="techOrg"
+                        value={form.techOrg}
+                        onChange={handleChange}
+                        placeholder="Your organization or company name"
+                        className="mt-1"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="techRole" className="text-indigo-700">Professional Role</Label>
+                      <Input
+                        id="techRole"
+                        name="techRole"
+                        value={form.techRole}
+                        onChange={handleChange}
+                        placeholder="Your role (e.g., Software Engineer, Tech Lead)"
+                        className="mt-1"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="highestEducation" className="text-indigo-700">Highest Education</Label>
+                      <Input
+                        id="highestEducation"
+                        name="highestEducation"
+                        value={form.highestEducation}
+                        onChange={handleChange}
+                        placeholder="Your highest education qualification"
+                        className="mt-1"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="odrLabUsageDescription" className="text-indigo-700">
+                        Share Your Expertise and Mentoring Approach
+                      </Label>
+                      <Textarea
+                        id="odrLabUsageDescription"
+                        name="odrLabUsageDescription"
+                        value={form.odrLabUsageDescription}
+                        onChange={handleChange}
+                        placeholder="Please describe your technical expertise, mentoring experience, and how you plan to guide student innovators through the ODR Lab."
+                        rows={6}
+                        className="mt-1"
+                      />
+                      <p className="text-xs text-gray-500 mt-2">
+                        Your mentorship will be invaluable in helping students develop effective technological solutions.
+                      </p>
+                    </div>
+                  </div>
                 </motion.div>
               </motion.div>
             )}
 
             {/* Law Enthusiast Mentor */}
             {form.userType === "law" && (
-              <motion.div
+                <motion.div
                 initial="hidden"
                 animate="visible"
                 variants={staggerContainer}>
                 <motion.div variants={fadeInUp} className="mb-6">
                   <h3 className="text-lg font-medium text-indigo-800 mb-4">Law Enthusiast Mentor</h3>
                   <p className="text-sm text-gray-600 mb-6">
-                    As a legal mentor, you&apos;ll provide guidance on legal and regulatory aspects of student innovations.
+                  As a legal mentor, you&apos;ll provide guidance on legal and regulatory aspects of student innovations.
                   </p>
                   
-                  <Tabs defaultValue="profile" className="w-full">
-                    <TabsList className="grid w-full grid-cols-2 mb-6">
-                      <TabsTrigger value="profile" className="text-sm">Professional Profile</TabsTrigger>
-                      <TabsTrigger value="mentoring" className="text-sm">Mentoring Approach</TabsTrigger>
-                    </TabsList>
-                    
-                    <TabsContent value="profile" className="space-y-4 pt-2">
-                      <div>
-                        <Label htmlFor="lawFirm" className="text-indigo-700">Law Firm/Organization</Label>
-                        <Input
-                          id="lawFirm"
-                          name="lawFirm"
-                          value={form.lawFirm}
-                          onChange={handleChange}
-                          placeholder="Your law firm or organization name"
-                          className="mt-1"
-                          required
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="highestEducation" className="text-indigo-700">Legal Education</Label>
-                        <Input
-                          id="highestEducation"
-                          name="highestEducation"
-                          value={form.highestEducation}
-                          onChange={handleChange}
-                          placeholder="Your legal education (e.g., LLB, JD)"
-                          className="mt-1"
-                          required
-                        />
-                      </div>
-                    </TabsContent>
-                    
-                    <TabsContent value="mentoring" className="space-y-4 pt-2">
-                      <div>
-                        <Label htmlFor="odrLabPurpose" className="text-indigo-700">
-                          Legal Expertise & Mentoring Approach
-                        </Label>
-                        <Textarea
-                          id="odrLabPurpose"
-                          name="odrLabPurpose"
-                          value={form.odrLabPurpose}
-                          onChange={handleChange}
-                          placeholder="Please describe your legal expertise, experience in ODR or innovation-related legal matters, and how you plan to mentor students through legal challenges."
-                          rows={6}
-                          className="mt-1"
-                        />
-                        <p className="text-xs text-gray-500 mt-2">
-                          Your legal guidance will help students navigate regulatory challenges in their innovation journey.
-                        </p>
-                      </div>
-                    </TabsContent>
-                  </Tabs>
+                  <div className="space-y-4 pt-2">
+                  <div>
+                    <Label htmlFor="lawFirm" className="text-indigo-700">Law Firm/Organization</Label>
+                    <Input
+                    id="lawFirm"
+                    name="lawFirm"
+                    value={form.lawFirm}
+                    onChange={handleChange}
+                    placeholder="Your law firm or organization name"
+                    className="mt-1"
+                    required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="highestEducation" className="text-indigo-700">Legal Education</Label>
+                    <Input
+                    id="highestEducation"
+                    name="highestEducation"
+                    value={form.highestEducation}
+                    onChange={handleChange}
+                    placeholder="Your legal education (e.g., LLB, JD)"
+                    className="mt-1"
+                    required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="odrLabPurpose" className="text-indigo-700">
+                    Legal Expertise & Mentoring Approach
+                    </Label>
+                    <Textarea
+                    id="odrLabPurpose"
+                    name="odrLabPurpose"
+                    value={form.odrLabPurpose}
+                    onChange={handleChange}
+                    placeholder="Please describe your legal expertise, experience in ODR or innovation-related legal matters, and how you plan to mentor students through legal challenges."
+                    rows={6}
+                    className="mt-1"
+                    />
+                    <p className="text-xs text-gray-500 mt-2">
+                    Your legal guidance will help students navigate regulatory challenges in their innovation journey.
+                    </p>
+                  </div>
+                  </div>
+                </motion.div>
+                </motion.div>
+            )}
+
+            {/* ODR Expert Mentor */}
+            {form.userType === "odr" && (
+              <motion.div
+                initial="hidden"
+                animate="visible"
+                variants={staggerContainer}>
+                <motion.div variants={fadeInUp} className="mb-6">
+                  <h3 className="text-lg font-medium text-indigo-800 mb-4">ODR Expert Mentor</h3>
+                  <p className="text-sm text-gray-600 mb-6">
+                    As an ODR expert, you&apos;ll guide students in understanding and implementing online dispute resolution systems.
+                  </p>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="otherWorkplace" className="text-indigo-700">Organization/Institution</Label>
+                      <Input
+                        id="otherWorkplace"
+                        name="otherWorkplace"
+                        value={form.otherWorkplace}
+                        onChange={handleChange}
+                        placeholder="Your organization or institution name"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="highestEducation" className="text-indigo-700">Highest Education</Label>
+                      <Input
+                        id="highestEducation"
+                        name="highestEducation"
+                        value={form.highestEducation}
+                        onChange={handleChange}
+                        placeholder="Your highest education qualification"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="odrLabPurpose" className="text-indigo-700">
+                        ODR Expertise & Mentoring Approach
+                      </Label>
+                      <Textarea
+                        id="odrLabPurpose"
+                        name="odrLabPurpose"
+                        value={form.odrLabPurpose}
+                        onChange={handleChange}
+                        placeholder="Describe your ODR expertise and how you'll mentor students"
+                        rows={4}
+                      />
+                    </div>
+                  </div>
                 </motion.div>
               </motion.div>
             )}
 
+            {/* Conflict Resolution Expert Mentor */}
+            {form.userType === "conflict" && (
+              <motion.div
+                initial="hidden"
+                animate="visible"
+                variants={staggerContainer}>
+                <motion.div variants={fadeInUp} className="mb-6">
+                  <h3 className="text-lg font-medium text-indigo-800 mb-4">Conflict Resolution Expert Mentor</h3>
+                  <p className="text-sm text-gray-600 mb-6">
+                    As a conflict resolution expert, you&apos;ll guide students in understanding effective dispute management techniques.
+                  </p>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="otherWorkplace" className="text-indigo-700">Organization/Institution</Label>
+                      <Input
+                        id="otherWorkplace"
+                        name="otherWorkplace"
+                        value={form.otherWorkplace}
+                        onChange={handleChange}
+                        placeholder="Your organization or institution name"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="highestEducation" className="text-indigo-700">Highest Education</Label>
+                      <Input
+                        id="highestEducation"
+                        name="highestEducation"
+                        value={form.highestEducation}
+                        onChange={handleChange}
+                        placeholder="Your highest education qualification"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="odrLabPurpose" className="text-indigo-700">
+                        Conflict Resolution Expertise & Mentoring Approach
+                      </Label>
+                      <Textarea
+                        id="odrLabPurpose"
+                        name="odrLabPurpose"
+                        value={form.odrLabPurpose}
+                        onChange={handleChange}
+                        placeholder="Describe your conflict resolution expertise and how you'll mentor students"
+                        rows={4}
+                      />
+                    </div>
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+            {/*  other type */}
             {form.userType === "other" && (
               <motion.div
                 initial="hidden"
@@ -1109,6 +1276,7 @@ const SignUpPage = () => {
             )}
           </motion.div>
         );
+        // the review step
       case 3:
         return (
           <motion.div
@@ -1121,155 +1289,223 @@ const SignUpPage = () => {
             <motion.div
               className="space-y-4"
               variants={fadeInUp}>
-              <h3 className="text-lg font-medium">Review Your Information</h3>
-              <div className="bg-gray-50 p-4 rounded border space-y-3">
+              <h3 className="text-lg font-medium text-[#0a1e42]">Review Your Information</h3>
+              <p className="text-sm text-gray-600">Please verify all the details before submitting your registration</p>
+              
+              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 space-y-3 max-h-[400px] overflow-y-auto">
                 <div className="grid gap-3">
+                  {/* Personal Information Section */}
                   <h4 className="font-medium text-[#0a1e42] border-b pb-1">
                     Personal Information
                   </h4>
-                  <div>
-                    <span className="font-medium">Name:</span> {form.name}
-                  </div>
-                  <div>
-                    <span className="font-medium">Email:</span> {form.email}
-                  </div>
-                  <div>
-                    <span className="font-medium">Mobile:</span> {form.mobile}
-                  </div>
-                  <div>
-                    <span className="font-medium">Location:</span> {form.city},{" "}
-                    {form.country}
-                  </div>
-                  <div>
-                    <span className="font-medium">User Type:</span>{" "}
-                    {form.mainUserType === "innovator" 
-                      ? "Student Innovator"
-                      : form.mainUserType === "mentor"
-                      ? `${form.mentorType === "tech" ? "Technical Enthusiast" : "Law Enthusiast"} Mentor`
-                      : form.mainUserType === "faculty"
-                      ? "Faculty"
-                      : "Other"
-                    }
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <span className="font-medium text-sm text-gray-700">Name:</span> 
+                      <p className="text-gray-900">{form.name}</p>
+                    </div>
+                    <div>
+                      <span className="font-medium text-sm text-gray-700">Email:</span> 
+                      <p className="text-gray-900">{form.email}</p>
+                    </div>
+                    <div>
+                      <span className="font-medium text-sm text-gray-700">Mobile:</span> 
+                      <p className="text-gray-900">{form.mobile}</p>
+                    </div>
+                    <div>
+                      <span className="font-medium text-sm text-gray-700">Location:</span> 
+                      <p className="text-gray-900">{form.city}, {form.country}</p>
+                    </div>
                   </div>
 
+                  {/* User Type Information */}
+                  <h4 className="font-medium text-[#0a1e42] border-b pb-1 mt-3">
+                    User Role
+                  </h4>
+                  <div>
+                    <span className="font-medium text-sm text-gray-700">Primary Role:</span>{" "}
+                    <p className="text-gray-900">
+                      {form.mainUserType === "innovator" 
+                        ? "Student Innovator"
+                        : form.mainUserType === "mentor"
+                        ? "Mentor"
+                        : form.mainUserType === "faculty"
+                        ? "Faculty"
+                        : "Other"
+                      }
+                    </p>
+                  </div>
+
+                  {form.mainUserType === "mentor" && (
+                    <div>
+                      <span className="font-medium text-sm text-gray-700">Mentor Type:</span>{" "}
+                      <p className="text-gray-900">
+                        {form.mentorType === "tech" ? "Technical Expert" : 
+                         form.mentorType === "law" ? "Legal Expert" : 
+                         form.mentorType === "odr" ? "ODR Expert" : 
+                         form.mentorType === "conflict" ? "Conflict Resolution Expert" : ""}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Professional Information Section */}
                   <h4 className="font-medium text-[#0a1e42] border-b pb-1 mt-3">
                     Professional Information
                   </h4>
+
+                  {/* Student Fields */}
                   {form.userType === "student" && (
-                    <>
+                    <div className="grid gap-2">
                       <div>
-                        <span className="font-medium">Highest Education:</span>{" "}
-                        {form.highestEducation}
+                        <span className="font-medium text-sm text-gray-700">Highest Education:</span>{" "}
+                        <p className="text-gray-900">{form.highestEducation}</p>
                       </div>
                       <div>
-                        <span className="font-medium">Institution:</span>{" "}
-                        {form.studentInstitute}
+                        <span className="font-medium text-sm text-gray-700">Institution:</span>{" "}
+                        <p className="text-gray-900">{form.studentInstitute}</p>
                       </div>
                       <div>
-                        <span className="font-medium">Course Status:</span>{" "}
-                        {form.courseStatus}
+                        <span className="font-medium text-sm text-gray-700">Course Name:</span>{" "}
+                        <p className="text-gray-900">{form.courseName}</p>
                       </div>
                       <div>
-                        <span className="font-medium">Course Name:</span>{" "}
-                        {form.courseName}
+                        <span className="font-medium text-sm text-gray-700">Course Status:</span>{" "}
+                        <p className="text-gray-900">{form.courseStatus}</p>
                       </div>
-                    </>
-                  )}
-                  {form.userType === "faculty" && (
-                    <>
-                      <div>
-                        <span className="font-medium">Institution:</span>{" "}
-                        {form.facultyInstitute}
-                      </div>
-                      <div>
-                        <span className="font-medium">Role:</span>{" "}
-                        {form.facultyRole}
-                      </div>
-                      <div>
-                        <span className="font-medium">Area of Expertise:</span>{" "}
-                        {form.facultyExpertise}
-                      </div>
-                      <div>
-                        <span className="font-medium">Course:</span>{" "}
-                        {form.facultyCourse}
-                      </div>
-                      <div>
-                        <span className="font-medium">Willing to Mentor:</span>{" "}
-                        {form.facultyMentor}
-                      </div>
-                    </>
-                  )}
-                  {form.userType === "tech" && (
-                    <>
-                      <div>
-                        <span className="font-medium">Organization:</span>{" "}
-                        {form.techOrg}
-                      </div>
-                      <div>
-                        <span className="font-medium">Role:</span>{" "}
-                        {form.techRole}
-                      </div>
-                    </>
-                  )}
-                  {form.userType === "law" && (
-                    <>
-                      <div>
-                        <span className="font-medium">
-                          Law Firm/Organization:
-                        </span>{" "}
-                        {form.lawFirm}
-                      </div>
-                      <div>
-                        <span className="font-medium">Legal Education:</span>{" "}
-                        {form.highestEducation}
-                      </div>
-                    </>
-                  )}
-                  {form.userType === "other" && (
-                    <>
-                      <div>
-                        <span className="font-medium">Role:</span>{" "}
-                        {form.otherRole}
-                      </div>
-                      <div>
-                        <span className="font-medium">
-                          Workplace/Institution:
-                        </span>{" "}
-                        {form.otherWorkplace}
-                      </div>
-                      <div>
-                        <span className="font-medium">Highest Education:</span>{" "}
-                        {form.highestEducation}
-                      </div>
-                    </>
+                    </div>
                   )}
 
+                  {/* Faculty Fields */}
+                  {form.userType === "faculty" && (
+                    <div className="grid gap-2">
+                      <div>
+                        <span className="font-medium text-sm text-gray-700">Institution:</span>{" "}
+                        <p className="text-gray-900">{form.facultyInstitute}</p>
+                      </div>
+                      <div>
+                        <span className="font-medium text-sm text-gray-700">Role:</span>{" "}
+                        <p className="text-gray-900">{form.facultyRole}</p>
+                      </div>
+                      <div>
+                        <span className="font-medium text-sm text-gray-700">Area of Expertise:</span>{" "}
+                        <p className="text-gray-900">{form.facultyExpertise}</p>
+                      </div>
+                      <div>
+                        <span className="font-medium text-sm text-gray-700">Course:</span>{" "}
+                        <p className="text-gray-900">{form.facultyCourse}</p>
+                      </div>
+                      <div>
+                        <span className="font-medium text-sm text-gray-700">Willing to Mentor:</span>{" "}
+                        <p className="text-gray-900">{form.facultyMentor === "yes" ? "Yes" : "No"}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Tech Mentor Fields */}
+                  {form.userType === "tech" && (
+                    <div className="grid gap-2">
+                      <div>
+                        <span className="font-medium text-sm text-gray-700">Organization:</span>{" "}
+                        <p className="text-gray-900">{form.techOrg}</p>
+                      </div>
+                      <div>
+                        <span className="font-medium text-sm text-gray-700">Role:</span>{" "}
+                        <p className="text-gray-900">{form.techRole}</p>
+                      </div>
+                      <div>
+                        <span className="font-medium text-sm text-gray-700">Highest Education:</span>{" "}
+                        <p className="text-gray-900">{form.highestEducation}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Law Mentor Fields */}
+                  {form.userType === "law" && (
+                    <div className="grid gap-2">
+                      <div>
+                        <span className="font-medium text-sm text-gray-700">Law Firm/Organization:</span>{" "}
+                        <p className="text-gray-900">{form.lawFirm}</p>
+                      </div>
+                      <div>
+                        <span className="font-medium text-sm text-gray-700">Legal Education:</span>{" "}
+                        <p className="text-gray-900">{form.highestEducation}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* ODR Expert Fields */}
+                  {form.userType === "odr" && (
+                    <div className="grid gap-2">
+                      <div>
+                        <span className="font-medium text-sm text-gray-700">Organization/Institution:</span>{" "}
+                        <p className="text-gray-900">{form.otherWorkplace}</p>
+                      </div>
+                      <div>
+                        <span className="font-medium text-sm text-gray-700">Highest Education:</span>{" "}
+                        <p className="text-gray-900">{form.highestEducation}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Conflict Resolution Expert Fields */}
+                  {form.userType === "conflict" && (
+                    <div className="grid gap-2">
+                      <div>
+                        <span className="font-medium text-sm text-gray-700">Organization/Institution:</span>{" "}
+                        <p className="text-gray-900">{form.otherWorkplace}</p>
+                      </div>
+                      <div>
+                        <span className="font-medium text-sm text-gray-700">Highest Education:</span>{" "}
+                        <p className="text-gray-900">{form.highestEducation}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Other User Fields */}
+                  {form.userType === "other" && (
+                    <div className="grid gap-2">
+                      <div>
+                        <span className="font-medium text-sm text-gray-700">Role:</span>{" "}
+                        <p className="text-gray-900">{form.otherRole}</p>
+                      </div>
+                      <div>
+                        <span className="font-medium text-sm text-gray-700">Workplace/Institution:</span>{" "}
+                        <p className="text-gray-900">{form.otherWorkplace}</p>
+                      </div>
+                      <div>
+                        <span className="font-medium text-sm text-gray-700">Highest Education:</span>{" "}
+                        <p className="text-gray-900">{form.highestEducation}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* ODR Lab Usage Section */}
                   <h4 className="font-medium text-[#0a1e42] border-b pb-1 mt-3">
                     ODR Lab Usage
                   </h4>
                   <div>
-                    <span className="font-medium">
-                      Purpose for joining ODR Lab:
-                    </span>
-                    <p className="mt-1 text-sm text-gray-700">
-                      {form.odrLabPurpose || "Not specified"}
+                    <span className="font-medium text-sm text-gray-700">Purpose for joining ODR Lab:</span>
+                    <p className="mt-1 text-sm text-gray-900 p-2 bg-white rounded border border-gray-100">
+                      {form.odrLabPurpose || form.odrLabUsageDescription || "Not specified"}
                     </p>
                   </div>
                 </div>
               </div>
-              <p className="text-sm text-gray-500">
-                Please review your information above before submitting. Click
-                &quot;Submit&quot; to complete your registration.
-              </p>
+
+              <div className="flex items-center p-3 bg-blue-50 border border-blue-100 rounded-md text-sm text-blue-800">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                </svg>
+                <p>Please carefully review your information above before submitting. Once submitted, you&apos;ll be able to update your profile later.</p>
+              </div>
             </motion.div>
           </motion.div>
-        );
+      )
       default:
         return null;
-    }
-  };
+    };
+  }
 
-  return (
+return (
     <motion.div
       className="flex flex-col items-center justify-center h-full bg-gray-100 text-gray-900 p-6 relative"
       initial={{ opacity: 0 }}
@@ -1349,14 +1585,14 @@ const SignUpPage = () => {
                 <div 
                   id="google-signin-container" 
                   ref={googleButtonRef}
-                  className="w-full h-12 mb-4"
+                  className="w-full h-12 flex justify-center"
                 >
                   {/* Google button will be rendered here by the Google API */}
                   {!googleScriptLoaded && (
                     <Button
                       type="button"
                       disabled={loading}
-                      className="w-full h-12 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 font-medium transition-all duration-200 flex items-center justify-center space-x-3 mb-4">
+                      className="w-full h-12 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 font-medium transition-all duration-200 flex items-center justify-center space-x-3 ">
                       <svg className="w-5 h-5" viewBox="0 0 24 24">
                         <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                         <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -1420,9 +1656,9 @@ const SignUpPage = () => {
                 </Alert>
               </motion.div>
             )}
-
+            {/* here is where the middle forms come into the picture.*/}
             <AnimatePresence mode="wait">{renderStep()}</AnimatePresence>
-
+            {/* back button  */}
             <motion.div
               className="flex justify-between mt-8"
               initial={{ opacity: 0 }}
@@ -1439,7 +1675,7 @@ const SignUpPage = () => {
               ) : (
                 <div></div>
               )}
-
+              {/* next button */}
               {step < steps.length - 1 ? (
                 <Button
                   type="button"
@@ -1471,7 +1707,7 @@ const SignUpPage = () => {
                 </Button>
               )}
             </motion.div>
-
+              {/* main account signup form common for all users. the bottom part of the main form  */}
             {step === 0 && (
               <motion.div
                 className="mt-6 text-center text-sm text-gray-500"
@@ -1490,7 +1726,10 @@ const SignUpPage = () => {
         )}
       </motion.div>
     </motion.div>
-  );
-};
+);
+
+}
+
+
 
 export default SignUpPage;
