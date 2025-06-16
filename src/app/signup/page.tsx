@@ -57,16 +57,17 @@ const mainUserTypes = [
 
 // Subtypes for mentors
 const mentorTypes = [
-  { value: "tech", label: "Technical Enthusiast" },
-  { value: "law", label: "Law Enthusiast" },
+  { value: "tech", label: "Technical Expert" },
+  { value: "law", label: "Law Expert" },
+
 ];
 
 // Legacy userTypes kept for compatibility with backend
 const userTypes = [
   { value: "student", label: "Ideator" },
   { value: "faculty", label: "Faculty" },
-  { value: "tech", label: "Tech Enthusiast" },
-  { value: "law", label: "Law Enthusiast" },
+  { value: "tech", label: "Tech Expert" },
+  { value: "law", label: "Law Expert" },
   { value: "other", label: "Other" },
 ];
 
@@ -953,12 +954,25 @@ const SignUpPage = () => {
                           required
                         />
                       </div>
+                      {/* changes to be done */}
+                      <div>
+                        <Label htmlFor="highestEducation" className="text-indigo-700">Your Expertise</Label>
+                        <Input
+                          id="highestEducation"
+                          name="highestEducation"
+                          value={form.highestEducation}
+                          onChange={handleChange}
+                          placeholder="Your highest education qualification"
+                          className="mt-1"
+                          required
+                        />
+                      </div>
                     </TabsContent>
                     
                     <TabsContent value="mentoring" className="space-y-4 pt-2">
                       <div>
                         <Label htmlFor="odrLabPurpose" className="text-indigo-700">
-                          Mentoring Philosophy & Expertise
+                         Share Your Expertise and mentoring approach
                         </Label>
                         <Textarea
                           id="odrLabPurpose"
