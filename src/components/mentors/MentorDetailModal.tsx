@@ -38,7 +38,11 @@ const MentorDetailModal: React.FC<MentorDetailModalProps> = ({
   // Get mentor image with fallback handling
   const getMentorImage = () => {
     if (imgError) return placeholderImage;
-    return mentor.id ? `/mentor/${mentor.id}.png` : placeholderImage;
+    const formats = ['png', 'jpg', 'jpeg'];
+    for (const format of formats) {
+      if (!imgError) return `/mentor/${mentor.id}.${format}`;
+    }
+    return placeholderImage;
   };
   
   // Simplified error handler
