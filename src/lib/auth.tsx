@@ -10,15 +10,17 @@ import React, {
   useRef,
 } from "react";
 import { useRouter } from "next/navigation";
+import {jwtDecode} from "jwt-decode";
 
 // Remove trailing slash to prevent double slashes in URLs
-const API_BASE_URL = (process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3001").replace(/\/$/, "");
+const API_BASE_URL = (process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000/api").replace(/\/$/, "");
 
-interface User {
+export type User = {
   id: string;
   name: string;
   email: string;
-  userRole: "INNOVATOR" | "MENTOR" | "ADMIN" | "OTHER"; // <-- Restrict to allowed values
+  userRole: "INNOVATOR" | "MENTOR" | "ADMIN" | "OTHER";
+  isMentorApproved?: boolean; // Add this field
   contactNumber?: string;
   city?: string;
   country?: string;
@@ -234,6 +236,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     },
     []
   );
+
+  // Decode JWT token to get user info
+  const getUserFromToken = (token: string): User | null => {
+    try {
+      // Decode JWT token
+      const decoded = jwtDecode<any>(token);
+      return {
+        id: decoded.id,
+        name: decoded.name,
+        email: decoded.email,
+        userRole: decoded.userRole as "INNOVATOR" | "MENTOR" | "ADMIN" | "OTHER",
+        isMentorApproved: decoded.isMentorApproved || false, // Include mentor approval status
+        contactNumber: decoded.contactNumber,
+        city: decoded.city,
+        country: decoded.country,
+        institution: decoded.institution,
+        highestEducation: decoded.highestEducation,
+        odrLabUsage: decoded.odrLabUsage,
+        imageAvatar: decoded.imageAvatar,
+        createdAt: decoded.createdAt,
+      };
+    } catch (error) {
+      return null;
+    }
+  };
 
   const value = {
     user,

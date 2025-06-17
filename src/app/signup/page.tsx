@@ -395,12 +395,14 @@ const SignUpPage = () => {
             form.userType === "student"
               ? "INNOVATOR"
               : form.userType === "faculty"
-              ? "OTHER"
-              : form.userType === "law"
-              ? "MENTOR"
-              : form.userType === "tech"
-              ? "MENTOR"
+              ? "FACULTY" // Changed from OTHER to FACULTY for clarity
+              : form.userType === "law" || form.userType === "tech" || 
+                form.userType === "odr" || form.userType === "conflict"
+              ? "MENTOR" // All mentor types get MENTOR role but with pending approval
               : "OTHER",
+          // Add mentorApproved flag to signal approval status for new mentors
+          mentorApproved: false, // Will be false for new mentor signups
+          mentorType: form.mentorType || undefined, // Store the specific mentor type
           institution:
             form.studentInstitute ||
             form.facultyInstitute ||
@@ -438,7 +440,6 @@ const SignUpPage = () => {
           // Selected user types
           mainUserType: form.mainUserType,
           userType: form.userType,
-          mentorType: form.mentorType,
           
           // Purpose and additional info
           odrLabPurpose: form.odrLabPurpose
