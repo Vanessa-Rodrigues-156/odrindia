@@ -20,7 +20,8 @@ export type User = {
   name: string;
   email: string;
   userRole: "INNOVATOR" | "MENTOR" | "ADMIN" | "OTHER";
-  isMentorApproved?: boolean; // Add this field
+  isMentorApproved?: boolean;
+  mentorRejectionReason?: string | null; // Add this field to store rejection reason
   contactNumber?: string;
   city?: string;
   country?: string;

@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/auth';
-import { AlertCircle, User, Briefcase, Lightbulb } from 'lucide-react';
-import axios from 'axios';
+import { AlertCircle, User, Briefcase, Lightbulb, XCircle } from 'lucide-react';
+import { apiFetch } from '@/lib/api';
+import { Button } from '@/components/ui/button';
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -18,8 +19,15 @@ export default function Dashboard() {
     const fetchUserStats = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('/api/user/stats');
-        setStats(response.data);
+        const response = await apiFetch('/api/user/stats');
+        
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.error || `Failed with status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        setStats(data);
       } catch (error) {
         console.error('Failed to fetch user stats:', error);
       } finally {
@@ -45,6 +53,34 @@ export default function Dashboard() {
           <p className="text-yellow-700 mt-1">
             Your mentor account is pending approval. You&apos;ll have full access to mentor features once approved.
           </p>
+        </div>
+      )}
+      
+      {/* Show message for users whose mentor application was rejected */}
+      {user?.userRole === "OTHER" && user?.mentorRejectionReason && (
+        <div className="p-4 mb-6 bg-red-50 border border-red-200 rounded-md">
+          <h3 className="flex items-center text-red-800 font-medium">
+            <XCircle className="w-5 h-5 mr-2" /> Mentor Application Rejected
+          </h3>
+          <p className="text-red-700 mt-1">
+            Your mentor application was not approved. Reason: {user.mentorRejectionReason || "No reason provided."}
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="bg-white hover:bg-red-50 border-red-200 text-red-700"
+              onClick={() => window.location.href = "/contact-admin"}>
+              Contact Admin
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="bg-white hover:bg-red-50 border-red-200 text-red-700"
+              onClick={() => window.location.href = "/apply-mentor"}>
+              Apply Again as Mentor
+            </Button>
+          </div>
         </div>
       )}
       

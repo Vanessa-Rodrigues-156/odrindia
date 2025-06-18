@@ -11,25 +11,7 @@ import {
   ChevronDown,
   ChevronUp
 } from 'lucide-react';
-import axios from 'axios';
-
-// Create an axios interceptor that adds the auth token to each request
-const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000/api'
-});
-
-// Add request interceptor to include auth token in every request
-api.interceptors.request.use(config => {
-  // Get token from localStorage
-  const token = localStorage.getItem('token');
-  
-  // If token exists, add it to the request headers
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  
-  return config;
-});
+import { apiFetch } from '@/lib/api';
 
 type Mentor = {
   id: string;
@@ -65,25 +47,30 @@ export default function MentorApprovalPage() {
       setLoading(true);
       console.log('Fetching pending mentors...');
       
-      // Log the token for debugging purposes (you can remove this later)
-      console.log('Using token:', localStorage.getItem('token') ? 'Token exists' : 'No token found');
+      const response = await apiFetch('/admin/approve-mentor');
       
-      const response = await api.get('/admin/approve-mentor');
-      console.log('Received mentors data:', response.data);
-      setMentors(response.data);
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `Failed with status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log('Received mentors data:', data);
+      setMentors(data);
       setError(null);
     } catch (err) {
       console.error('Failed to fetch pending mentors:', err);
-      // Provide more detailed error information, especially for auth errors
+      
+      // Provide more detailed error information
       let errorMessage = 'Please try again later.';
       
-      if (axios.isAxiosError(err)) {
-        if (err.response?.status === 401) {
+      if (err instanceof Error) {
+        if (err.message.includes('401')) {
           errorMessage = 'Authentication failed. Please log in again.';
-        } else if (err.response?.status === 403) {
+        } else if (err.message.includes('403')) {
           errorMessage = 'You do not have permission to access this resource.';
-        } else if (err.response?.data?.error) {
-          errorMessage = err.response.data.error;
+        } else {
+          errorMessage = err.message;
         }
       }
       
@@ -96,7 +83,17 @@ export default function MentorApprovalPage() {
   const approveMentor = async (mentorId: string) => {
     try {
       console.log(`Approving mentor: ${mentorId}`);
-      await api.post('/admin/approve-mentor', { userId: mentorId });
+      
+      const response = await apiFetch('/admin/approve-mentor', {
+        method: 'POST',
+        body: JSON.stringify({ userId: mentorId })
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `Failed with status: ${response.status}`);
+      }
+      
       // Remove approved mentor from the list
       setMentors(mentors.filter(mentor => mentor.id !== mentorId));
       // Show success message
@@ -118,10 +115,20 @@ export default function MentorApprovalPage() {
     
     try {
       console.log(`Rejecting mentor: ${currentMentor.id}, reason: ${rejectionReason || 'None provided'}`);
-      await api.post('/admin/approve-mentor/reject', { 
-        userId: currentMentor.id,
-        reason: rejectionReason 
+      
+      const response = await apiFetch('/admin/approve-mentor/reject', {
+        method: 'POST',
+        body: JSON.stringify({
+          userId: currentMentor.id,
+          reason: rejectionReason
+        })
       });
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `Failed with status: ${response.status}`);
+      }
+      
       // Remove rejected mentor from the list
       setMentors(mentors.filter(mentor => mentor.id !== currentMentor.id));
       setRejectModalVisible(false);
