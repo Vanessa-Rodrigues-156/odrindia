@@ -150,14 +150,14 @@ const MentorDetailModal: React.FC<MentorDetailModalProps> = ({
                 <h3 className="font-bold text-xl text-blue-800 flex items-center">
                   Ideas Being Mentored
                   <Badge variant="outline" className="ml-2 bg-blue-100 text-blue-700 border-blue-300">
-                    {mentor.mentoringIdeas.length}
+                    {mentor.ideas?.length || 0}
                   </Badge>
                 </h3>
               </div>
               
-              {mentor.mentoringIdeas.length > 0 ? (
+              {mentor.ideas && mentor.ideas.length > 0 ? (
                 <div className="space-y-4 md:space-y-5">
-                  {mentor.mentoringIdeas.map(({ idea }) => (
+                  {mentor.ideas.map((idea) => (
                     <Card key={idea.id} className="overflow-hidden hover:shadow-lg transition-all duration-300 border border-blue-100">
                       <CardContent className="p-4 md:p-5">
                         <Link href={`/ideas/${idea.id}`} className="hover:no-underline block">

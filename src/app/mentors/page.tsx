@@ -19,7 +19,7 @@ export default function MentorsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { user } = useAuth();
   
-  // Fetch mentors on component mount
+  // Fetch mentors on component mount - this now only gets approved mentors
   useEffect(() => {
     const fetchMentors = async () => {
       try {

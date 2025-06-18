@@ -5,22 +5,23 @@ export interface MentorWithIdeas {
   id: string;
   name: string;
   email: string;
+  userRole: string;
   contactNumber?: string;
   city?: string;
   country?: string;
   institution?: string;
   highestEducation?: string;
   odrLabUsage?: string;
+  imageAvatar?: string;
+  isMentorApproved?: boolean;
   createdAt: string;
-  mentoringIdeas: {
-    idea: {
-      id: string;
-      title: string;
-      caption?: string;
-      description: string;
-      createdAt: string;
-      views: number;
-    }
+  ideas?: {
+    id: string;
+    title: string;
+    caption?: string;
+    description?: string;
+    createdAt: string;
+    views?: number;
   }[];
 }
 
@@ -34,7 +35,9 @@ export async function getAllMentors(): Promise<MentorWithIdeas[]> {
     }
     
     const data = await response.json();
-    return data.mentors;
+    
+    // Filter to only include approved mentors
+    return data.mentors.filter((mentor: MentorWithIdeas) => mentor.isMentorApproved === true);
   } catch (error) {
     console.error("Error fetching mentors:", error);
     throw error;

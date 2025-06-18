@@ -15,7 +15,7 @@ interface MentorCardProps {
 const MentorCard: React.FC<MentorCardProps> = ({ mentor, onClick }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [imgError, setImgError] = useState(false);
-  const ideaCount = mentor.mentoringIdeas.length;
+  const ideaCount = mentor.ideas?.length || 0;
   
   // Generate placeholder image based on mentor's name
   const placeholderImage = `https://ui-avatars.com/api/?name=${encodeURIComponent(mentor.name)}&background=0D8ABC&color=fff&size=256`;
