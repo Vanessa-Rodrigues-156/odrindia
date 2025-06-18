@@ -4,152 +4,99 @@ import { MessageSquare, Globe, Scale, Award, BarChart, BookOpen, PieChart} from 
 
 export function LetsCollaborate() {
   return (
-    <section className="py-16 bg-gradient-to-b from-white to-gray-50">
-          <div className="container mx-auto px-4">
-            <div className="mb-10 text-center">
-              <h2 className="mb-2 text-3xl font-bold tracking-tight text-[#0a1e42] md:text-4xl">LET&apos;S COLLABORATE FOR</h2>
-              <p className="mx-auto max-w-[700px] text-gray-600">
-                Innovative solutions advancing the future of dispute resolution
-              </p>
+    <section className="py-20 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+      <div className="container mx-auto px-6">
+      <div className="mb-16 text-center">
+        <h2 className="mb-4 text-4xl font-extrabold tracking-tight text-[#0a1e42] md:text-5xl">
+        <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-800 to-blue-900">
+          LET&apos;S COLLABORATE FOR
+        </span>
+        </h2>
+        <p className="mx-auto max-w-[700px] text-lg text-gray-600">
+        Innovative solutions advancing the future of dispute resolution
+        </p>
+        <div className="mt-6 mx-auto w-24 h-1 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full"></div>
+      </div>
+
+      <div className="grid gap-7 md:grid-cols-2 lg:grid-cols-3">
+        {[
+        {
+          icon: <MessageSquare className="h-7 w-7" />,
+          title: "Designing Dispute Resolution Systems",
+          subtitle: "Custom solutions for complex dispute scenarios",
+          description: "Design comprehensive dispute resolution systems tailored to specific industries, integrating advanced technology with human expertise"
+        },
+        {
+          icon: <Globe className="h-7 w-7" />,
+          title: "Predictive Justice Technologies",
+          subtitle: "AI-powered solutions for better outcomes",
+          description: "Develop predictive outcome platforms and analyze case patterns using advanced algorithms, enabling parties to make informed decisions"
+        },
+        {
+          icon: <Scale className="h-7 w-7" />,
+          title: "Legal Tech Solutions for Court Integration",
+          subtitle: "Bridging traditional and digital justice",
+          description: "Develop seamless interfaces between conventional court systems and modern ODR platforms to enhance judicial efficiency"
+        },
+        {
+          icon: <BarChart className="h-7 w-7" />,
+          title: "Automated Mediation Platforms",
+          subtitle: "AI-assisted conflict resolution",
+          description: "Design an automated mediation platform enabling efficient dispute resolution through smart suggestions and seamless dialogue"
+        },
+        {
+          icon: <Scale className="h-7 w-7" />,
+          title: "Online Arbitration Processes",
+          subtitle: "Customized digital arbitration solutions",
+          description: "Develop specialized arbitration workflows tailored to specific dispute types, industries, and regulatory requirements"
+        },
+        {
+          icon: <Award className="h-7 w-7" />,
+          title: "Personalized Resolution Pathways",
+          subtitle: "Tailored experiences for unique needs",
+          description: "Customized resolution journeys based on the unique characteristics of disputes and the preferences of the parties involved"
+        },
+        {
+          icon: <Globe className="h-7 w-7" />,
+          title: "Multilingual Dispute Resolution",
+          subtitle: "Breaking language barriers in ODR",
+          description: "Design inclusive platforms that support multiple languages to facilitate cross-border and cross-cultural dispute resolution"
+        },
+        {
+          icon: <BookOpen className="h-7 w-7" />,
+          title: "ODR Research",
+          subtitle: "Expanding knowledge frontiers",
+          description: "Conduct ODR research from a multidisciplinary perspective, providing a strong foundation for the development of ODR systems"
+        },
+        {
+          icon: <PieChart className="h-7 w-7" />,
+          title: "Impact Assessment Studies",
+          subtitle: "Measuring ODR effectiveness",
+          description: "Conduct empirical research involving stakeholders to improve current platforms and provide valuable insights for future systems"
+        }
+        ].map((item, index) => (
+          <>
+          <Card key={index} className="border-none transition-all duration-300 hover:shadow-xl hover:-translate-y-2 bg-white/80 backdrop-blur-sm overflow-hidden group">
+            <CardHeader className="pb-2 pt-6 relative">
+            <div className="absolute top-0 left-0 h-1 w-full bg-gradient-to-r from-blue-500 to-indigo-600 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
+            <div className="mb-4 rounded-xl bg-gradient-to-br from-blue-100 to-indigo-100 p-3 w-fit group-hover:from-blue-200 group-hover:to-indigo-200 transition-all duration-300">
+              <div className="text-blue-600 group-hover:text-indigo-700 transition-colors duration-300">
+              {item.icon}
+              </div>
             </div>
-
-            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-              <Card className="border-2 border-transparent transition-all hover:border-[#0a1e42]/10 hover:shadow-lg hover:-translate-y-1 overflow-hidden group">
-                <CardHeader className="pb-1 pt-4">
-                  <div className="mb-2 rounded-full bg-[#0a1e42]/10 p-2 w-fit group-hover:bg-[#0a1e42]/20">
-                    <MessageSquare className="h-6 w-6 text-[#0a1e42]" />
-                  </div>
-                  <CardTitle className="text-[#0a1e42]">Designing Dispute Resolution Systems</CardTitle>
-                  <CardDescription>Custom solutions for complex dispute scenarios</CardDescription>
-                </CardHeader>
-                <CardContent className="pt-2">
-                  <p className="text-gray-600">
-                   Design comprehensive dispute resolution systems tailored to specific industries, integrating advanced technology with human expertise 
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="border-2 border-transparent transition-all hover:border-[#0a1e42]/10 hover:shadow-lg hover:-translate-y-1 overflow-hidden group">
-                <CardHeader className="pb-1 pt-4">
-                  <div className="mb-2 rounded-full bg-[#0a1e42]/10 p-2 w-fit group-hover:bg-[#0a1e42]/20">
-                    <Globe className="h-6 w-6 text-[#0a1e42]" />
-                  </div>
-                  <CardTitle className="text-[#0a1e42]">Predictive Justice Technologies</CardTitle>
-                  <CardDescription>AI-powered solutions for better outcomes</CardDescription>
-                </CardHeader>
-                <CardContent className="pt-2">
-                  <p className="text-gray-600">
-                   Develop predictive outcome platforms and analyze case patterns using advanced algorithms, enabling parties to make informed decisions about their future course of action
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="border-2 border-transparent transition-all hover:border-[#0a1e42]/10 hover:shadow-lg hover:-translate-y-1 overflow-hidden group">
-                <CardHeader className="pb-1 pt-4">
-                  <div className="mb-2 rounded-full bg-[#0a1e42]/10 p-2 w-fit group-hover:bg-[#0a1e42]/20">
-                    <Scale className="h-6 w-6 text-[#0a1e42]" />
-                  </div>
-                  <CardTitle className="text-[#0a1e42]">Legal Tech Solutions for Court Integration</CardTitle>
-                  <CardDescription>Bridging traditional and digital justice</CardDescription>
-                </CardHeader>
-                <CardContent className="pt-2">
-                  <p className="text-gray-600">
-                   Develop seamless interfaces between conventional court systems and modern ODR platforms to enhance judicial efficiency.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="border-2 border-transparent transition-all hover:border-[#0a1e42]/10 hover:shadow-lg hover:-translate-y-1 overflow-hidden group">
-                <CardHeader className="pb-1 pt-4">
-                  <div className="mb-2 rounded-full bg-[#0a1e42]/10 p-2 w-fit group-hover:bg-[#0a1e42]/20">
-                    <BarChart className="h-6 w-6 text-[#0a1e42]" />
-                  </div>
-                  <CardTitle className="text-[#0a1e42]">Developing Automated Mediation Platforms</CardTitle>
-                  <CardDescription>AI-assisted conflict resolution</CardDescription>
-                </CardHeader>
-                <CardContent className="pt-2">
-                  <p className="text-gray-600">
-                    Design an automated mediation platform enabling efficient dispute resolution through smart suggestions and seamless dialogue.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="border-2 border-transparent transition-all hover:border-[#0a1e42]/10 hover:shadow-lg hover:-translate-y-1 overflow-hidden group">
-                <CardHeader className="pb-1 pt-4">
-                  <div className="mb-2 rounded-full bg-[#0a1e42]/10 p-2 w-fit group-hover:bg-[#0a1e42]/20">
-                    <Scale className="h-6 w-6 text-[#0a1e42]" />
-                  </div>
-                  <CardTitle className="text-[#0a1e42]">Designing Case-Specific Online Arbitration Processes</CardTitle>
-                  <CardDescription>Customized digital arbitration solutions</CardDescription>
-                </CardHeader>
-                <CardContent className="pt-2">
-                  <p className="text-gray-600">
-                   Develop specialized arbitration workflows tailored to specific dispute types, industries, and regulatory requirements
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="border-2 border-transparent transition-all hover:border-[#0a1e42]/10 hover:shadow-lg hover:-translate-y-1 overflow-hidden group">
-                <CardHeader className="pb-1 pt-4">
-                  <div className="mb-2 rounded-full bg-[#0a1e42]/10 p-2 w-fit group-hover:bg-[#0a1e42]/20">
-                    <Award className="h-6 w-6 text-[#0a1e42]" />
-                  </div>
-                  <CardTitle className="text-[#0a1e42]">Creating Personalized Dispute Resolution Pathways</CardTitle>
-                  <CardDescription>Tailored experiences for unique needs</CardDescription>
-                </CardHeader>
-                <CardContent className="pt-2">
-                  <p className="text-gray-600">
-                    Customized resolution journeys based on the unique characteristics of disputes and the preferences of the parties involved.
-                  </p>
-                </CardContent>
-              </Card>
-              
-              <Card className="border-2 border-transparent transition-all hover:border-[#0a1e42]/10 hover:shadow-lg hover:-translate-y-1 overflow-hidden group">
-                <CardHeader className="pb-1 pt-4">
-                  <div className="mb-2 rounded-full bg-[#0a1e42]/10 p-2 w-fit group-hover:bg-[#0a1e42]/20">
-                    <Globe className="h-6 w-6 text-[#0a1e42]" />
-                  </div>
-                  <CardTitle className="text-[#0a1e42]">Building Multilingual Dispute Resolution Platforms</CardTitle>
-                  <CardDescription>Breaking language barriers in ODR</CardDescription>
-                </CardHeader>
-                <CardContent className="pt-2">
-                  <p className="text-gray-600">
-                    DesignInclusive Dispute Resolution platform that cater to special needs languages that support multiple languages to facilitate cross-border and cross-cultural dispute resolution
-                  </p>
-                </CardContent>
-
-              </Card>
-               <Card className="border-2 border-transparent transition-all hover:border-[#0a1e42]/10 hover:shadow-lg hover:-translate-y-1 overflow-hidden group">
-                <CardHeader className="pb-1 pt-4">
-                  <div className="mb-2 rounded-full bg-[#0a1e42]/10 p-2 w-fit group-hover:bg-[#0a1e42]/20">
-                    <BookOpen className="h-6 w-6 text-[#0a1e42]" />
-                  </div>
-                  <CardTitle className="text-[#0a1e42]">ODR Research</CardTitle>
-                  <CardDescription>Expanding knowledge frontiers in digital dispute resolution</CardDescription>
-                </CardHeader>
-                <CardContent className="pt-2">
-                  <p className="text-gray-600">
-                    Conduct ODR research from a multidisciplinary perspective, providing a strong foundation for the development of ODR systems
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="border-2 border-transparent transition-all hover:border-[#0a1e42]/10 hover:shadow-lg hover:-translate-y-1 overflow-hidden group">
-                <CardHeader className="pb-1 pt-4">
-                  <div className="mb-2 rounded-full bg-[#0a1e42]/10 p-2 w-fit group-hover:bg-[#0a1e42]/20">
-                    <PieChart className="h-6 w-6 text-[#0a1e42]" />
-                  </div>
-                  <CardTitle className="text-[#0a1e42]">Impact Assessment Studies</CardTitle>
-                  <CardDescription>Measuring and evaluating ODR effectiveness</CardDescription>
-                </CardHeader>
-                <CardContent className="pt-2">
-                  <p className="text-gray-600">
-                    Conduct impact assessment studies on existing ODR systems through empirical research involving stakeholders to both improve current platforms and provide valuable insights for the development of future systems
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </section>
+            <CardTitle className="text-xl text-[#0a1e42] font-bold group-hover:text-blue-700 transition-colors duration-300">{item.title}</CardTitle>
+            <CardDescription className="text-indigo-600 font-medium">{item.subtitle}</CardDescription>
+            </CardHeader>
+            <CardContent className="pt-2 pb-6">
+            <p className="text-gray-600 group-hover:text-gray-800 transition-colors duration-300">
+              {item.description}
+            </p>
+            </CardContent>
+          </Card>
+         </>
+        ))}
+      </div>
+      </div>
+    </section>
   );
 }
