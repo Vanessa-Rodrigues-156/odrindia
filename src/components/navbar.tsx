@@ -391,21 +391,36 @@ export default function Navbar() {
 											</Link>
 
 											{currentUser.userRole === "ADMIN" && (
-												<Link
-													href="/admin/idea-approval"
-													onClick={() => setProfileDropdown(false)}
-													className="flex w-full items-center gap-2 rounded-md px-3 py-2.5 text-sm text-slate-700 hover:bg-blue-50"
-												>
-													<div className="h-7 w-7 rounded-full bg-blue-100 flex items-center justify-center">
-														<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-600">
+													
+													<Link
+														href="/admin/idea-approval"
+														onClick={() => setIsOpen(false)}
+														className="flex items-center gap-2 px-3 py-2 bg-white rounded-lg text-sm font-medium text-slate-700 hover:border-blue-200 hover:bg-blue-50"
+													>
+														<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-500">
 															<path d="M12 2H2v10h10V2z"></path>
 															<path d="M22 12h-10v10h10V12z"></path>
 															<path d="M12 12H2v10h10V12z"></path>
 														</svg>
-													</div>
-													Admin Dashboard
-												</Link>
-											)}
+														Idea Approval
+													</Link>
+												)}
+												{currentUser.userRole === "ADMIN" && (
+													<Link
+														href="/admin/mentor-approval"
+														onClick={() => setIsOpen(false)}
+														className="flex items-center gap-2 px-3 py-2 bg-white rounded-lg  text-sm font-medium text-slate-700 hover:border-blue-200 hover:bg-blue-50"
+													>
+														<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-500">
+															<path d="M8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path>
+															<path d="M16 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path>
+															<path d="M12 17a5 5 0 0 0-5-5H6a5 5 0 0 0-5 5"></path>
+															<path d="M18 17a5 5 0 0 0-5-5h-1a5 5 0 0 0-5 5"></path>
+															<line x1="14" y1="7" x2="18" y2="3"></line>
+														</svg>
+														Mentor Approval
+													</Link>
+												)}
 
 											<Link
 												href="/submit-idea"
@@ -642,7 +657,7 @@ export default function Navbar() {
 												)}
 												{currentUser.userRole === "ADMIN" && (
 													<Link
-														href="/admin/admin-approval"
+														href="/admin/mentor-approval"
 														onClick={() => setIsOpen(false)}
 														className="flex items-center gap-2 px-3 py-2 bg-white rounded-lg border border-slate-200 text-sm font-medium text-slate-700 hover:border-blue-200 hover:bg-blue-50"
 													>
