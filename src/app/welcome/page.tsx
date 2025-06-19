@@ -95,10 +95,10 @@ export default function WelcomePage() {
 
   const steps = [
     { icon: Users, title: "Register", description: "Join as Mentor or Ideator" },
-    { icon: Lightbulb, title: "Ideate", description: "Share innovative solutions" },
-    { icon: MessageSquare, title: "Collaborate", description: "Connect with experts" },
-    { icon: Scale, title: "Develop", description: "Build ODR systems together" },
-    { icon: BarChart3, title: "Impact", description: "Transform dispute resolution" },
+    { icon: Lightbulb, title: "Ideate", description: "Share ideas for creating ODR systems" },
+    { icon: MessageSquare, title: "Collaborate", description: "Connect with ideators and mentors" },
+    { icon: Scale, title: "Develop", description: "Build ODR Systems together" },
+    { icon: BarChart3, title: "Impact", description: "Transform Dispute Resolution System" },
   ]
 
   // Splash Screen
@@ -136,7 +136,7 @@ export default function WelcomePage() {
               />
             </div>
             <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">ODR LAB</h1>
-            <p className="text-[#f6ece3] text-lg mb-2">The first AI supported platform in the world of ODR</p>
+            <p className="text-[#f6ece3] text-lg mb-2">A Digital Hub for Building Smarter ODR Systems—supported by both, Professional Expertise & Artificial Intelligence</p>
             <p className="text-[#f6ece3] text-lg mb-8">Launching Innovation</p>
           </div>
 
@@ -174,7 +174,7 @@ export default function WelcomePage() {
       <AnimatedParticles />
 
       {/* Rest of your existing JSX */}
-      <main className="relative z-10 flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] px-4 pt-4">
+      <main className="relative z-10 flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] px-4 pt-4 mb-4">
         {/* Launch Announcement */}
         <div
           className={`text-center mb-8 transition-all duration-1000 delay-500 ${isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"}`}
@@ -190,16 +190,16 @@ export default function WelcomePage() {
           </div>
         </div>
 
-        {/* Subtitle */}
+        {/* Subtitle
         <p
           className={`text-xl md:text-2xl text-[#917e6e] text-center max-w-3xl mb-4 transition-all duration-1000 delay-700 ${isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"}`}
         >
-          The first AI supported Platform in the world of ODR
-        </p>
+          A Digital Hub for Building Smarter ODR Systems—supported by both, Professional Expertise & Artificial Intelligence
+        </p> */}
         <p
-          className={`text-lg md:text-xl text-[#917e6e] text-center max-w-3xl mb-12 transition-all duration-1000 delay-800 ${isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"}`}
+          className={`text-lg md:text-xl text-[#917e6e] text-center max-w-3xl mb-10 transition-all duration-1000 delay-800 ${isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"}`}
         >
-          Platform for co-creating innovative Online Dispute Resolution systems through collaboration and innovation
+          A global platform for co-creating innovative Online Dispute Resolution systems through collaboration.
         </p>
 
         {/* Animated Central Icon */}
@@ -233,24 +233,13 @@ export default function WelcomePage() {
           </div>
         </div>
 
-        {/* CTA Buttons */}
-        <div
-          className={`flex flex-col sm:flex-row gap-4 mb-16 transition-all duration-1000 delay-1100 ${isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"}`}
-        >
-          <Link href={"/signup"} className="w-full sm:w-auto">
-            <Button className="bg-[#486581] hover:bg-[#486581]/90 text-white px-8 py-3 text-lg rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg group">
-              Register as a Mentor or Ideator
-              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Button>
-          </Link>
-        </div>
-
+        
         {/* Animated Steps Preview */}
         <div
-          className={`w-full max-w-4xl transition-all duration-1000 delay-1300 ${isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"}`}
+          className={`w-full mb-10 max-w-4xl transition-all duration-1000 delay-1300 ${isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"}`}
         >
           <h3 className="text-2xl md:text-3xl font-bold text-[#486581] text-center mb-8">How ODR LAB Works</h3>
-          <div className="flex flex-wrap justify-center gap-8">
+          <div className="flex flex-wrap  justify-center gap-8">
             {steps.map((step, index) => {
               const Icon = step.icon
               const isActive = index === currentStep
@@ -275,6 +264,19 @@ export default function WelcomePage() {
             })}
           </div>
         </div>
+
+        {/* CTA Buttons */}
+        <div
+          className={`flex flex-col sm:flex-row gap-4 mb-16 transition-all duration-1000 delay-1100 ${isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"}`}
+        >
+          <Link href={"/signup"} className="w-full sm:w-auto">
+            <Button className="bg-[#486581] hover:bg-[#486581]/90 text-white px-8 py-3 text-lg rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg group">
+              Register as a Mentor or Ideator
+              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </Link>
+        </div>
+
       </main>
 
       {/* Custom CSS for animations */}

@@ -111,7 +111,7 @@ export default function Home() {
                   variants={fadeInUp}
                 >
                   <Button size="lg" className="bg-sky-500 hover:bg-sky-600" onClick={() => window.location.href = '/signup'}>
-                    Register as a Mentor
+                    Register as an Ideator or Mentor
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </motion.div>
