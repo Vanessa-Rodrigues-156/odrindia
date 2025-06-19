@@ -23,7 +23,7 @@ const HowToCard: React.FC = () => {
             <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
           </svg>
           <h3 className="text-[#0a1e42] font-semibold mb-2">Sign Up</h3>
-          <p className="text-gray-600 text-sm">Register on the idea board</p>
+          <p className="text-gray-600 text-sm">Register as an Ideator</p>
         </div>
       </div>
 
@@ -38,7 +38,7 @@ const HowToCard: React.FC = () => {
             <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
           </svg>
           <h3 className="text-[#0a1e42] font-semibold mb-2">Join</h3>
-          <p className="text-gray-600 text-sm">Become a member of the ODR lab</p>
+          <p className="text-gray-600 text-sm">Start with an Idea Board to design ODR</p>
         </div>
       </div>
 
@@ -52,7 +52,7 @@ const HowToCard: React.FC = () => {
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
           </svg>
           <h3 className="text-[#0a1e42] font-semibold mb-2">Discuss</h3>
-          <p className="text-gray-600 text-sm">Deliberate and exchange ideas</p>
+          <p className="text-gray-600 text-sm">Deliberate and exchange ideas in the ODR lab</p>
         </div>
       </div>
 
@@ -96,7 +96,7 @@ const HowToCard: React.FC = () => {
             <line x1="6" y1="20" x2="6" y2="16"></line>
           </svg>
           <h3 className="text-[#0a1e42] font-semibold mb-2">Reflect</h3>
-          <p className="text-gray-600 text-sm">Analyze and share your results</p>
+          <p className="text-gray-600 text-sm">Collaboratively develop Impactful  ODR Systems</p>
         </div>
       </div>
     </div>
