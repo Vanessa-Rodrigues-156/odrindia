@@ -128,6 +128,20 @@ export default function RequestMentorButton({
       </Button>
     );
   }
+  
+  // If mentor but not approved
+  if (!user.isMentorApproved) {
+    return (
+      <Button 
+        variant="outline"
+        size="sm" 
+        disabled
+        className="text-sm bg-yellow-50 border-yellow-200 text-yellow-800 cursor-default">
+        <BookOpen className="h-4 w-4 mr-1" />
+        Approval Pending
+      </Button>
+    );
+  }
 
   // If already a mentor
   if (isMentor) {

@@ -45,13 +45,13 @@ export default function Dashboard() {
       <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
       
       {/* Show pending approval status for mentors */}
-      {user?.userRole === "MENTOR" && !user?.isMentorApproved && (
+      {(user?.hasMentorApplication && !user?.isMentorApproved) && (
         <div className="p-4 mb-6 bg-yellow-50 border border-yellow-200 rounded-md">
           <h3 className="flex items-center text-yellow-800 font-medium">
             <AlertCircle className="w-5 h-5 mr-2" /> Mentor Approval Pending
           </h3>
           <p className="text-yellow-700 mt-1">
-            Your mentor account is pending approval. You&apos;ll have full access to mentor features once approved.
+            Your mentor application is pending approval. You&apos;ll have full access to mentor features once approved.
           </p>
         </div>
       )}

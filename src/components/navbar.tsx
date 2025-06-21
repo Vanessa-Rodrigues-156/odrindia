@@ -322,10 +322,12 @@ export default function Navbar() {
 									<div className="flex flex-col items-start">
 										<span className="text-sm font-medium text-slate-800 leading-none">
 											{currentUser.name.split(' ')[0]}
-										</span>
-										<span className="text-xs text-slate-500">
-											{currentUser.userRole.charAt(0) + currentUser.userRole.slice(1).toLowerCase()}
-										</span>
+										</span>                                    <span className="text-xs text-slate-500">
+                                        {/* Show role based on actual userRole, with pending indicator if applicable */}
+                                        {currentUser.userRole.charAt(0) + currentUser.userRole.slice(1).toLowerCase()}
+                                        {currentUser.hasMentorApplication && !currentUser.isMentorApproved && 
+                                          currentUser.userRole !== "MENTOR" && " (Mentor Pending)"}
+                                    </span>
 									</div>
 									<ChevronDown 
 										size={14} 
@@ -624,6 +626,11 @@ export default function Navbar() {
 													<p className="text-xs text-slate-500">
 														{currentUser.email}
 													</p>
+													{currentUser.hasMentorApplication && !currentUser.isMentorApproved && (
+														<p className="text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full mt-1 inline-block">
+															Mentor Approval Pending
+														</p>
+													)}
 												</div>
 											</div>
 
