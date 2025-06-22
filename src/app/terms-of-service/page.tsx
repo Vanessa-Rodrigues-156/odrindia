@@ -1,6 +1,7 @@
 import React from 'react';
 
 export default function TermsOfService() {
+
     return (
         <div className="max-w-4xl mx-auto px-4 py-8">
             <h1 className="text-3xl font-bold mb-6 text-center">TERMS AND CONDITIONS FOR USE OF ODR LAB</h1>
@@ -8,7 +9,7 @@ export default function TermsOfService() {
             <div className="mb-6">
                 <p className="mb-4">
                     These Terms and Conditions govern your access to and use of ODR LAB, which includes the
-                    website, services, tools, and any related content (collectively, the "Platform").
+                    website, services, tools, and any related content (collectively, the &quot;Platform&quot;).
                     By accessing or using the Platform, you acknowledge that you have read, understood, and
                     agree to be bound by these Terms and Conditions.
                 </p>
@@ -134,7 +135,7 @@ export default function TermsOfService() {
                     <li className="mb-2">
                         <strong>Inappropriate or Harmful Content:</strong> Post, upload, share, distribute, or otherwise
                         transmit any content that is unlawful, harmful, threatening, abusive, harassing,
-                        defamatory, vulgar, obscene, invasive of another's privacy, hateful, or racially,
+                        defamatory, vulgar, obscene, invasive of another&apos;s privacy, hateful, or racially,
                         ethnically, or otherwise objectionable. We reserve the right to remove such content
                         and take appropriate action, including termination of your account.
                     </li>
@@ -236,7 +237,7 @@ export default function TermsOfService() {
             <section className="mb-8">
                 <h2 className="text-2xl font-bold mb-3">9. Disclaimer of Warranties</h2>
                 <p className="mb-4">
-                    The Platform is provided on an "as is" and "as available" basis. We make no warranties or
+                    The Platform is provided on an &quot;as is&quot; and &quot;as available&quot; basis. We make no warranties or
                     representations, express or implied, regarding the operation or availability of the Platform.
                     We do not guarantee that the Platform will be uninterrupted, error-free, or secure. Your use of
                     the Platform is at your sole risk.
