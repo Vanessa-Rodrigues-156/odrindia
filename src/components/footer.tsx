@@ -69,19 +69,14 @@ export default function Footer() {
 
           <div className="space-y-4">
             <h3 className="text-xl font-bold">ODR News</h3>
-            <p className="text-gray-300">Global ODR News Live </p>
-            <form className="flex flex-col space-y-2">
-              <Input
-                type="url"
-                placeholder="https://example.com "
-                className="border-gray-700 bg-[#263e69] text-white placeholder:text-gray-400"
-              />
-              <Button className="bg-sky-500 hover:bg-sky-600">Submit Yours </Button>
-            </form>
+            <p className="text-gray-300">Have ODR news to share?</p>
+            <p className="text-gray-300">
+              We&apos;re happy to feature it! Email us at{" "}
+              <a href="mailto:contact@odrlab.com" className="text-sky-400 hover:text-sky-300 underline">
+                contact@odrlab.com
+              </a>{""}.
+            </p>
           </div>
-        </div>
-
-          
         </div>
 
         <div className="mt-8 border-t border-gray-700 pt-4 mb-4">
@@ -98,6 +93,7 @@ export default function Footer() {
               </Link>
             </div>
           </div>
+        </div>
       </div>
     </footer>
   )
