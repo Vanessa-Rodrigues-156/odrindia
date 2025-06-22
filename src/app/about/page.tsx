@@ -54,7 +54,7 @@ export default function AboutPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-gray-600">
-                    To build a global, inclusive platform that brings together ideators, mentors, academia, and technologists to collaboratively research and design innovative, technology-driven dispute resolution systems that are accessible to all.
+                    To build a global, inclusive platform that brings together innovators, mentors, academia, and technologists to collaboratively research and design innovative, technology-driven dispute resolution systems that are accessible to all.
                   </p>
                 </CardContent>
               </Card>
@@ -87,7 +87,7 @@ export default function AboutPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-gray-600">
-                    To build a global, inclusive platform that brings together ideators, mentors, academia, and technologists to collaboratively research and design innovative, technology-driven dispute resolution systems that are accessible to all.
+                    To build a global, inclusive platform that brings together innovators, mentors, academia, and technologists to collaboratively research and design innovative, technology-driven dispute resolution systems that are accessible to all.
                   </p>
                 </CardContent>
               </Card>

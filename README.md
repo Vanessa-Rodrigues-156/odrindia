@@ -9,7 +9,7 @@ ODR India is a full-stack web platform for co-creating Online Dispute Resolution
 ## Features
 
 - **Idea Board & ODR Lab:** Submit, discuss, and collaborate on new ODR ideas and technologies.
-- **Mentor & Ideator Registration:** Join as a mentor or ideator to contribute or seek guidance.
+- **Mentor & Innovator Registration:** Join as a mentor or Innovator to contribute or seek guidance.
 - **Chatbot Legal Assistant:** Get instant answers to legal and ODR-related queries.
 - **Discussion Forums:** Engage in detailed discussions on submitted ideas.
 - **Virtual Meeting Integration:** Conduct real-time meetings with Jitsi Meet integration for seamless collaboration.

@@ -94,9 +94,9 @@ export default function WelcomePage() {
   }, [showSplash])
 
   const steps = [
-    { icon: Users, title: "Register", description: "Join as Mentor or Ideator" },
+    { icon: Users, title: "Register", description: "Join as Mentor or Innovator" },
     { icon: Lightbulb, title: "Ideate", description: "Share ideas for creating ODR systems" },
-    { icon: MessageSquare, title: "Collaborate", description: "Connect with ideators and mentors" },
+    { icon: MessageSquare, title: "Collaborate", description: "Connect with innovators and mentors" },
     { icon: Scale, title: "Develop", description: "Build ODR Systems together" },
     { icon: BarChart3, title: "Impact", description: "Transform Dispute Resolution System" },
   ]
@@ -271,7 +271,7 @@ export default function WelcomePage() {
         >
           <Link href={"/signup"} className="w-full sm:w-auto">
             <Button className="bg-[#486581] hover:bg-[#486581]/90 text-white px-8 py-3 text-lg rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg group">
-              Register as a Mentor or Ideator
+              Register as a Mentor or Innovator
               <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Button>
           </Link>

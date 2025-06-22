@@ -23,6 +23,8 @@ const MentorCard: React.FC<MentorCardProps> = ({ mentor, onClick }) => {
   // Get mentor image with proper fallback
   const getMentorImage = () => {
     if (imgError) return placeholderImage;
+    // Use imageAvatar if available, otherwise fall back to ID-based path
+    if (mentor.imageAvatar) return mentor.imageAvatar;
     return mentor.id ? `/mentor/${mentor.id}.png` : placeholderImage;
   };
   
@@ -57,7 +59,12 @@ const MentorCard: React.FC<MentorCardProps> = ({ mentor, onClick }) => {
             {!isHovered ? (
               <>
                 <p className="text-gray-600 text-center mb-2 truncate w-full">
-                  {mentor.institution || 'Institution not specified'}
+                  {mentor.mentorType && (
+                    <span className="block text-sm font-medium text-blue-600 mb-1">
+                      {mentor.mentorType.replace(/_/g, ' ')}
+                    </span>
+                  )}
+                  {mentor.institution || mentor.organization || 'Institution not specified'}
                 </p>
                 <p className="text-sm text-gray-500 mb-3">
                   Mentoring {ideaCount} {ideaCount === 1 ? 'idea' : 'ideas'}

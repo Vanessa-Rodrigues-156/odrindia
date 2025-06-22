@@ -372,6 +372,13 @@ const SignUpPage = () => {
           form.otherWorkplace
         }. ${form.odrLabPurpose || ""}`;
         break;
+      case "odr":
+        odrLabUsageDescription = `${form.otherWorkplace}. ${form.odrLabPurpose || ""}`; 
+        break;
+      case "conflict":
+        odrLabUsageDescription = `${form.otherWorkplace}. ${form.odrLabPurpose || ""}`;
+        break;
+      
       default:
         odrLabUsageDescription = form.odrLabPurpose || "";
     }
@@ -617,7 +624,7 @@ const SignUpPage = () => {
                     </div>
                     <div className="font-bold text-lg text-blue-800">Student Innovator</div>
                     <p className="text-sm text-gray-600 mt-2">
-                      Join as a student to innovate and learn with ODR Lab
+                      Join as an Ideator and collaborate using ODR Lab to design and develop innovative ODR systems.
                     </p>
                   </div>
                 </motion.div>
@@ -702,7 +709,7 @@ const SignUpPage = () => {
                     </div>
                     <div className="font-bold text-lg text-amber-800">Other</div>
                     <p className="text-sm text-gray-600 mt-2">
-                      Join in another capacity
+                     Join to discover innovative ODR ideas and stay inspired by the latest advancements.
                     </p>
                   </div>
                 </motion.div>
@@ -987,9 +994,9 @@ const SignUpPage = () => {
                 animate="visible"
                 variants={staggerContainer}>
                 <motion.div variants={fadeInUp} className="mb-6">
-                  <h3 className="text-lg font-medium text-indigo-800 mb-4">Technical Enthusiast Mentor</h3>
+                  <h3 className="text-lg font-medium text-indigo-800 mb-4">Technical Expert Mentor</h3>
                   <p className="text-sm text-gray-600 mb-6">
-                    As a technical mentor, you&apos;ll guide students in developing innovative technology solutions.
+                    As a technical mentor, you will guide students in developing innovative technology solutions.
                   </p>
                   
                   <div className="space-y-4 pt-2">
@@ -1097,12 +1104,12 @@ const SignUpPage = () => {
                     name="odrLabPurpose"
                     value={form.odrLabPurpose}
                     onChange={handleChange}
-                    placeholder="Please describe your legal expertise, experience in ODR or innovation-related legal matters, and how you plan to mentor students through legal challenges."
+                    placeholder="Share your expertise which can benefit student innovators in ODR Lab"
                     rows={6}
                     className="mt-1"
                     />
                     <p className="text-xs text-gray-500 mt-2">
-                    Your legal guidance will help students navigate regulatory challenges in their innovation journey.
+                    Your legal expertise will be invaluable in guiding students through complex regulatory landscapes.
                     </p>
                   </div>
                   </div>
@@ -1154,7 +1161,7 @@ const SignUpPage = () => {
                         name="odrLabPurpose"
                         value={form.odrLabPurpose}
                         onChange={handleChange}
-                        placeholder="Describe your ODR expertise and how you'll mentor students"
+                        placeholder="Share your expertise which can benefit student innovators in ODR Lab"
                         rows={4}
                       />
                     </div>
@@ -1172,7 +1179,7 @@ const SignUpPage = () => {
                 <motion.div variants={fadeInUp} className="mb-6">
                   <h3 className="text-lg font-medium text-indigo-800 mb-4">Conflict Resolution Expert Mentor</h3>
                   <p className="text-sm text-gray-600 mb-6">
-                    As a conflict resolution expert, you&apos;ll guide students in understanding effective dispute management techniques.
+                    As a conflict resolution expert, you will guide students in understanding effective dispute management and resolution techniques.
                   </p>
                   
                   <div className="space-y-4">
@@ -1207,7 +1214,7 @@ const SignUpPage = () => {
                         name="odrLabPurpose"
                         value={form.odrLabPurpose}
                         onChange={handleChange}
-                        placeholder="Describe your conflict resolution expertise and how you'll mentor students"
+                        placeholder="Share your expertise which can benefit student innovators in ODR Lab"
                         rows={4}
                       />
                     </div>

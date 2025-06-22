@@ -56,7 +56,7 @@ const MentorDetailModal: React.FC<MentorDetailModalProps> = ({
         className="w-11/12 md:w-10/12 lg:w-4/5 max-w-7xl max-h-[90vh] p-4 md:p-6 bg-gradient-to-b from-white to-blue-50" 
         style={{ minWidth: "min(95vw, 1200px)" }}
       >
-        <DialogHeader className="pb-4 border-b border-blue-100">
+        <DialogHeader className="pb-3 border-b border-blue-100">
           <DialogTitle className="text-2xl font-bold flex items-center justify-between text-blue-800">
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-sky-500">
               Mentor Profile
@@ -75,34 +75,51 @@ const MentorDetailModal: React.FC<MentorDetailModalProps> = ({
         </DialogHeader>
         
         <ScrollArea className="h-[calc(90vh-150px)] px-1 md:px-2 overflow-y-auto">
-          <div className="flex flex-col lg:flex-row gap-4 lg:gap-8 py-4 lg:py-6">
+          <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 py-3 lg:py-4">
             {/* Left side - Mentor details */}
-            <div className="w-full lg:w-1/3 flex flex-col items-center">
-              <div className="relative w-32 h-32 md:w-44 md:h-44 rounded-full overflow-hidden mb-5 border-4 border-sky-300 shadow-lg">
-                <Image 
-                  src={getMentorImage()}
-                  alt={mentor.name || 'Mentor'} 
-                  fill
-                  sizes="(max-width: 768px) 128px, 176px"
-                  className="object-cover"
-                  priority
-                  onError={handleImageError}
-                />
+            <div className="w-full lg:w-1/3 flex flex-col">
+              <div className="flex flex-col items-center mb-4">
+                <div className="relative w-28 h-28 md:w-40 md:h-40 rounded-full overflow-hidden mb-4 border-4 border-sky-300 shadow-lg">
+                  <Image 
+                    src={getMentorImage()}
+                    alt={mentor.name || 'Mentor'} 
+                    fill
+                    sizes="(max-width: 768px) 112px, 160px"
+                    className="object-cover"
+                    priority
+                    onError={handleImageError}
+                  />
+                </div>
+                
+                <h2 className="text-xl md:text-2xl font-bold mb-1 md:mb-2 text-center text-blue-900 break-words w-full px-2">
+                  {mentor.name}
+                </h2>
+                <p className="text-blue-600 mb-2 text-center break-all w-full px-2">
+                  {mentor.email}
+                </p>
+                
+                {mentor.approved !== undefined && (
+                  <Badge className={`mb-3 ${mentor.approved ? 'bg-green-100 hover:bg-green-200 text-green-800' : 'bg-amber-100 hover:bg-amber-200 text-amber-800'}`}>
+                    {mentor.approved ? 'Approved Mentor' : 'Approval Pending'}
+                  </Badge>
+                )}
               </div>
               
-              <h2 className="text-xl md:text-2xl font-bold mb-2 md:mb-3 text-center text-blue-900 break-words w-full px-2 md:px-4">
-                {mentor.name}
-              </h2>
-              <p className="text-blue-600 mb-4 md:mb-5 text-center break-all w-full px-2">
-                {mentor.email}
-              </p>
-              
-              <div className="bg-white rounded-xl p-4 md:p-5 w-full shadow-sm border border-blue-100 hover:shadow-md transition-shadow duration-300">
-                <h3 className="font-semibold text-lg mb-4 text-blue-800 border-b border-blue-100 pb-2">
-                  Mentor Info
+              <div className="bg-white rounded-xl p-4 w-full shadow-sm border border-blue-100 hover:shadow-md transition-shadow duration-300">
+                <h3 className="font-semibold text-lg mb-3 text-blue-800 border-b border-blue-100 pb-2">
+                  Mentor Details
                 </h3>
                 
-                <div className="space-y-3">
+                <div className="space-y-2.5">
+                  {mentor.mentorType && (
+                    <div className="text-sm flex flex-col">
+                      <span className="font-medium text-blue-700">Mentor Type:</span>
+                      <span className="text-gray-700 break-words">
+                        {mentor.mentorType.replace(/_/g, ' ')}
+                      </span>
+                    </div>
+                  )}
+                  
                   {(mentor.city || mentor.country) && (
                     <div className="text-sm flex flex-col">
                       <span className="font-medium text-blue-700">Location:</span>
@@ -112,10 +129,24 @@ const MentorDetailModal: React.FC<MentorDetailModalProps> = ({
                     </div>
                   )}
                   
-                  {mentor.institution && (
+                  {(mentor.institution || mentor.organization) && (
                     <div className="text-sm flex flex-col">
-                      <span className="font-medium text-blue-700">Institution:</span>
-                      <span className="text-gray-700 break-words">{mentor.institution}</span>
+                      <span className="font-medium text-blue-700">Institution/Organization:</span>
+                      <span className="text-gray-700 break-words">{mentor.institution || mentor.organization}</span>
+                    </div>
+                  )}
+                  
+                  {mentor.role && (
+                    <div className="text-sm flex flex-col">
+                      <span className="font-medium text-blue-700">Role:</span>
+                      <span className="text-gray-700 break-words">{mentor.role}</span>
+                    </div>
+                  )}
+                  
+                  {mentor.expertise && (
+                    <div className="text-sm flex flex-col">
+                      <span className="font-medium text-blue-700">Expertise:</span>
+                      <span className="text-gray-700 break-words">{mentor.expertise}</span>
                     </div>
                   )}
                   
@@ -133,46 +164,56 @@ const MentorDetailModal: React.FC<MentorDetailModalProps> = ({
                     </span>
                   </div>
                 </div>
-                {/* {mentor.odrLabUsage && (
-                  <div className="mt-5 pt-4 border-t border-blue-100">
+                
+                {mentor.description && (
+                  <div className="mt-4 pt-3 border-t border-blue-100">
+                    <h3 className="font-semibold text-md mb-2 text-blue-800">About</h3>
+                    <p className="text-sm text-gray-600 break-words whitespace-pre-wrap">
+                      {mentor.description}
+                    </p>
+                  </div>
+                )}
+                
+                {mentor.odrLabUsage && (
+                  <div className="mt-4 pt-3 border-t border-blue-100">
                     <h3 className="font-semibold text-md mb-2 text-blue-800">ODR Lab Usage</h3>
                     <p className="text-sm text-gray-600 break-words whitespace-pre-wrap">
                       {mentor.odrLabUsage}
                     </p>
                   </div>
-                )} */}
+                )}
               </div>
             </div>
             
             {/* Right side - Ideas being mentored */}
-            <div className="w-full lg:w-2/3 mt-6 lg:mt-0">
-              <div className="flex items-center justify-between mb-4 md:mb-5 pb-2 border-b border-blue-100">
+            <div className="w-full lg:w-2/3 mt-4 lg:mt-0">
+              <div className="flex items-center justify-between mb-3 pb-2 border-b border-blue-100">
                 <h3 className="font-bold text-xl text-blue-800 flex items-center">
                   Ideas Being Mentored
                   <Badge variant="outline" className="ml-2 bg-blue-100 text-blue-700 border-blue-300">
-                    {mentor.ideas?.length || 0}
+                    {mentor.ideas?.length || mentor.mentoringIdeas?.length || 0}
                   </Badge>
                 </h3>
               </div>
               
-              {mentor.ideas && mentor.ideas.length > 0 ? (
-                <div className="space-y-4 md:space-y-5">
+              {(mentor.ideas && mentor.ideas.length > 0) ? (
+                <div className="space-y-3 md:space-y-4">
                   {mentor.ideas.map((idea) => (
-                    <Card key={idea.id} className="overflow-hidden hover:shadow-lg transition-all duration-300 border border-blue-100">
-                      <CardContent className="p-4 md:p-5">
+                    <Card key={idea.id} className="overflow-hidden hover:shadow-md transition-all duration-300 border border-blue-100">
+                      <CardContent className="p-4">
                         <Link href={`/ideas/${idea.id}`} className="hover:no-underline block">
-                          <h4 className="font-semibold text-lg text-blue-700 hover:text-blue-800 mb-2 md:mb-3 break-words">
+                          <h4 className="font-semibold text-lg text-blue-700 hover:text-blue-800 mb-2 break-words">
                             {idea.title}
                           </h4>
                         </Link>
                         
                         {idea.caption && (
-                          <p className="text-sm text-blue-600 mb-2 md:mb-3 break-words">
+                          <p className="text-sm text-blue-600 mb-2 break-words">
                             {idea.caption}
                           </p>
                         )}
                         
-                        <p className="text-sm text-gray-700 line-clamp-3 mb-3 md:mb-4 break-words whitespace-pre-wrap">
+                        <p className="text-sm text-gray-700 line-clamp-3 mb-3 break-words whitespace-pre-wrap">
                           {idea.description || 'No description available'}
                         </p>
                         
@@ -188,8 +229,43 @@ const MentorDetailModal: React.FC<MentorDetailModalProps> = ({
                     </Card>
                   ))}
                 </div>
+              ) : mentor.mentoringIdeas && mentor.mentoringIdeas.length > 0 ? (
+                <div className="space-y-3 md:space-y-4">
+                  {mentor.mentoringIdeas.map((mentorship) => (
+                    <Card key={mentorship.idea.id} className="overflow-hidden hover:shadow-md transition-all duration-300 border border-blue-100">
+                      <CardContent className="p-4">
+                        <Link href={`/ideas/${mentorship.idea.id}`} className="hover:no-underline block">
+                          <h4 className="font-semibold text-lg text-blue-700 hover:text-blue-800 mb-2 break-words">
+                            {mentorship.idea.title}
+                          </h4>
+                        </Link>
+                        
+                        {mentorship.idea.caption && (
+                          <p className="text-sm text-blue-600 mb-2 break-words">
+                            {mentorship.idea.caption}
+                          </p>
+                        )}
+                        
+                        <p className="text-sm text-gray-700 line-clamp-3 mb-3 break-words whitespace-pre-wrap">
+                          {mentorship.idea.description || 'No description available'}
+                        </p>
+                        
+                        <div className="flex flex-wrap items-center justify-between text-xs pt-2 border-t border-gray-100">
+                          <span className="text-blue-500 my-1">
+                            Created {formatDistanceToNow(new Date(mentorship.idea.createdAt), { addSuffix: true })}
+                          </span>
+                          {mentorship.role && (
+                            <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-300">
+                              {mentorship.role}
+                            </Badge>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
               ) : (
-                <div className="bg-white p-6 md:p-10 rounded-xl text-center border border-blue-100 shadow-sm">
+                <div className="bg-white p-5 rounded-xl text-center border border-blue-100 shadow-sm">
                   <p className="text-blue-600">This mentor is not currently mentoring any ideas.</p>
                 </div>
               )}

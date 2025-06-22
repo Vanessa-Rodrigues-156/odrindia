@@ -35,14 +35,29 @@ export default function MentorsPage() {
     fetchMentors();
   }, []);
   
+  // Log mentors data for debugging
+  useEffect(() => {
+    if (mentors.length > 0) {
+      console.log("Loaded mentors:", mentors);
+    }
+  }, [mentors]);
+
   // Filter mentors based on search term
-  const filteredMentors = mentors.filter(mentor => 
-    mentor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    mentor.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (mentor.institution && mentor.institution.toLowerCase().includes(searchTerm.toLowerCase())) ||
-    (mentor.city && mentor.city.toLowerCase().includes(searchTerm.toLowerCase())) ||
-    (mentor.country && mentor.country.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  const filteredMentors = mentors.filter(mentor => {
+    const matchesSearch = 
+      (mentor.name && mentor.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (mentor.email && mentor.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (mentor.institution && mentor.institution.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (mentor.organization && mentor.organization.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (mentor.city && mentor.city.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (mentor.country && mentor.country.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (mentor.expertise && mentor.expertise.toLowerCase().includes(searchTerm.toLowerCase()));
+      
+    // Only show approved mentors or assume approved if field is missing
+    const isApproved = mentor.approved !== false;
+    
+    return matchesSearch && isApproved;
+  });
   
   // Show login message by default for non-authenticated users
   const showLoginMessage = !user;

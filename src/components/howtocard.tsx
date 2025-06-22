@@ -23,7 +23,7 @@ const HowToCard: React.FC = () => {
             <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
           </svg>
           <h3 className="text-[#0a1e42] font-semibold mb-2">Sign Up</h3>
-          <p className="text-gray-600 text-sm">Register as an Ideator</p>
+          <p className="text-gray-600 text-sm">Register as an Innovator</p>
         </div>
       </div>
 
