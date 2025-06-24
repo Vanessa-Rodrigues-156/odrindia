@@ -3,6 +3,12 @@ import { useEffect } from "react";
 
 export default function GoogleScriptLoader() {
   useEffect(() => {
+    // Check if Client ID is available
+    const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+    if (!googleClientId) {
+      console.error('Google Client ID is missing. Make sure NEXT_PUBLIC_GOOGLE_CLIENT_ID is set.');
+    }
+    
     // Check if Google is already loaded
     const isGoogleLoaded =
       typeof window !== "undefined" &&

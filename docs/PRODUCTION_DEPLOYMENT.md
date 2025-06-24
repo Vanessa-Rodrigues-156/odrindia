@@ -27,7 +27,7 @@ DATABASE_URL="postgresql://username:password@hostname:5432/odrindia"
 NODE_ENV="production"
 
 # Next.js
-NEXT_PUBLIC_APP_URL="https://your-domain.com" # Replace with actual domain
+NEXT_PUBLIC_APP_URL="https://odrlab.com" # Replace with actual domain
 
 # Jitsi configuration
 NEXT_PUBLIC_JITSI_SERVER="meet.jit.si" # Or your self-hosted Jitsi domain

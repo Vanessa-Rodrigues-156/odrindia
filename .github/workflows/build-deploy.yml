@@ -18,16 +18,32 @@ jobs:
       - name: Set up Bun
         uses: oven-sh/setup-bun@v1
 
-      - name: Create .env file
+      - name: Create environment files
         run: |
+          # Create .env file with all secrets
           touch .env
           echo "${{ secrets.ENV_FILE }}" > .env
+          
+          # Explicitly create .env.production for Next.js
+          touch .env.production
+          echo "NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }}" >> .env.production
+          echo "NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }}" >> .env.production
+          
+          # Debug - check if env vars are set (will be masked in logs)
+          echo "Checking if NEXT_PUBLIC_GOOGLE_CLIENT_ID is set: ${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID != '' }}"
 
       - name: Install dependencies
         run: bun install
 
       - name: Build Next.js app
-        run: bun run build
+        env:
+          NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }}
+          NEXT_PUBLIC_API_BASE_URL: ${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
+        run: |
+          # First run the environment checker
+          bun check-env.js
+          # Then build the app with environment variables
+          bun run build
 
       - name: Copy files to EC2
         uses: appleboy/scp-action@v0.1.7
@@ -35,7 +51,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: ".next,public,package.json,ecosystem.config.js,node_modules,.env"
+          source: ".next,public,package.json,ecosystem.config.js,node_modules,.env,.env.production"
           target: /home/ec2-user/odrlab-frontend
 
       - name: Restart PM2 on EC2
@@ -46,4 +62,15 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd /home/ec2-user/odrlab-frontend
+            
+            # Verify environment files
+            echo "Checking environment files..."
+            if [ -f .env.production ]; then
+              echo ".env.production exists"
+              grep -q "NEXT_PUBLIC_GOOGLE_CLIENT_ID" .env.production && echo "NEXT_PUBLIC_GOOGLE_CLIENT_ID is set" || echo "ERROR: NEXT_PUBLIC_GOOGLE_CLIENT_ID is missing"
+            else
+              echo "WARNING: .env.production file is missing"
+            fi
+            
+            # Restart application
             pm2 restart odrlab-frontend || pm2 start "bun start" --name odrlab-frontend
