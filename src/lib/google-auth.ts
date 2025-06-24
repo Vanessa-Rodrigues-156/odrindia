@@ -24,7 +24,7 @@ export async function initializeGoogleAuth(
       throw new Error("Google OAuth is not available");
     }
 
-    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+    const clientId = process.env.GOOGLE_CLIENT_ID;
     if (!clientId) {
       throw new Error("Google Client ID is not configured");
     }
