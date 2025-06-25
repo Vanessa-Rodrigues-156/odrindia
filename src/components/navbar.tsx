@@ -30,6 +30,13 @@ const navItems = [
 		icon: BookOpenCheck,
 		children: [
 			{
+				title: "ODR",
+				href: "https://odr.info/",
+				description:
+					"Explore a curated list of resources, articles, and tools related to Online Dispute Resolution (ODR).",
+				icon: BookOpen,
+			},
+			{
 				title: "ICODR standards",
 				href: "https://icodr.org/standards/",
 				description:
@@ -43,13 +50,7 @@ const navItems = [
 					"Global source for insightful mediation resources and trusted mediator  connections.",
 				icon: Users,
 			},
-			{
-				title: "ODR",
-				href: "https://odr.info/",
-				description:
-					"Explore a curated list of resources, articles, and tools related to Online Dispute Resolution (ODR).",
-				icon: BookOpen,
-			},
+			
 		],
 	},
 	{

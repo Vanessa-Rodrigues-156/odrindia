@@ -11,7 +11,7 @@ export default function Footer() {
           <div className="space-y-4">
             <h3 className="text-xl font-bold">ODR</h3>
             <p className="text-gray-300">
-              Online Dispute Resolution (ODR) leverages technology—automated, augmented, or assisted—to design innovative systems that simplify conflict resolution, facilitate dialogue, streamline processes, and provide both human and AI-driven support, customized to the needs of each dispute.
+              Online Dispute Resolution (ODR) leverages technology — automated, augmented, or assisted — to design innovative systems that simplify conflict resolution, facilitate dialogue, streamline processes, and provide both human and AI-driven support, customized to the needs of each dispute.
             </p>
             {/* <div className="flex space-x-4">
               <Link href="https://twitter.com" target="_blank" rel="noopener noreferrer">

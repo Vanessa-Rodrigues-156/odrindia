@@ -324,73 +324,7 @@ export default function ContactPage() {
           </div>
         </section>
 
-        {/* FAQ Coming Soon Section */}
-        <section className="py-16 bg-gradient-to-b from-blue-50 to-white">
-          <div className="container mx-auto px-4">
-            <motion.div 
-              className="max-w-4xl mx-auto"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-            >
-              <motion.div 
-                className="text-center mb-10"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                viewport={{ once: true }}
-              >
-                <motion.div 
-                  className="inline-block p-3 bg-blue-50 rounded-full mb-4"
-                  initial={{ scale: 0.8 }}
-                  whileInView={{ scale: 1 }}
-                  transition={{ duration: 0.5 }}
-                  viewport={{ once: true }}
-                >
-                  <HelpCircle className="h-6 w-6 text-[#0a1e42]" />
-                </motion.div>
-                <h2 className="text-3xl font-bold text-[#0a1e42] mb-3">
-                  Frequently Asked Questions
-                </h2>
-              </motion.div>
-
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                viewport={{ once: true }}
-                className="max-w-lg mx-auto"
-              >
-                <div className="bg-white rounded-xl border border-blue-100 shadow-lg overflow-hidden">
-                  <div className="p-8 relative">
-                    {/* Decorative elements */}
-                    <div className="absolute -top-4 -right-4 w-20 h-20 bg-blue-100 rounded-full opacity-40"></div>
-                    <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-indigo-100 rounded-full opacity-30"></div>
-                    
-                    <div className="relative z-10 text-center">
-                      <div className="mx-auto w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mb-6">
-                        <HelpCircle className="h-8 w-8 text-blue-600" />
-                      </div>
-                      <h3 className="text-2xl font-bold text-blue-800 mb-4">FAQs Coming Soon</h3>
-                      <p className="text-gray-600 mb-6 leading-relaxed">
-                        We&apos;re currently compiling a comprehensive list of frequently asked questions about ODR India and our services.
-                      </p>
-                      <div className="pt-2">
-                        <Button 
-                          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md text-base transition-all shadow-sm hover:shadow"
-                          onClick={() => window.location.href = '#contact-form'}
-                        >
-                          Ask a Question
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            </motion.div>
-          </div>
-        </section>
+  
       </main>
     </div>
   )

@@ -70,41 +70,24 @@ export default function Home() {
                 variants={staggerContainer}
               >
                 <motion.h1 
-                  className="text-4xl font-bold leading-tight tracking-tighter md:text-5xl lg:text-6xl"
+                  className="text-4xl font-bold leading-tight tracking-tighter md:text-7xl lg:text-6xl"
                   variants={fadeInUp}
                 >
                   <motion.span 
-                    className="text-sky-400"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.5, duration: 0.6 }}
                   >
-                    Connect, Collaborate,
-                  </motion.span> and{" "}
-                  <motion.span 
-                    className="text-sky-400"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.8, duration: 0.6 }}
-                  >
-                    Create{" "}
-                  </motion.span> 
-                  Innovative{" "}
-                  <motion.span 
-                    className="text-sky-400"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 1.1, duration: 0.6 }}
-                  >
-                    ODR{" "}
+                    <span className="text-sky-400">A</span><span className="text-white">spire</span>, {" "}
+                    <span className="text-sky-400">B</span><span className="text-white">uild</span>, {" "}
+                    <span className="text-sky-400">C</span><span className="text-white">onnect</span>
                   </motion.span>
-                  Systems
                 </motion.h1>
                 <motion.p 
-                  className="max-w-[600px] text-lg text-gray-200 md:text-xl"
+                  className="max-w-[600px] text-xl text-sky-100 md:text-2xl"
                   variants={fadeInUp}
                 >
-                  Platform for co-creating Online Dispute Resolution systems. 
+                  Join a community of changemakers building the next wave of ODR systems and legal tech solutions
                 </motion.p>
                 <motion.div 
                   className="flex flex-col gap-4 sm:flex-row"
