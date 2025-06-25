@@ -496,7 +496,7 @@ function CompleteProfileClient() {
                   type="tel"
                   value={formData.contactNumber}
                   onChange={(e) => handleInputChange("contactNumber", e.target.value)}
-                  placeholder="Your phone number"
+                  placeholder="Your mobile number"
                   required
                 />
               </div>
@@ -602,25 +602,20 @@ function CompleteProfileClient() {
                       id="institution"
                       value={formData.institution}
                       onChange={(e) => handleInputChange("institution", e.target.value)}
-                      placeholder="Your university/college"
+                      placeholder="Your institute or university name"
                       required
                     />
                   </div>
                   
                   <div>
                     <Label htmlFor="highestEducation">Highest Education</Label>
-                    <Select value={formData.highestEducation} onValueChange={(value) => handleInputChange("highestEducation", value)}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select your education level" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="high-school">High School</SelectItem>
-                        <SelectItem value="bachelors">Bachelor&apos;s Degree</SelectItem>
-                        <SelectItem value="masters">Master&apos;s Degree</SelectItem>
-                        <SelectItem value="phd">PhD</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <Input
+                      id="highestEducation"
+                      value={formData.highestEducation}
+                      onChange={(e) => handleInputChange("highestEducation", e.target.value)}
+                      placeholder="Your highest education qualification"
+                      required
+                    />
                   </div>
                   
                   <div>
@@ -629,22 +624,23 @@ function CompleteProfileClient() {
                       id="courseName"
                       value={formData.courseName}
                       onChange={(e) => handleInputChange("courseName", e.target.value)}
-                      placeholder="What course are you pursuing?"
+                      placeholder="Your course or program name"
                     />
                   </div>
                   
                   <div>
                     <Label htmlFor="courseStatus">Course Status</Label>
-                    <Select value={formData.courseStatus} onValueChange={(value) => handleInputChange("courseStatus", value)}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select course status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="in-progress">In Progress</SelectItem>
-                        <SelectItem value="completed">Completed</SelectItem>
-                        <SelectItem value="on-hold">On Hold</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <select
+                      id="courseStatus"
+                      className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 mt-1"
+                      value={formData.courseStatus}
+                      onChange={(e) => handleInputChange("courseStatus", e.target.value)}
+                      required
+                    >
+                      <option value="">Select status</option>
+                      <option value="ongoing">Ongoing</option>
+                      <option value="completed">Completed</option>
+                    </select>
                   </div>
                 </>
               )}
@@ -710,7 +706,7 @@ function CompleteProfileClient() {
                               id="techOrg"
                               value={formData.techOrg}
                               onChange={(e) => handleInputChange("techOrg", e.target.value)}
-                              placeholder="Where do you work?"
+                              placeholder="Your organization or company name"
                               className="mt-1"
                             />
                           </div>
@@ -720,7 +716,7 @@ function CompleteProfileClient() {
                               id="role"
                               value={formData.role}
                               onChange={(e) => handleInputChange("role", e.target.value)}
-                              placeholder="Your role or position (e.g., Software Engineer)"
+                              placeholder="Your role (e.g., Software Engineer, Tech Lead)"
                               className="mt-1"
                             />
                           </div>
@@ -736,7 +732,7 @@ function CompleteProfileClient() {
                               id="lawFirm"
                               value={formData.lawFirm}
                               onChange={(e) => handleInputChange("lawFirm", e.target.value)}
-                              placeholder="Where do you practice?"
+                              placeholder="Your law firm or organization name"
                               className="mt-1"
                             />
                           </div>
@@ -772,7 +768,7 @@ function CompleteProfileClient() {
                               id="role"
                               value={formData.role}
                               onChange={(e) => handleInputChange("role", e.target.value)}
-                              placeholder="Your role or position"
+                              placeholder="Your role (e.g., Software Engineer, Tech Lead)"
                               className="mt-1"
                             />
                           </div>
@@ -786,7 +782,7 @@ function CompleteProfileClient() {
                           id="expertise"
                           value={formData.expertise}
                           onChange={(e) => handleInputChange("expertise", e.target.value)}
-                          placeholder="List your areas of expertise, skills, or specializations"
+                          placeholder="Please describe your technical expertise, mentoring experience, and how you plan to guide student innovators in ODR Lab."
                           rows={3}
                           className="mt-1"
                         />
@@ -808,7 +804,7 @@ function CompleteProfileClient() {
                       id="facultyInstitute"
                       value={formData.facultyInstitute}
                       onChange={(e) => handleInputChange("facultyInstitute", e.target.value)}
-                      placeholder="Your university/college"
+                      placeholder="Your institute or university name"
                       required
                     />
                   </div>
@@ -852,7 +848,7 @@ function CompleteProfileClient() {
                       id="workplace"
                       value={formData.workplace}
                       onChange={(e) => handleInputChange("workplace", e.target.value)}
-                      placeholder="Where do you work?"
+                      placeholder="Your organization or company name"
                     />
                   </div>
                   <div>
@@ -861,7 +857,7 @@ function CompleteProfileClient() {
                       id="otherRole"
                       value={formData.otherRole}
                       onChange={(e) => handleInputChange("otherRole", e.target.value)}
-                      placeholder="Your role or position"
+                      placeholder="Your role (e.g., Software Engineer, Tech Lead)"
                     />
                   </div>
                 </>
@@ -874,7 +870,7 @@ function CompleteProfileClient() {
                   id="description"
                   value={formData.description}
                   onChange={(e) => handleInputChange("description", e.target.value)}
-                  placeholder="Tell us about your interests and how you plan to contribute..."
+                  placeholder="Tell us about your interests and expertise and how you plan to contribute..."
                   rows={3}
                 />
               </div>
