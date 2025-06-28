@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { X } from 'lucide-react';
 import { MentorWithIdeas } from '@/lib/mentors-service';
 import { formatDistanceToNow } from 'date-fns';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 
 import {
   Dialog,
@@ -29,25 +30,22 @@ const MentorDetailModal: React.FC<MentorDetailModalProps> = ({
   isOpen, 
   onClose 
 }) => {
-  const [imgError, setImgError] = useState(false);
-
   if (!mentor) return null;
 
-  const placeholderImage = `https://ui-avatars.com/api/?name=${encodeURIComponent(mentor.name || 'Mentor')}&background=0D8ABC&color=fff&size=256&bold=true`;
-  
   // Get mentor image with fallback handling
   const getMentorImage = () => {
-    if (imgError) return placeholderImage;
-    const formats = ['png', 'jpg', 'jpeg'];
-    for (const format of formats) {
-      if (!imgError) return `/mentor/${mentor.id}.${format}`;
-    }
-    return placeholderImage;
+    if (mentor.imageAvatar) return mentor.imageAvatar;
+    return mentor.id ? `/mentor/${mentor.id}.png` : undefined;
   };
   
-  // Simplified error handler
-  const handleImageError = () => {
-    setImgError(true);
+  // Generate fallback initials from mentor's name
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map(word => word.charAt(0))
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
   };
   
   return (
@@ -61,13 +59,6 @@ const MentorDetailModal: React.FC<MentorDetailModalProps> = ({
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-sky-500">
               Mentor Profile
             </span>
-            <button 
-              className="text-gray-500 hover:text-red-500 transition-colors duration-200"
-              onClick={onClose}
-              aria-label="Close dialog"
-            >
-              <X size={22} />
-            </button>
           </DialogTitle>
           <DialogDescription className="text-blue-600">
             Detailed information about this mentor
@@ -79,17 +70,16 @@ const MentorDetailModal: React.FC<MentorDetailModalProps> = ({
             {/* Left side - Mentor details */}
             <div className="w-full lg:w-1/3 flex flex-col">
               <div className="flex flex-col items-center mb-4">
-                <div className="relative w-28 h-28 md:w-40 md:h-40 rounded-full overflow-hidden mb-4 border-4 border-sky-300 shadow-lg">
-                  <Image 
+                <Avatar className="w-28 h-28 md:w-40 md:h-40 mb-4 border-4 border-sky-300 shadow-lg">
+                  <AvatarImage 
                     src={getMentorImage()}
-                    alt={mentor.name || 'Mentor'} 
-                    fill
-                    sizes="(max-width: 768px) 112px, 160px"
+                    alt={mentor.name || 'Mentor'}
                     className="object-cover"
-                    priority
-                    onError={handleImageError}
                   />
-                </div>
+                  <AvatarFallback className="bg-gradient-to-br from-blue-500 to-sky-600 text-white text-xl md:text-3xl font-bold">
+                    {getInitials(mentor.name || 'Mentor')}
+                  </AvatarFallback>
+                </Avatar>
                 
                 <h2 className="text-xl md:text-2xl font-bold mb-1 md:mb-2 text-center text-blue-900 break-words w-full px-2">
                   {mentor.name}

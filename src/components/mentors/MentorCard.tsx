@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { MentorWithIdeas } from '@/lib/mentors-service';
 import { Button } from '@/components/ui/button';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface MentorCardProps {
@@ -14,22 +15,23 @@ interface MentorCardProps {
 
 const MentorCard: React.FC<MentorCardProps> = ({ mentor, onClick }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const [imgError, setImgError] = useState(false);
   const ideaCount = mentor.ideas?.length || 0;
-  
-  // Generate placeholder image based on mentor's name
-  const placeholderImage = `https://ui-avatars.com/api/?name=${encodeURIComponent(mentor.name)}&background=0D8ABC&color=fff&size=256`;
   
   // Get mentor image with proper fallback
   const getMentorImage = () => {
-    if (imgError) return placeholderImage;
     // Use imageAvatar if available, otherwise fall back to ID-based path
     if (mentor.imageAvatar) return mentor.imageAvatar;
-    return mentor.id ? `/mentor/${mentor.id}.png` : placeholderImage;
+    return mentor.id ? `/mentor/${mentor.id}.png` : undefined;
   };
   
-  const handleImgError = () => {
-    setImgError(true);
+  // Generate fallback initials from mentor's name
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map(word => word.charAt(0))
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
   };
   
   return (
@@ -45,15 +47,16 @@ const MentorCard: React.FC<MentorCardProps> = ({ mentor, onClick }) => {
       >
         <div className="p-5">
           <div className="flex flex-col items-center">
-            <div className="relative w-32 h-32 mb-4 rounded-full overflow-hidden">
-              <Image 
-                src={getMentorImage()}
-                alt={mentor.name} 
-                fill
+            <Avatar className="w-32 h-32 mb-4">
+              <AvatarImage 
+                src={getMentorImage()} 
+                alt={mentor.name}
                 className="object-cover"
-                onError={handleImgError}
               />
-            </div>
+              <AvatarFallback className="bg-gradient-to-br from-blue-500 to-sky-600 text-white text-2xl font-semibold">
+                {getInitials(mentor.name)}
+              </AvatarFallback>
+            </Avatar>
             <h3 className="text-xl font-semibold mb-2 text-center">{mentor.name}</h3>
             
             {!isHovered ? (
