@@ -3,11 +3,14 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
+import MobileWarning from "@/components/ui/MobileWarning"
+import { shouldShowMobileWarning, dismissMobileWarning } from "@/hooks/useMobileDetection"
 
 export default function WelcomePage() {
   const router = useRouter()
   const [particles, setParticles] = useState<any[]>([]);
   const [splashTimer, setSplashTimer] = useState(10)
+  const [showMobileWarning, setShowMobileWarning] = useState(false)
 
   // Function to generate particles with consistent properties
   const generateParticles = (count: number) => {
@@ -26,18 +29,42 @@ export default function WelcomePage() {
     setParticles(generateParticles(50)); // Generate 50 particles with consistent seed
   }, []);
 
+  // Check for mobile device on welcome page too (as a backup)
   useEffect(() => {
-    // Splash timer countdown
-    if (splashTimer > 0) {
+    // Check if we need to show the mobile warning
+    // This is a backup check since we already check in the root page
+    if (shouldShowMobileWarning()) {
+      setShowMobileWarning(true);
+      // Pause the timer while showing the warning
+      setSplashTimer(10);
+    }
+  }, []);
+  
+  const handleContinueAnyway = () => {
+    dismissMobileWarning();
+    setShowMobileWarning(false);
+    // Reset timer when continuing
+    setSplashTimer(10);
+  };
+
+  const handleDismiss = () => {
+    setShowMobileWarning(false);
+    // Reset timer when dismissing
+    setSplashTimer(10);
+  };
+
+  useEffect(() => {
+    // Only run the countdown if mobile warning is not shown
+    if (!showMobileWarning && splashTimer > 0) {
       const timer = setTimeout(() => {
         setSplashTimer((prev) => prev - 1)
       }, 1000)
       return () => clearTimeout(timer)
-    } else {
+    } else if (!showMobileWarning && splashTimer === 0) {
       // Redirect to home page when timer ends
       router.push('/home')
     }
-  }, [splashTimer, router])
+  }, [splashTimer, router, showMobileWarning])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-[#486581] to-[#b7a7a9] flex items-center justify-center overflow-hidden">
@@ -97,8 +124,23 @@ export default function WelcomePage() {
             </div>
           </div>
           <p className="text-[#f6ece3] text-sm">Preparing your experience...</p>
+          
+          {/* Skip button for users who don't want to wait */}
+          <button 
+            onClick={() => router.push('/home')}
+            className="mt-6 text-[#f6ece3] text-sm underline hover:text-white transition-colors duration-300"
+          >
+            Skip
+          </button>
         </div>
       </div>
+
+      {/* Mobile Warning Component */}
+      <MobileWarning
+        isOpen={showMobileWarning}
+        onClose={handleDismiss}
+        onContinue={handleContinueAnyway}
+      />
 
       {/* Custom CSS for animations */}
       <style jsx>{`
