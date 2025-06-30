@@ -207,7 +207,7 @@ export default function ProfileEditor({ isOpen, onClose, onSave }: ProfileEditor
 
     setLoading(true);
     try {
-      const response = await apiFetch('/api/user/profile', {
+      const response = await apiFetch('/user/profile', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
