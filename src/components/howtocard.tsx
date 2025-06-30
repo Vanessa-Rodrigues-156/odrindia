@@ -122,7 +122,7 @@ const HowToCard: React.FC = () => {
                                         </svg>
                                     </div>
                                     <h3 className="text-[#0a1e42] font-bold mb-2 text-lg">Discuss</h3>
-                                    <p className="text-gray-600 text-sm leading-relaxed">Deliberate and exchange ideas in the ODR lab</p>
+                                    <p className="text-gray-600 text-sm leading-relaxed">Deliberate and exchange ideas in the ODR Lab</p>
                                 </div>
                             </div>
                         </div>

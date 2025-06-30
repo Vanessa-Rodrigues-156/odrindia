@@ -58,10 +58,10 @@ export default function StudentAmbassadorCard({ ambassador, index }: StudentAmba
         whileHover={{ y: -5, transition: { duration: 0.2 } }}
         className="h-full"
       >
-        <Card className="overflow-hidden border-none shadow-lg h-full flex flex-col group">
+        <Card className="overflow-hidden border-none shadow-lg h-full flex flex-col group max-w-sm mx-auto">
           {/* Image Container with Responsibility Badge */}
           <div className="relative">
-            <div className="relative h-[50vh] w-full overflow-hidden">
+            <div className="relative aspect-square w-full overflow-hidden">
               <Image 
                 src={ambassador.image}
                 alt={ambassador.name} 
@@ -72,18 +72,18 @@ export default function StudentAmbassadorCard({ ambassador, index }: StudentAmba
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </div>
             
-            <Badge className="absolute top-4 right-4 bg-blue-600 hover:bg-blue-700">
+            <Badge className="absolute top-4 right-4 bg-blue-600 hover:bg-blue-700 text-xs">
               {ambassador.responsibility}
             </Badge>
           </div>
           
-          <CardHeader className="bg-white pb-2 relative z-10">
-            <CardTitle className="text-[#0a1e42] text-xl">{ambassador.name}</CardTitle>
-            <CardDescription className="line-clamp-2">{ambassador.institution}</CardDescription>
+          <CardHeader className="bg-white pb-2 relative z-10 px-4 py-3">
+            <CardTitle className="text-[#0a1e42] text-lg lg:text-xl">{ambassador.name}</CardTitle>
+            <CardDescription className="line-clamp-2 text-sm">{ambassador.institution}</CardDescription>
           </CardHeader>
           
-          <CardContent className="bg-white flex-grow">
-            <p className="text-gray-600 mb-4 line-clamp-3">
+          <CardContent className="bg-white flex-grow px-4 pb-4">
+            <p className="text-gray-600 mb-4 line-clamp-3 text-sm">
               {ambassador.description}
             </p>
             
@@ -96,10 +96,12 @@ export default function StudentAmbassadorCard({ ambassador, index }: StudentAmba
                       href={link.url} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className={`text-gray-500 transition-colors duration-200 ${platformColors[link.platform]}`}
+                      className={`text-gray-500 transition-colors duration-200 ${platformColors[link.platform]} hover:scale-110 transform`}
                       aria-label={`${ambassador.name}'s ${link.platform}`}
                     >
-                      {platformIcons[link.platform]}
+                      <div className="w-4 h-4 lg:w-5 lg:h-5">
+                        {platformIcons[link.platform]}
+                      </div>
                     </a>
                   </TooltipTrigger>
                   <TooltipContent>

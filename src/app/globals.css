@@ -1,6 +1,23 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* Fix for full-width responsivity */
+@layer utilities {
+  .container {
+    max-width: none !important;
+    width: 100% !important;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  @media (min-width: 1536px) {
+    .container {
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+  }
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

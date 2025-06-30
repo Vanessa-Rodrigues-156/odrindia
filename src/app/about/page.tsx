@@ -12,7 +12,7 @@ export default function AboutPage() {
   return (
     <div className="max-w-[100vw] overflow-x-hidden">
     <div className="flex min-h-screen flex-col">
-      <main className="flex-1">
+      <main className="flex-1 ">
         {/* Hero Section */}
         <section
           className="relative bg-gradient-to-r from-[#0a1e42] to-[#263e69] py-20 text-white"
@@ -36,12 +36,12 @@ export default function AboutPage() {
 
         {/* Our Story */}
         <section className="bg-gradient-to-b from-white to-blue-50/30 py-16 backdrop-blur-sm">
-          <div className="container mx-auto px-4 items-center justify-center flex">
+          <div className="container mx-auto px-4">
             <div className="mb-12 text-center">
               <h2 className="mb-2 text-3xl font-bold tracking-tight text-[#0a1e42] md:text-4xl">Our Story</h2>
               <div className="w-20 h-1 bg-sky-400 mx-auto rounded-full mb-6"></div>
-              <p className="mx-auto max-w-full text-gray-600 text-xl text-justify">
-                ODR Lab was born from a shared vision among industry experts, passionate students, and forward-thinking academicians. It serves as a dynamic platform that bridges the gap between academia and industry, empowering innovators to connect with a global community around the design and development of Online Dispute Resolution (ODR) systems. Fueled by the eagerness of students to work on real-world challenges, the pressing societal need for more efficient justice mechanisms, and the collaborative spirit of global idea exchange, ODR Lab stands as a hub for innovation, dialogue, and impactful solutions.
+              <p className="mx-[10%] text-gray-600 text-base md:text-lg lg:text-xl leading-relaxed text-justify">
+          ODR Lab was born from a shared vision among industry experts, passionate students, and forward-thinking academicians. It serves as a dynamic platform that bridges the gap between academia and industry, empowering innovators to connect with a global community around the design and development of Online Dispute Resolution (ODR) systems. Fueled by the eagerness of students to work on real-world challenges, the pressing societal need for more efficient justice mechanisms, and the collaborative spirit of global idea exchange, ODR Lab stands as a hub for innovation, dialogue, and impactful solutions.
               </p>
             </div>
           </div>
@@ -54,7 +54,7 @@ export default function AboutPage() {
               <div className="w-20 h-1 bg-sky-400 mx-auto rounded-full"></div>
             </div>
 
-            <div className="flex flex-col md:flex-row gap-8 max-w-full mx-auto">
+            <div className="flex flex-col md:flex-row gap-8 max-w-full mx-[10%]">
               <Card className="flex-1 border border-blue-100 bg-gray-50 text-[#0a1e42] shadow-md transform transition-all duration-300 hover:shadow-lg">
                 <CardHeader className="pb-2">
                   <div className="mb-3 w-fit rounded-full bg-blue-100 p-3">
