@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Mail, Phone, MapPin, Building, Save, X, Upload, Camera, Link } from 'lucide-react';
+import { User, Mail, Phone, MapPin, Building, Save, X, Upload, Camera, Link, AlertCircle } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
 import { apiFetch } from '@/lib/api';
 import { toast } from 'sonner';
@@ -13,6 +13,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { UserAvatar } from '@/components/ui/user-avatar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface ProfileData {
@@ -278,6 +279,7 @@ export default function ProfileEditor({ isOpen, onClose, onSave }: ProfileEditor
                       <AvatarImage
                         src={formData.imageAvatar || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(formData.name)}`}
                         alt={formData.name}
+                        className="object-cover"
                       />
                       <AvatarFallback className="text-xl font-semibold bg-gradient-to-br from-blue-500 to-indigo-600 text-white">
                         {formData.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
@@ -286,7 +288,7 @@ export default function ProfileEditor({ isOpen, onClose, onSave }: ProfileEditor
                     <Button
                       size="sm"
                       variant="outline"
-                      className="absolute -bottom-2 -right-2 rounded-full h-8 w-8 p-0"
+                      className="absolute -bottom-2 -right-2 rounded-full h-8 w-8 p-0 bg-white shadow-lg hover:shadow-xl border-2 border-blue-100"
                       onClick={() => setShowImageUrlInput(!showImageUrlInput)}
                     >
                       <Camera className="h-4 w-4" />
@@ -311,18 +313,22 @@ export default function ProfileEditor({ isOpen, onClose, onSave }: ProfileEditor
                             placeholder="https://example.com/your-image.jpg"
                             value={imageUrlInput}
                             onChange={(e) => handleImageUrlChange(e.target.value)}
-                            className={`flex-1 ${!validateImageUrl(imageUrlInput) && imageUrlInput ? 'border-red-300' : ''}`}
+                            className={`flex-1 ${!validateImageUrl(imageUrlInput) && imageUrlInput ? 'border-red-300 focus:border-red-500' : 'focus:border-blue-500'}`}
                           />
                           <Button
                             size="sm"
                             variant="outline"
                             onClick={() => setShowImageUrlInput(false)}
+                            className="hover:bg-gray-50"
                           >
                             <X className="h-4 w-4" />
                           </Button>
                         </div>
                         {!validateImageUrl(imageUrlInput) && imageUrlInput && (
-                          <p className="text-xs text-red-600">Please enter a valid image URL</p>
+                          <p className="text-xs text-red-600 flex items-center gap-1">
+                            <AlertCircle className="h-3 w-3" />
+                            Please enter a valid image URL ending with .jpg, .jpeg, .png, .gif, .webp, or .svg
+                          </p>
                         )}
                       </motion.div>
                     )}

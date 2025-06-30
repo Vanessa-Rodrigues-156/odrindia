@@ -71,7 +71,7 @@ export default function Footer() {
             <h3 className="text-xl font-bold">ODR News</h3>
             <p className="text-gray-300">Have ODR news to share?</p>
             <p className="text-gray-300">
-              We&apos;re happy to feature it! Email us at{" "}
+              We are happy to feature it! Email us at{" "}
               <a href="mailto:contact@odrlab.com" className="text-sky-400 hover:text-sky-300 underline">
                 contact@odrlab.com
               </a>{""}.

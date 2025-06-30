@@ -1,9 +1,7 @@
 "use client"
 import "../globals.css"
-import { ArrowRight } from "lucide-react"
 import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import HowToCard from "@/components/howtocard"
+import ResponsiveHowToCard from "@/components/ResponsiveHowToCard"
 import { LetsCollaborate } from "@/components/letscolaborate"
 import { HeroSection } from "@/components/hero-section"
 import { InnovationSection } from "@/components/innovation-section"
@@ -32,12 +30,12 @@ const staggerContainer = {
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col">
-      <main className="flex-1">
+      <main className="flex-1 overflow-x-hidden">
         {/* Hero Section */}
         <HeroSection />
 
-        {/* How It Works Section */}
-        <HowToCard />
+        {/* How It Works Section - Responsive */}
+        <ResponsiveHowToCard />
 
         {/* Lets Collaborate Section */}
         <LetsCollaborate />

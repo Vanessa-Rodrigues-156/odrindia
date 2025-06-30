@@ -18,7 +18,7 @@ export default function MobileWarning({
   onClose,
   onContinue,
   title = "Better Experience on Desktop",
-  message = "ODR India is optimized for desktop use. For the best experience with our features like collaborative editing, video meetings, and document management, we recommend using a desktop or laptop computer.",
+  message = "ODR Lab is optimized for desktop use. For the best experience with our features like collaborative editing and video meetings, we recommend using a desktop or laptop computer.",
   showSwitchButton = true
 }: MobileWarningProps) {
   const handleSwitchToDesktop = () => {
@@ -95,7 +95,7 @@ export default function MobileWarning({
               </div>
 
               <p className="text-xs text-gray-500 mt-4">
-                This message won't appear again during this session.
+                This message won&apos;t appear again during this session.
               </p>
             </div>
           </motion.div>

@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from "framer-motion"
 
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { UserAvatar } from "@/components/ui/user-avatar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 
@@ -307,19 +307,12 @@ export default function Navbar() {
 									aria-label="User menu"
 									onClick={() => setProfileDropdown(!profileDropdown)}
 								>
-									<Avatar
-										className="h-8 w-8 border-2 border-white shadow-sm transition-all"
-									>
-										<AvatarImage
-											src={currentUser.imageAvatar || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(
-												currentUser.name
-											)}`}
-											alt={currentUser.name}
-										/>
-										<AvatarFallback className="bg-blue-600 text-white">
-											{currentUser.name?.charAt(0).toUpperCase() || "U"}
-										</AvatarFallback>
-									</Avatar>
+									<UserAvatar
+										user={currentUser}
+										size="sm"
+										className="border-2 border-white shadow-sm transition-all"
+										fallbackClassName="bg-blue-600 text-white"
+									/>
 									<div className="flex flex-col items-start">
 										<span className="text-sm font-medium text-slate-800 leading-none">
 											{currentUser.name.split(' ')[0]}
@@ -357,17 +350,12 @@ export default function Navbar() {
 										>
 											<div className="p-3 mb-1.5 border-b border-slate-100">
 												<div className="flex items-center gap-3">
-													<Avatar className="h-10 w-10 border-2 border-blue-100">
-														<AvatarImage
-															src={currentUser.imageAvatar || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(
-																currentUser.name
-															)}`}
-															alt={currentUser.name}
-														/>
-														<AvatarFallback className="bg-blue-600 text-white">
-															{currentUser.name?.charAt(0).toUpperCase() || "U"}
-														</AvatarFallback>
-													</Avatar>
+													<UserAvatar
+														user={currentUser}
+														size="md"
+														className="h-10 w-10 border-2 border-blue-100"
+														fallbackClassName="bg-blue-600 text-white"
+													/>
 													<div>
 														<p className="font-medium text-slate-900 leading-tight">
 															{currentUser.name}
@@ -609,17 +597,12 @@ export default function Navbar() {
 									) : currentUser ? (
 										<div className="space-y-4">
 											<div className="flex items-center gap-3 p-3 rounded-xl bg-slate-50">
-												<Avatar className="h-10 w-10 border-2 border-white shadow-sm">
-													<AvatarImage
-														src={currentUser.imageAvatar || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(
-															currentUser.name
-														)}`}
-														alt={currentUser.name}
-													/>
-													<AvatarFallback className="bg-blue-600 text-white">
-														{currentUser.name?.charAt(0).toUpperCase() || "U"}
-													</AvatarFallback>
-												</Avatar>
+												<UserAvatar
+													user={currentUser}
+													size="md"
+													className="h-10 w-10 border-2 border-white shadow-sm"
+													fallbackClassName="bg-blue-600 text-white"
+												/>
 												<div>
 													<p className="font-medium text-slate-900">
 														{currentUser.name}

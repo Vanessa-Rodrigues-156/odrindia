@@ -56,7 +56,7 @@ export function HeroSection() {
       />
       
       <div className="container relative z-10">
-        <div className="grid gap-8 md:grid-cols-2 md:gap-12">
+        <div className="grid gap-8 md:grid-cols-[60%,40%] md:gap-12">
           <motion.div 
             className="flex flex-col justify-center space-y-6 pl-[5vw]"
             initial="hidden"
@@ -64,7 +64,7 @@ export function HeroSection() {
             variants={staggerContainer}
           >
             <motion.h1 
-              className="text-4xl font-bold leading-tight tracking-tighter md:text-7xl lg:text-6xl"
+              className="text-4xl font-bold leading-tight tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl"
               variants={fadeInUp}
             >
               <motion.span 
@@ -79,7 +79,7 @@ export function HeroSection() {
               </motion.span>
             </motion.h1>
             <motion.p 
-              className="max-w-[600px] text-xl text-sky-100 md:text-2xl"
+              className="max-w-[600px] text-lg text-sky-100 sm:text-xl md:text-2xl"
               variants={fadeInUp}
             >
               Join a community of changemakers building the next wave of ODR systems and legal tech solutions

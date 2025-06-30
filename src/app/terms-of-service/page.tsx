@@ -18,7 +18,7 @@ export default function TermsOfService() {
             <section className="mb-8">
                 <h2 className="text-2xl font-bold mb-3">1. Eligibility</h2>
                 <p className="mb-4">
-                    Use of the ODR LABS Platform is intended only for individuals who are at least 18 years of
+                    Use of the ODR LAB Platform is intended only for individuals who are at least 18 years of
                     age or who have reached the age of legal majority in their respective jurisdiction, whichever
                     is greater. By accessing, registering for, or otherwise using the Platform, you represent and
                     warrant that:
@@ -30,7 +30,7 @@ export default function TermsOfService() {
                 </ul>
                 <p className="mb-4">If you do not meet these eligibility requirements, you are not authorized to use or access the Platform.</p>
                 <p className="mb-4">
-                    ODR LABS reserves the right to verify your age or legal capacity at any time and to suspend
+                    ODR LAB reserves the right to verify your age or legal capacity at any time and to suspend
                     or terminate your access if we have reason to believe that you do not meet the eligibility
                     requirements. We may also request additional information or documentation to confirm your
                     eligibility, and failure to provide such information may result in restricted access or account

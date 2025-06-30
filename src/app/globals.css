@@ -16,6 +16,39 @@
       padding-right: 2rem;
     }
   }
+
+  /* Responsive text utilities for extreme viewport sizes */
+  @media (min-width: 1920px) {
+    .text-responsive-xl {
+      font-size: clamp(1rem, 2vw, 3rem);
+    }
+    .text-responsive-2xl {
+      font-size: clamp(1.25rem, 2.5vw, 4rem);
+    }
+    .text-responsive-3xl {
+      font-size: clamp(1.5rem, 3vw, 5rem);
+    }
+    .text-responsive-4xl {
+      font-size: clamp(2rem, 4vw, 6rem);
+    }
+  }
+
+  /* Text overflow protection */
+  .text-responsive {
+    word-break: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+
+  /* Prevent horizontal scroll issues */
+  .no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 

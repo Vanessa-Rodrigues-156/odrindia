@@ -32,16 +32,6 @@ const ambassadors: StudentAmbassador[] = [
       { platform: "linkedin", url: "http://linkedin.com/in/anjali-singh-066191218" },
       { platform: "email", url: "mailto:anjalisingh24506@gmail.com" }
     ]
-  },
-  {
-    name: "Samarth Jain",
-    image: "/samarth.png",
-    institution: "Fourth Year Student from OP Jindal Global University",
-    description: "Contributing to research and legal requirements of ODR solutions. Bringing legal knowledge to ensure compliance and effective dispute resolution methodologies.",
-    responsibility: "Legal Ambassador",
-    socialLinks: [
-      { platform: "email", url: "mailto:22jgls-ssjain@jgu.edu.in" }
-    ]
   }
 ];
 
@@ -112,7 +102,7 @@ export default function StudentAmbassadorSection() {
             </div>
           </div>
 
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 justify-center mx-auto">
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-2 justify-center mx-auto">
             {filteredAmbassadors.map((ambassador, index) => (
               <StudentAmbassadorCard
                 key={ambassador.name}

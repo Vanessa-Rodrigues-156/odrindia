@@ -42,7 +42,7 @@ export function InnovationSection() {
           viewport={{ once: true }}
         >
           <motion.h2 
-            className="mb-4 text-3xl font-bold tracking-tight text-[#0a1e42] md:text-4xl"
+            className="mb-4 text-3xl font-bold tracking-tight text-[#0a1e42] sm:text-4xl md:text-5xl lg:text-6xl"
             initial={{ opacity: 0, y: -10 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
@@ -53,7 +53,7 @@ export function InnovationSection() {
             </span>
           </motion.h2>
           <motion.p 
-            className="mx-auto max-w-[700px] text-xl text-gray-600"
+            className="mx-auto max-w-[700px] text-xl text-gray-600 sm:text-2xl"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.3 }}
@@ -82,7 +82,7 @@ export function InnovationSection() {
               <div className="absolute top-0 left-0 h-1 w-full bg-gradient-to-r from-[#3a86ff] to-indigo-600 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
               <CardContent className="space-y-6 pt-8 pb-8">
                 <motion.p
-                  className="text-gray-700 text-lg leading-relaxed"
+                  className="text-gray-700 text-lg leading-relaxed sm:text-xl"
                   initial={{ opacity: 0 }}
                   whileInView={{ opacity: 1 }}
                   transition={{ delay: 0.2 }}
@@ -107,7 +107,7 @@ export function InnovationSection() {
                     <motion.li 
                       key={index}
                       variants={fadeInUp}
-                      className="text-base"
+                      className="text-base sm:text-lg"
                     >
                       {item}
                     </motion.li>

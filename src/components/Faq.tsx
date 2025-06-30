@@ -180,7 +180,7 @@ export function FAQ() {
 						</div>
 					</motion.div>
 					<motion.h2 
-						className="mb-4 text-4xl font-extrabold tracking-tight text-[#0a1e42] md:text-5xl"
+						className="mb-4 text-4xl font-extrabold tracking-tight text-[#0a1e42] sm:text-5xl md:text-6xl"
 						variants={fadeInUp}
 					>
 						<span className="bg-clip-text text-transparent bg-gradient-to-r from-[#0a1e42] to-[#3a86ff]">
@@ -188,7 +188,7 @@ export function FAQ() {
 						</span>
 					</motion.h2>
 					<motion.p 
-						className="mx-auto max-w-[700px] text-lg text-gray-600"
+						className="mx-auto max-w-[700px] text-lg text-gray-600 sm:text-xl md:text-2xl"
 						variants={fadeInUp}
 					>
 						Find answers to common questions about ODRLab and how to get started
@@ -274,7 +274,7 @@ export function FAQ() {
 										>
 											{index + 1}
 										</motion.div>
-										<h3 className="text-lg font-semibold text-[#0a1e42] group-hover:text-[#3a86ff] transition-colors duration-300">
+										<h3 className="text-lg font-semibold text-[#0a1e42] group-hover:text-[#3a86ff] transition-colors duration-300 sm:text-xl md:text-2xl">
 											{faq.question}
 										</h3>
 									</div>
@@ -310,7 +310,7 @@ export function FAQ() {
 														transition={{ duration: 0.5, delay: 0.1 }}
 													></motion.div>
 													<motion.p 
-														className="text-gray-600 leading-relaxed"
+														className="text-gray-600 leading-relaxed text-sm sm:text-base md:text-lg"
 														initial={{ opacity: 0, y: 10 }}
 														animate={{ opacity: 1, y: 0 }}
 														transition={{ duration: 0.3, delay: 0.2 }}
