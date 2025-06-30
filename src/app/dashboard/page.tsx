@@ -2,13 +2,17 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/auth';
-import { AlertCircle, User, Briefcase, Lightbulb, XCircle } from 'lucide-react';
+import { AlertCircle, User, Briefcase, Lightbulb, XCircle, Settings, Edit } from 'lucide-react';
 import { apiFetch } from '@/lib/api';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import ProfileEditor from '@/components/profile/ProfileEditor';
 
 export default function Dashboard() {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [isProfileEditorOpen, setIsProfileEditorOpen] = useState(false);
   const [stats, setStats] = useState({
     ideasCount: 0,
     collaborationsCount: 0,
@@ -41,8 +45,72 @@ export default function Dashboard() {
   }, [user?.id]);
 
   return (
-    <div className="max-w-5xl mx-auto p-5">
-      <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
+    <div className="max-w-6xl mx-auto p-5">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-[#0a1e42]">Dashboard</h1>
+        <Button
+          onClick={() => setIsProfileEditorOpen(true)}
+          variant="outline"
+          className="flex items-center space-x-2"
+        >
+          <Settings className="h-4 w-4" />
+          <span>Profile Settings</span>
+        </Button>
+      </div>
+
+      {/* Profile Card */}
+      <Card className="mb-8 bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <Avatar className="h-16 w-16 border-4 border-blue-200">
+                <AvatarImage
+                  src={user?.imageAvatar || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(user?.name || '')}`}
+                  alt={user?.name || 'User'}
+                />
+                <AvatarFallback className="text-lg font-semibold bg-gradient-to-br from-blue-500 to-indigo-600 text-white">
+                  {user?.name?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'U'}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <h2 className="text-2xl font-bold text-[#0a1e42]">Welcome back, {user?.name}</h2>
+                <p className="text-gray-600 flex items-center mt-1">
+                  <span className="inline-block w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                  {user?.userRole?.replace('_', ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase())}
+                </p>
+                {(() => {
+                  // Get institution from role-specific data
+                  const extendedUser = user as any;
+                  let institution = '';
+                  
+                  if (extendedUser?.userRole === 'INNOVATOR' && extendedUser?.innovator?.institution) {
+                    institution = extendedUser.innovator.institution;
+                  } else if (extendedUser?.userRole === 'MENTOR' && extendedUser?.mentor?.organization) {
+                    institution = extendedUser.mentor.organization;
+                  } else if (extendedUser?.userRole === 'OTHER' && extendedUser?.other?.workplace) {
+                    institution = extendedUser.other.workplace;
+                  } else if (extendedUser?.faculty?.institution) {
+                    institution = extendedUser.faculty.institution;
+                  }
+                  
+                  return institution ? (
+                    <p className="text-sm text-gray-500 mt-1">{institution}</p>
+                  ) : null;
+                })()}
+              </div>
+            </div>
+            <Button
+              onClick={() => setIsProfileEditorOpen(true)}
+              size="sm"
+              variant="ghost"
+              className="text-blue-600 hover:text-blue-800 hover:bg-blue-100"
+            >
+              <Edit className="h-4 w-4 mr-2" />
+              Edit Profile
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
       
       {/* Show pending approval status for mentors */}
       {(user?.hasMentorApplication && !user?.isMentorApproved) && (
@@ -123,11 +191,44 @@ export default function Dashboard() {
       
       {/* Add more dashboard content here based on user role */}
       <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-        <h2 className="text-xl font-semibold mb-4">Welcome, {user?.name}</h2>
-        <p className="text-gray-700">
-          This is your personal dashboard where you can track your activity and progress on the ODR Lab platform. 
-        </p>
+        <h2 className="text-xl font-semibold mb-4">Quick Actions</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Button 
+            variant="outline" 
+            className="flex items-center justify-center space-x-2 h-12"
+            onClick={() => window.location.href = "/submit-idea"}
+          >
+            <Lightbulb className="h-5 w-5" />
+            <span>Submit New Idea</span>
+          </Button>
+          <Button 
+            variant="outline" 
+            className="flex items-center justify-center space-x-2 h-12"
+            onClick={() => window.location.href = "/ideas"}
+          >
+            <User className="h-5 w-5" />
+            <span>Browse Ideas</span>
+          </Button>
+          <Button 
+            variant="outline" 
+            className="flex items-center justify-center space-x-2 h-12"
+            onClick={() => window.location.href = "/mentors"}
+          >
+            <Briefcase className="h-5 w-5" />
+            <span>Find Mentors</span>
+          </Button>
+        </div>
       </div>
+
+      {/* Profile Editor Modal */}
+      <ProfileEditor
+        isOpen={isProfileEditorOpen}
+        onClose={() => setIsProfileEditorOpen(false)}
+        onSave={() => {
+          // Profile editor handles the save and user refresh
+          console.log('Profile saved successfully');
+        }}
+      />
     </div>
   );
 }

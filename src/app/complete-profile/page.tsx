@@ -534,7 +534,7 @@ function CompleteProfileClient() {
                   <div className="flex items-start space-x-3">
                     <RadioGroupItem id="student" value="student" />
                     <div>
-                      <Label htmlFor="student" className="font-medium">Student</Label>
+                      <Label htmlFor="student" className="font-medium">Student Innovator</Label>
                       <p className="text-sm text-gray-500">Working on academic projects, research, or coursework</p>
                     </div>
                   </div>
