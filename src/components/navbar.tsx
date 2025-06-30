@@ -170,8 +170,8 @@ export default function Navbar() {
 					</Link>
 				</div>
 
-				{/* Desktop Navigation */}
-				<nav className="hidden lg:block">
+				{/* Desktop Navigation - xl and up (above lg/1280px) */}
+				<nav className="hidden xl:block">
 					<ul className="flex items-center space-x-5">
 						{navItems.map((item) => (
 							<li key={item.title} className="relative">
@@ -292,9 +292,9 @@ export default function Navbar() {
 						))}
 					</ul>
 				</nav>
-					{/* Show either login/signup buttons or user avatar based on auth status */}
+					{/* Desktop Auth Section - xl and up (above lg/1280px) */}
 					{loading ? (
-						<div className="hidden lg:flex gap-2 items-center">
+						<div className="hidden xl:flex gap-2 items-center">
 							<div className="animate-pulse h-9 w-9 rounded-full bg-slate-200"></div>
 							<div className="animate-pulse h-4 w-16 rounded bg-slate-200"></div>
 						</div>
@@ -303,7 +303,7 @@ export default function Navbar() {
 							<PopoverTrigger asChild>
 								<button
 									id="profile-button"
-									className="hidden lg:flex items-center gap-2 px-2.5 py-1.5 rounded-full transition-all border border-transparent hover:border-slate-200 hover:bg-slate-50"
+									className="hidden xl:flex items-center gap-2 px-2.5 py-1.5 rounded-full transition-all border border-transparent hover:border-slate-200 hover:bg-slate-50"
 									aria-label="User menu"
 									onClick={() => setProfileDropdown(!profileDropdown)}
 								>
@@ -336,7 +336,7 @@ export default function Navbar() {
 								{profileDropdown && (
 									<PopoverContent
 										id="profile-dropdown"
-										className="w-[260px] p-1.5 rounded-xl shadow-xl border-slate-200"
+										className="w-[260px] p-1.5 bg-white rounded-xl shadow-xl border-slate-200"
 										align="end"
 										sideOffset={8}
 										forceMount
@@ -448,8 +448,8 @@ export default function Navbar() {
 							</AnimatePresence>
 						</Popover>
 					) : (
-						<div className="hidden lg:flex items-center gap-2">
-							<Button asChild className="bg-transparent border border-slate-300 text-slate-700 hover:text-blue-600 hover:border-blue-200 hover:bg-blue-50 shadow-sm">
+						<div className="hidden xl:flex items-center gap-2">
+							<Button asChild className="bg-white border border-slate-300 text-slate-700 hover:text-blue-600 hover:border-blue-200 hover:bg-blue-50 shadow-sm">
 								<Link href="/signin">
 									Sign in
 								</Link>
@@ -462,13 +462,13 @@ export default function Navbar() {
 						</div>
 					)}
 
-					{/* Mobile Menu Toggle */}
+					{/* Mobile Menu Toggle - lg and below (up to 1280px) */}
 					<Sheet open={isOpen} onOpenChange={setIsOpen}>
 						<SheetTrigger asChild>
 							<Button 
 								variant="ghost" 
 								size="sm" 
-								className="h-9 w-9 rounded-full p-0 lg:hidden bg-slate-50 hover:bg-slate-100 text-slate-700"
+								className="h-9 w-9 rounded-full p-0 xl:hidden bg-slate-50 hover:bg-slate-100 text-slate-700"
 							>
 								<Menu className="h-5 w-5" />
 								<span className="sr-only">Toggle menu</span>
@@ -476,7 +476,7 @@ export default function Navbar() {
 						</SheetTrigger>
 						<SheetContent 
 							side="right" 
-							className="w-[300px] sm:w-[350px] border-l border-slate-100 p-0"
+							className="w-[300px] sm:w-[350px] bg-sky-50 border-l border-slate-100 p-0"
 						>
 							<div className="flex flex-col h-full">
 								<div className="p-4 border-b border-slate-100">
