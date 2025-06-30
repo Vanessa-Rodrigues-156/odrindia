@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { ChevronDown, ChevronUp, HelpCircle, User, Lightbulb, Users, Shield } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const faqCategories = {
 	"getting-started": {
@@ -88,6 +89,44 @@ const faqCategories = {
 	}
 };
 
+// Animation variants
+const fadeInUp = {
+	hidden: { opacity: 0, y: 20 },
+	visible: { 
+		opacity: 1, 
+		y: 0,
+		transition: { duration: 0.6 }
+	}
+};
+
+const staggerContainer = {
+	hidden: { opacity: 0 },
+	visible: {
+		opacity: 1,
+		transition: {
+			staggerChildren: 0.1
+		}
+	}
+};
+
+const tabAnimation = {
+	hidden: { opacity: 0, y: 10 },
+	visible: { 
+		opacity: 1, 
+		y: 0,
+		transition: { duration: 0.4 }
+	}
+};
+
+const faqCardAnimation = {
+	hidden: { opacity: 0, y: 15 },
+	visible: { 
+		opacity: 1, 
+		y: 0,
+		transition: { duration: 0.5 }
+	}
+};
+
 export function FAQ() {
 	const [activeTab, setActiveTab] = useState("getting-started");
 	const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -99,31 +138,88 @@ export function FAQ() {
 	const currentCategory = faqCategories[activeTab as keyof typeof faqCategories];
 
 	return (
-		<section className="py-20 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+		<motion.section 
+			className="py-20 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100"
+			initial={{ opacity: 0 }}
+			whileInView={{ opacity: 1 }}
+			transition={{ duration: 0.8 }}
+			viewport={{ once: true, margin: "-100px" }}
+		>
 			<div className="container mx-auto px-6">
-				<div className="mb-16 text-center">
-					<div className="mb-6 flex justify-center">
+				{/* Animated background elements */}
+				<motion.div 
+					className="absolute top-20 right-10 w-60 h-60 rounded-full bg-[#3a86ff]/5"
+					animate={{ 
+						scale: [1, 1.2, 1],
+						opacity: [0.3, 0.5, 0.3]
+					}}
+					transition={{ duration: 8, repeat: Infinity }}
+				/>
+				<motion.div 
+					className="absolute bottom-10 left-10 w-80 h-80 rounded-full bg-indigo-400/5"
+					animate={{ 
+						scale: [1, 1.1, 1],
+						opacity: [0.2, 0.4, 0.2]
+					}}
+					transition={{ duration: 6, repeat: Infinity }}
+				/>
+
+				<motion.div 
+					className="mb-16 text-center"
+					initial="hidden"
+					whileInView="visible"
+					variants={staggerContainer}
+					viewport={{ once: true }}
+				>
+					<motion.div 
+						className="mb-6 flex justify-center"
+						variants={fadeInUp}
+					>
 						<div className="p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl">
 							<HelpCircle className="h-12 w-12 text-[#3a86ff]" />
 						</div>
-					</div>
-					<h2 className="mb-4 text-4xl font-extrabold tracking-tight text-[#0a1e42] md:text-5xl">
+					</motion.div>
+					<motion.h2 
+						className="mb-4 text-4xl font-extrabold tracking-tight text-[#0a1e42] md:text-5xl"
+						variants={fadeInUp}
+					>
 						<span className="bg-clip-text text-transparent bg-gradient-to-r from-[#0a1e42] to-[#3a86ff]">
 							Frequently Asked Questions
 						</span>
-					</h2>
-					<p className="mx-auto max-w-[700px] text-lg text-gray-600">
+					</motion.h2>
+					<motion.p 
+						className="mx-auto max-w-[700px] text-lg text-gray-600"
+						variants={fadeInUp}
+					>
 						Find answers to common questions about ODRLab and how to get started
-					</p>
-					<div className="mt-6 mx-auto w-24 h-1 bg-gradient-to-r from-[#3a86ff] to-indigo-600 rounded-full"></div>
-				</div>
+					</motion.p>
+					<motion.div 
+						className="mt-6 mx-auto w-24 h-1 bg-gradient-to-r from-[#3a86ff] to-indigo-600 rounded-full"
+						variants={fadeInUp}
+					></motion.div>
+				</motion.div>
 
 				{/* Category Tabs */}
-				<div className="max-w-4xl mx-auto mb-8">
-					<div className="flex flex-wrap justify-center gap-2 bg-white/90 backdrop-blur-sm rounded-xl p-2 shadow-lg">
-						{Object.entries(faqCategories).map(([key, category]) => (
-							<button
+				<motion.div 
+					className="max-w-4xl mx-auto mb-8"
+					initial={{ opacity: 0, y: 20 }}
+					whileInView={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.6, delay: 0.2 }}
+					viewport={{ once: true }}
+				>
+					<motion.div 
+						className="flex flex-wrap justify-center gap-2 bg-white/90 backdrop-blur-sm rounded-xl p-2 shadow-lg"
+						variants={staggerContainer}
+						initial="hidden"
+						whileInView="visible"
+						viewport={{ once: true }}
+					>
+						{Object.entries(faqCategories).map(([key, category], index) => (
+							<motion.button
 								key={key}
+								variants={tabAnimation}
+								whileHover={{ scale: 1.05 }}
+								whileTap={{ scale: 0.95 }}
 								onClick={() => {
 									setActiveTab(key);
 									setOpenIndex(null);
@@ -138,74 +234,147 @@ export function FAQ() {
 									{category.icon}
 								</span>
 								<span className="text-sm">{category.title}</span>
-							</button>
+							</motion.button>
 						))}
-					</div>
-				</div>
+					</motion.div>
+				</motion.div>
 
 				{/* FAQ Items for Active Category */}
-				<div className="max-w-4xl mx-auto space-y-4">
-					{currentCategory.questions.map((faq, index) => (
-						<div
-							key={index}
-							className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group"
-						>
-							<button
-								onClick={() => toggleFAQ(index)}
-								className="w-full px-8 py-6 text-left flex items-center justify-between hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 group"
+				<motion.div 
+					className="max-w-4xl mx-auto space-y-4"
+					initial="hidden"
+					whileInView="visible"
+					variants={staggerContainer}
+					viewport={{ once: true }}
+				>
+					<AnimatePresence mode="wait">
+						{currentCategory.questions.map((faq, index) => (
+							<motion.div
+								key={`${activeTab}-${index}`}
+								variants={faqCardAnimation}
+								initial="hidden"
+								animate="visible"
+								exit="hidden"
+								transition={{ delay: index * 0.1 }}
+								whileHover={{ 
+									scale: 1.02,
+									boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)"
+								}}
+								className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group"
 							>
-								<div className="flex items-center space-x-4">
-									<div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-[#3a86ff] to-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
-										{index + 1}
+								<button
+									onClick={() => toggleFAQ(index)}
+									className="w-full px-8 py-6 text-left flex items-center justify-between hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 group"
+								>
+									<div className="flex items-center space-x-4">
+										<motion.div 
+											className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-[#3a86ff] to-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-sm"
+											whileHover={{ scale: 1.1 }}
+											transition={{ type: "spring", stiffness: 400, damping: 10 }}
+										>
+											{index + 1}
+										</motion.div>
+										<h3 className="text-lg font-semibold text-[#0a1e42] group-hover:text-[#3a86ff] transition-colors duration-300">
+											{faq.question}
+										</h3>
 									</div>
-									<h3 className="text-lg font-semibold text-[#0a1e42] group-hover:text-[#3a86ff] transition-colors duration-300">
-										{faq.question}
-									</h3>
-								</div>
-								<div className="flex-shrink-0 ml-4">
-									{openIndex === index ? (
-										<ChevronUp className="h-6 w-6 text-[#3a86ff] transition-transform duration-300" />
-									) : (
-										<ChevronDown className="h-6 w-6 text-gray-400 group-hover:text-[#3a86ff] transition-colors duration-300" />
+									<div className="flex-shrink-0 ml-4">
+										<motion.div
+											animate={{ rotate: openIndex === index ? 180 : 0 }}
+											transition={{ duration: 0.3 }}
+										>
+											{openIndex === index ? (
+												<ChevronUp className="h-6 w-6 text-[#3a86ff]" />
+											) : (
+												<ChevronDown className="h-6 w-6 text-gray-400 group-hover:text-[#3a86ff] transition-colors duration-300" />
+											)}
+										</motion.div>
+									</div>
+								</button>
+
+								<AnimatePresence>
+									{openIndex === index && (
+										<motion.div
+											initial={{ height: 0, opacity: 0 }}
+											animate={{ height: "auto", opacity: 1 }}
+											exit={{ height: 0, opacity: 0 }}
+											transition={{ duration: 0.3, ease: "easeInOut" }}
+											className="overflow-hidden"
+										>
+											<div className="px-8 pb-6">
+												<div className="pl-12 pr-10">
+													<motion.div 
+														className="h-px bg-gradient-to-r from-[#3a86ff]/20 to-indigo-600/20 mb-4"
+														initial={{ scaleX: 0 }}
+														animate={{ scaleX: 1 }}
+														transition={{ duration: 0.5, delay: 0.1 }}
+													></motion.div>
+													<motion.p 
+														className="text-gray-600 leading-relaxed"
+														initial={{ opacity: 0, y: 10 }}
+														animate={{ opacity: 1, y: 0 }}
+														transition={{ duration: 0.3, delay: 0.2 }}
+													>
+														{faq.answer}
+													</motion.p>
+												</div>
+											</div>
+										</motion.div>
 									)}
-								</div>
-							</button>
+								</AnimatePresence>
+							</motion.div>
+						))}
+					</AnimatePresence>
+				</motion.div>
 
-							<div
-								className={`overflow-hidden transition-all duration-300 ease-in-out ${
-									openIndex === index ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-								}`}
-							>
-								<div className="px-8 pb-6">
-									<div className="pl-12 pr-10">
-										<div className="h-px bg-gradient-to-r from-[#3a86ff]/20 to-indigo-600/20 mb-4"></div>
-										<p className="text-gray-600 leading-relaxed">
-											{faq.answer}
-										</p>
-									</div>
-								</div>
-							</div>
-						</div>
-					))}
-				</div>
-
-				<div className="mt-16 text-center">
-					<div className="bg-white/90 backdrop-blur-sm rounded-xl p-8 shadow-lg max-w-2xl mx-auto">
-						<h3 className="text-xl font-bold text-[#0a1e42] mb-4">
+				<motion.div 
+					className="mt-16 text-center"
+					initial={{ opacity: 0, y: 20 }}
+					whileInView={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.6, delay: 0.4 }}
+					viewport={{ once: true }}
+				>
+					<motion.div 
+						className="bg-white/90 backdrop-blur-sm rounded-xl p-8 shadow-lg max-w-2xl mx-auto"
+						whileHover={{ 
+							scale: 1.02,
+							boxShadow: "0 20px 40px -10px rgba(0, 0, 0, 0.1)"
+						}}
+						transition={{ type: "spring", stiffness: 400, damping: 10 }}
+					>
+						<motion.h3 
+							className="text-xl font-bold text-[#0a1e42] mb-4"
+							initial={{ opacity: 0 }}
+							whileInView={{ opacity: 1 }}
+							transition={{ duration: 0.5, delay: 0.2 }}
+							viewport={{ once: true }}
+						>
 							Still have questions?
-						</h3>
-						<p className="text-gray-600 mb-6">
+						</motion.h3>
+						<motion.p 
+							className="text-gray-600 mb-6"
+							initial={{ opacity: 0 }}
+							whileInView={{ opacity: 1 }}
+							transition={{ duration: 0.5, delay: 0.3 }}
+							viewport={{ once: true }}
+						>
 							Can&apos;t find the answer you&apos;re looking for? Feel free to reach out to our support team.
-						</p>
-						<a
+						</motion.p>
+						<motion.a
 							href="mailto:contact@odrlab.com"
-							className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-[#0a1e42] to-[#3a86ff] text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105"
+							className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-[#0a1e42] to-[#3a86ff] text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-300"
+							whileHover={{ scale: 1.05 }}
+							whileTap={{ scale: 0.95 }}
+							initial={{ opacity: 0, y: 10 }}
+							whileInView={{ opacity: 1, y: 0 }}
+							transition={{ duration: 0.5, delay: 0.4 }}
+							viewport={{ once: true }}
 						>
 							Contact Support
-						</a>
-					</div>
-				</div>
+						</motion.a>
+					</motion.div>
+				</motion.div>
 			</div>
-		</section>
+		</motion.section>
 	);
 }

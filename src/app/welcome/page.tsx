@@ -72,8 +72,7 @@ export default function WelcomePage() {
             />
           </div>
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">ODR LAB</h1>
-          <p className="text-[#f6ece3] text-lg mb-2">A Virtual Space for Empowering legal-tech innovation through collaboration, Expert mentorship, and AI-driven tools—shaping the future of ODR.</p>
-          <p className="text-[#f6ece3] text-lg mb-8">Launching Innovation</p>
+          <p className="text-[#f6ece3] text-lg mb-2">A virtual space for student innovators and legal-tech enthusiasts to co-create smarter ODR systems—driven by expert guidance and AI.</p>
         </div>
 
         {/* Countdown Timer */}

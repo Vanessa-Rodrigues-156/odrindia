@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -16,20 +15,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import  {toast}  from "sonner";
 
 // Animation variants
-const fadeInUp = {
-  hidden: { opacity: 0, y: 15 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { 
-      duration: 0.2,
-      ease: [0.25, 0.1, 0.25, 1], // Fast easing function
-      when: "beforeChildren",
-      staggerChildren: 0.05
-    },
-  },
-};
-
 const pageTransition = {
   hidden: { opacity: 0, x: -20 },
   visible: {
