@@ -55,10 +55,10 @@ export function HeroSection() {
         transition={{ duration: 6, repeat: Infinity }}
       />
       
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="container relative z-10">
         <div className="grid gap-8 md:grid-cols-2 md:gap-12">
           <motion.div 
-            className="flex flex-col justify-center space-y-6"
+            className="flex flex-col justify-center space-y-6 pl-[5vw]"
             initial="hidden"
             animate="visible"
             variants={staggerContainer}
@@ -73,7 +73,8 @@ export function HeroSection() {
                 transition={{ delay: 0.5, duration: 0.6 }}
               >
                 <span className="text-[#3a86ff]">A</span><span className="text-white">spire</span>, {" "}
-                <span className="text-[#3a86ff]">B</span><span className="text-white">uild</span>, {" "}
+                <span className="text-[#3a86ff]">B</span><span className="text-white">uild</span> {" "}
+                <span className="text-sky-100">and</span> {" "}
                 <span className="text-[#3a86ff]">C</span><span className="text-white">onnect</span>
               </motion.span>
             </motion.h1>
