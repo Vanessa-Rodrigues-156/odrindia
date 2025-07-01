@@ -139,7 +139,7 @@ export function FAQ() {
 
 	return (
 		<motion.section 
-			className="py-20 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100"
+			className="py-20 bg-gradient-to-b from-gray-100 to-indigo-100"
 			initial={{ opacity: 0 }}
 			whileInView={{ opacity: 1 }}
 			transition={{ duration: 0.8 }}

@@ -25,7 +25,7 @@ const HowToCard: React.FC = () => {
     }, []);
 
     return (
-        <section ref={sectionRef} className="py-16 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 howto-timeline-section">
+        <section ref={sectionRef} className="py-16 bg-gradient-to-b from-slate-50 via-blue-50 to-indigo-100 howto-timeline-section">
             <div className="container mx-auto px-4">
                 <div className="mb-12 text-center">
                     <h2 className="text-4xl font-bold text-[#0a1e42] mb-4 sm:text-5xl md:text-6xl">
@@ -57,7 +57,7 @@ const HowToCard: React.FC = () => {
                         {/* Step 1 */}
                         <div className={`relative transition-all duration-700 ${scrollProgress >= 5 ? 'opacity-100 transform translate-y-0' : 'opacity-70 transform translate-y-4'}`}>
                             {/* Card */}
-                            <div className="bg-white/90 backdrop-blur-sm rounded-xl p-[1.5vw] md:p-[2vw] shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 relative group mt-[6vw] h-[20vh] sm:h-[22vh] md:h-[20vw] lg:h-[25vw] w-[15vw] flex flex-col">
+                            <div className="bg-white/90 backdrop-blur-sm rounded-xl p-[1.5vw] md:p-[2vw] shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 relative group h-[20vh] sm:h-[10vw] md:h-[15vw] lg:h-[20vw] w-[15vw] m-auto flex flex-col">
                                 <div className="absolute top-0 left-0 h-2 w-full bg-gradient-to-r from-[#3a86ff] to-indigo-600 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 rounded-t-xl"></div>
                                 
                                 {/* Step Number */}
@@ -80,7 +80,7 @@ const HowToCard: React.FC = () => {
 
                         {/* Step 2 */}
                         <div className={`relative transition-all duration-700 delay-150 ${scrollProgress >= 20 ? 'opacity-100 transform translate-y-0' : 'opacity-70 transform translate-y-4'}`}>
-                            <div className="bg-white/90 backdrop-blur-sm rounded-xl p-[1.5vw] md:p-[2vw] shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 relative group mt-[6vw] h-[20vh] sm:h-[22vh] md:h-[20vw] lg:h-[25vw] w-[15vw] flex flex-col">
+                            <div className="bg-white/90 backdrop-blur-sm rounded-xl p-[1.5vw] md:p-[2vw] shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 relative group h-[20vh] sm:h-[10vw] md:h-[15vw] lg:h-[20vw] w-[15vw] m-auto flex flex-col">
                                 <div className="absolute top-0 left-0 h-2 w-full bg-gradient-to-r from-[#3a86ff] to-indigo-600 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 rounded-t-xl"></div>
                                 
                                 <div className="absolute -top-[2vw] left-1/2 transform -translate-x-1/2 flex h-[3vw] w-[3vw] items-center justify-center rounded-full bg-gradient-to-br from-[#0a1e42] to-[#3a86ff] text-white font-bold shadow-xl text-[1.2vw]">
@@ -106,7 +106,7 @@ const HowToCard: React.FC = () => {
 
                         {/* Step 3 */}
                         <div className={`relative transition-all duration-700 delay-300 ${scrollProgress >= 40 ? 'opacity-100 transform translate-y-0' : 'opacity-70 transform translate-y-4'}`}>
-                            <div className="bg-white/90 backdrop-blur-sm rounded-xl p-[1.5vw] md:p-[2vw] shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 relative group mt-[6vw] h-[20vh] sm:h-[22vh] md:h-[20vw] lg:h-[25vw] w-[15vw] flex flex-col">
+                            <div className="bg-white/90 backdrop-blur-sm rounded-xl p-[1.5vw] md:p-[2vw] shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 relative group h-[20vh] sm:h-[10vw] md:h-[15vw] lg:h-[20vw] w-[15vw] m-auto flex flex-col">
                                 <div className="absolute top-0 left-0 h-2 w-full bg-gradient-to-r from-[#3a86ff] to-indigo-600 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 rounded-t-xl"></div>
                                 
                                 <div className="absolute -top-[2vw] left-1/2 transform -translate-x-1/2 flex h-[3vw] w-[3vw] items-center justify-center rounded-full bg-gradient-to-br from-[#0a1e42] to-[#3a86ff] text-white font-bold shadow-xl text-[1.2vw]">
@@ -129,7 +129,7 @@ const HowToCard: React.FC = () => {
 
                         {/* Step 4 */}
                         <div className={`relative transition-all duration-700 delay-500 ${scrollProgress >= 60 ? 'opacity-100 transform translate-y-0' : 'opacity-70 transform translate-y-4'}`}>
-                            <div className="bg-white/90 backdrop-blur-sm rounded-xl p-[1.5vw] md:p-[2vw] shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 relative group mt-[6vw] h-[20vh] sm:h-[22vh] md:h-[20vw] lg:h-[25vw] w-[15vw] flex flex-col">
+                            <div className="bg-white/90 backdrop-blur-sm rounded-xl p-[1.5vw] md:p-[2vw] shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 relative group h-[20vh] sm:h-[10vw] md:h-[15vw] lg:h-[20vw] w-[15vw] m-auto flex flex-col">
                                 <div className="absolute top-0 left-0 h-2 w-full bg-gradient-to-r from-[#3a86ff] to-indigo-600 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 rounded-t-xl"></div>
                                 
                                 <div className="absolute -top-[2vw] left-1/2 transform -translate-x-1/2 flex h-[3vw] w-[3vw] items-center justify-center rounded-full bg-gradient-to-br from-[#0a1e42] to-[#3a86ff] text-white font-bold shadow-xl text-[1.2vw]">
@@ -157,7 +157,7 @@ const HowToCard: React.FC = () => {
 
                         {/* Step 5 */}
                         <div className={`relative transition-all duration-700 delay-700 ${scrollProgress >= 80 ? 'opacity-100 transform translate-y-0' : 'opacity-70 transform translate-y-4'}`}>
-                            <div className="bg-white/90 backdrop-blur-sm rounded-xl p-[1.5vw] md:p-[2vw] shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 relative group mt-[6vw] h-[20vh] sm:h-[22vh] md:h-[20vw] lg:h-[25vw] w-[15vw] flex flex-col">
+                            <div className="bg-white/90 backdrop-blur-sm rounded-xl p-[1.5vw] md:p-[2vw] shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 relative group h-[20vh] sm:h-[10vw] md:h-[15vw] lg:h-[20vw] w-[15vw] m-auto flex flex-col">
                                 <div className="absolute top-0 left-0 h-2 w-full bg-gradient-to-r from-[#3a86ff] to-indigo-600 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 rounded-t-xl"></div>
                                 
                                 <div className="absolute -top-[2vw] left-1/2 transform -translate-x-1/2 flex h-[3vw] w-[3vw] items-center justify-center rounded-full bg-gradient-to-br from-[#0a1e42] to-[#3a86ff] text-white font-bold shadow-xl text-[1.2vw]">

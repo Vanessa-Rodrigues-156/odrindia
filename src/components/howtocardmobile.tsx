@@ -94,7 +94,7 @@ const HowToCardMobile: React.FC = () => {
     ];
 
     return (
-        <section ref={sectionRef} className="py-12 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+        <section ref={sectionRef} className="py-12 bg-gradient-to-b from-slate-50 via-blue-50 to-indigo-100">
             <div className="container mx-auto px-4">
                 {/* Header */}
                 <div className="mb-8 text-center">

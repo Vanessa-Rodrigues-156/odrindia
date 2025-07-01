@@ -27,7 +27,7 @@ const staggerContainer = {
 export function InnovationSection() {
   return (
     <motion.section 
-      className="py-16 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100"
+      className="py-16 bg-gradient-to-b from-sky-100 via-gray-50 to-gray-100"
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
       transition={{ duration: 0.8 }}

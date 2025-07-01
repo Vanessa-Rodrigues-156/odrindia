@@ -20,21 +20,14 @@ const visionaries: Visionary[] = [
     alt: 'Portrait of Ethan Katsh, Father of Online Dispute Resolution, Founder of ODR Info, depicted with scholarly attire and thoughtful expression',
     ariaLabel: 'Ethan Katsh, Father of ODR, Founder of ODR Info',
   },
+
   {
-    name: 'Amy J. Schmitz',
-    title: 'Professor, The Ohio State Moritz College of Law',
-    imageUrl: '/visionaries/amy.jpg',
-    fallbackUrl: 'https://placehold.co/150x150?text=Image+Unavailable',
-    alt: 'Portrait of Amy J. Schmitz, Professor at The Ohio State Moritz College of Law, wearing professional attire with a confident smile',
-    ariaLabel: 'Amy J. Schmitz is a professor, The Ohio State Moritz College of Law',
-  },
-  {
-    name: 'Ms. Leah Wing',
+    name: 'Leah Wing',
     title: 'Senior Lecturer II, Legal Studies',
     imageUrl: '/visionaries/leah.jpg',
     fallbackUrl: 'https://placehold.co/150x150?text=Image+Unavailable',
-    alt: 'Portrait of Ms. Leah Wing, Senior Lecturer II of Legal Studies, depicted in warm tones with attentive gaze',
-    ariaLabel: 'Ms. Leah Wing Senior Lecturer II of Legal Studies',
+    alt: 'Portrait of Leah Wing, Senior Lecturer II of Legal Studies, depicted in warm tones with attentive gaze',
+    ariaLabel: 'Leah Wing Senior Lecturer II of Legal Studies',
   },
   {
     name: 'Chittu Nagarajan',
@@ -43,6 +36,14 @@ const visionaries: Visionary[] = [
     fallbackUrl: 'https://placehold.co/150x150?text=Image+Unavailable',
     alt: 'Portrait of Chittu Nagarajan, co-founder of odr.com, with approachable expression and professional attire',
     ariaLabel: 'Chittu Nagarajan, co-founder odr.com',
+  },
+  {
+    name: 'Amy J. Schmitz',
+    title: 'Professor, \nThe Ohio State Moritz College of Law',
+    imageUrl: '/visionaries/amy.jpg',
+    fallbackUrl: 'https://placehold.co/150x150?text=Image+Unavailable',
+    alt: 'Portrait of Amy J. Schmitz, Professor at The Ohio State Moritz College of Law, wearing professional attire with a confident smile',
+    ariaLabel: 'Amy J. Schmitz is a professor, The Ohio State Moritz College of Law',
   },
   {
     name: 'Suman Kalani',
@@ -83,44 +84,94 @@ const VisionariesGallery: React.FC = () => {
   }, []);
 
   return (
-    <section className="my-16">
-    <h2 className="mb-4 text-4xl font-extrabold tracking-tight text-[#0a1e42] sm:text-5xl md:text-6xl text-center">
-      <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#0a1e42] to-[#3a86ff]">
-        ODR Lab Visionaries
-    </span>
-    </h2>
-    <p className="section-subtitle mx-auto max-w-xl mb-12 text-lg text-gray-600 sm:text-xl md:text-2xl text-center font-medium">
-      Celebrating the leaders whose visionary work has shaped and advanced the ODR ecosystem worldwide.
-    </p>
-    <div className="mt-2 mb-8 mx-auto w-24 h-1 bg-gradient-to-r from-[#3a86ff] to-indigo-600 rounded-full"></div>
-      <div className="gallery-container grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 max-w-6xl mx-auto px-4">
-        {visionaries.map((v, idx) => (
-          <article
-            className="card cursor-pointer"
-            role="group"
-            tabIndex={0}
-            aria-label={v.ariaLabel}
-            key={v.name}
-            style={{ animation: 'floatUpDown 3.5s ease-in-out infinite', animationDelay: `${idx * 0.2}s` }}
-          >
-            <div className="card-inner">
-              <div className="card-front">
-                <img
-                  src={v.imageUrl}
-                  alt={v.alt}
-                  loading="lazy"
-                  onError={e => {
-                    if (v.fallbackUrl) (e.currentTarget as HTMLImageElement).src = v.fallbackUrl;
-                  }}
-                />
-                <h3 className="name">{v.name}</h3>
-                <p className="title" dangerouslySetInnerHTML={{ __html: v.title.replace(/\n/g, '<br/>') }} />
+    <section className="py-16 bg-gradient-to-b from-gray-100 to-sky-100">
+      <h2 className="mb-4 text-4xl font-extrabold tracking-tight text-[#0a1e42] sm:text-5xl md:text-6xl text-center">
+        <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#0a1e42] to-[#3a86ff]">
+          ODR Lab Visionaries
+        </span>
+      </h2>
+      <p className="mx-auto max-w-xl mb-12 text-lg text-gray-600 sm:text-xl md:text-2xl text-center font-medium">
+        Pioneers of Collaborative ODR Innovation.
+      </p>
+      <div className="mt-2 mb-8 mx-auto w-24 h-1 bg-gradient-to-r from-[#3a86ff] to-indigo-600 rounded-full"></div>
+      <div className="max-w-6xl mx-auto px-4">
+        <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
+          {visionaries.slice(0, 3).map((v, idx) => (
+            <article
+              className={
+                `card cursor-pointer [perspective:1000px] animate-floatUpDown` +
+                (idx ? ` [animation-delay:${idx * 0.2}s]` : '')
+              }
+              role="group"
+              tabIndex={0}
+              aria-label={v.ariaLabel}
+              key={v.name}
+            >
+              {/* Your existing card content */}
+              <div className="card-inner transition-transform duration-500 ease-[ease] [transform-style:preserve-3d] will-change-transform">
+                <div className="relative p-8 flex flex-col items-center gap-4 h-full rounded-2xl shadow-lg bg-white overflow-hidden [backface-visibility:hidden]">
+                  <img
+                    src={v.imageUrl}
+                    alt={v.alt}
+                    loading="lazy"
+                    className="
+                      rounded-full border-4 border-blue-600
+                      w-[65%] h-[54%]
+                      sm:w-[120px] sm:h-[120px]
+                      md:w-[160px] md:h-[160px]
+                      lg:w-[180px] lg:h-[180px]
+                      object-cover flex-shrink-0 shadow-lg transition-transform duration-300 ease-[ease]"
+                    onError={e => {
+                      if (v.fallbackUrl) (e.currentTarget as HTMLImageElement).src = v.fallbackUrl;
+                    }}
+                  />
+                  <h3 className="name font-bold text-xl text-slate-800 text-center select-none">{v.name}</h3>
+                  <p className="title font-medium text-base text-slate-600 text-center leading-tight select-none" dangerouslySetInnerHTML={{ __html: v.title.replace(/\n/g, '<br/>') }} />
+                </div>
               </div>
-            </div>
-          </article>
-        ))}
-      </div>
-      <style>{`
+            </article>
+          ))}
+        </div>
+
+        {/* Centered container for last 2 cards */}
+        <div className="flex justify-center gap-8 mt-8">
+          {visionaries.slice(3).map((v, idx) => (
+            <article
+              className={
+                `card cursor-pointer [perspective:1000px] animate-floatUpDown` +
+                ` [animation-delay:${(idx + 3) * 0.2}s]`
+              }
+              role="group"
+              tabIndex={0}
+              aria-label={v.ariaLabel}
+              key={v.name}
+            >
+              {/* Your existing card content */}
+              <div className="card-inner transition-transform duration-500 ease-[ease] [transform-style:preserve-3d] will-change-transform">
+                <div className="relative p-8 flex flex-col items-center gap-4 h-full rounded-2xl shadow-lg bg-white overflow-hidden [backface-visibility:hidden]">
+                  <img
+                    src={v.imageUrl}
+                    alt={v.alt}
+                    loading="lazy"
+                    className="rounded-full border-4 border-blue-600
+                      w-[65%] h-[54%]
+                      sm:w-[120px] sm:h-[120px]
+                      md:w-[160px] md:h-[160px]
+                      lg:w-[180px] lg:h-[180px]
+                      object-cover flex-shrink-0 shadow-lg transition-transform duration-300 ease-[ease]"
+                    onError={e => {
+                      if (v.fallbackUrl) (e.currentTarget as HTMLImageElement).src = v.fallbackUrl;
+                    }}
+                  />
+                  <h3 className="name font-bold text-xl text-slate-800 text-center select-none">{v.name}</h3>
+                  <p className="title font-medium text-base text-slate-600 text-center leading-tight select-none" dangerouslySetInnerHTML={{ __html: v.title.replace(/\n/g, '<br/>') }} />
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div >
+      {/* <style>{`
         .card { perspective: 1000px; }
         .card-inner {
           transition: transform 0.5s ease;
@@ -145,13 +196,14 @@ const VisionariesGallery: React.FC = () => {
           flex-direction: column;
           align-items: center;
           gap: 1rem;
-          min-height: 320px;
+          min-height: 520px;
+          width: 20vw;
         }
         .card-front img {
           border-radius: 50%;
           border: 4px solid #2563EB;
-          width: 120px;
-          height: 120px;
+          width: 420px;
+          height: 320px;
           object-fit: cover;
           flex-shrink: 0;
           box-shadow: 0 8px 15px rgb(37 99 235 / 0.3);
@@ -176,7 +228,7 @@ const VisionariesGallery: React.FC = () => {
           user-select: none;
         }
         .gallery-container {
-          max-width: 1200px;
+          max-width: 80vw;
           margin-left: auto;
           margin-right: auto;
           padding: 2rem 1rem;
@@ -203,8 +255,8 @@ const VisionariesGallery: React.FC = () => {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(-8px); }
         }
-      `}</style>
-    </section>
+      `}</style> */}
+    </section >
   );
 };
 

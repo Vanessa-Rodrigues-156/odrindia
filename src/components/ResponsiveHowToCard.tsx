@@ -10,7 +10,7 @@ const ResponsiveHowToCard = () => {
         setIsMounted(true);
         
         const checkScreenSize = () => {
-            setIsMobile(window.innerWidth < 768);
+            setIsMobile(window.innerWidth < 1280);
         };
 
         checkScreenSize();
@@ -21,7 +21,7 @@ const ResponsiveHowToCard = () => {
 
     // Prevent hydration mismatch by not rendering until mounted
     if (!isMounted) {
-        return <div className="py-16 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 min-h-[400px]" />;
+        return <div className="py-16 bg-gradient-to-b from-slate-50 via-blue-50 to-indigo-100 min-h-[400px]" />;
     }
 
     return isMobile ? <HowToCardMobile /> : <HowToCard />;

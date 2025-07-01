@@ -32,6 +32,17 @@ const ambassadors: StudentAmbassador[] = [
       { platform: "linkedin", url: "http://linkedin.com/in/anjali-singh-066191218" },
       { platform: "email", url: "mailto:anjalisingh24506@gmail.com" }
     ]
+  },
+  {
+    name:"Aastha Bhatia",
+    image: "/aastha.jpg",
+    institution: "Communication Skills Professor, Fr. Conceicao Rodrigues College of Engineering",
+    description: "Specializing in communication strategies for effective dispute resolution. Contributing as a Communication Skills expert and Soft Skills Enthusiast.",
+    responsibility: "Communication",
+    socialLinks: [
+      {platform:"linkedin", url: "https://www.linkedin.com/in/aastha-bhatia-a95b86244/"},
+      { platform: "email", url: "mailto:aasthabhatia24506@gmail.com" }
+    ]
   }
 ];
 
@@ -54,7 +65,7 @@ export default function StudentAmbassadorSection() {
   });
 
   return (
-    <section className="py-24 bg-gradient-to-b from-white to-blue-50 ">
+    <section className="py-24 bg-gradient-to-b from-indigo-100/60 to-blue-50 ">
       <div className="container mx-auto px-4">
         <div className="mx-[10%]">
           <motion.div
@@ -63,8 +74,13 @@ export default function StudentAmbassadorSection() {
             transition={{ duration: 0.6 }}
             className="mb-12 text-center"
           >
-            <h2 className="text-4xl font-bold text-[#0a1e42] mb-4">Student Ambassadors</h2>
-            <p className="mx-auto max-w-2xl text-lg text-gray-600"> Meet our dynamic student ambassadors—emerging leaders bringing passion, creativity, and commitment to the advancement of Online Dispute Resolution.</p>
+            <div className="mb-10 text-center">
+                <h2 className="text-3xl font-bold text-[#0a1e42] md:text-4xl mb-2 animate-fade-in">Developement and Communication Team </h2>
+                <div className="w-20 h-1 bg-sky-400 mx-auto rounded-full"></div>
+                <p className="text-gray-600 mt-4 max-w-2xl mx-auto">
+                  A dedicated team behind the development of  ODRLab.com to advance its mission
+                </p>
+              </div>
           </motion.div>
 
           {/* Search and filter */}
@@ -73,7 +89,7 @@ export default function StudentAmbassadorSection() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
               <Input
                 type="text"
-                placeholder="Search ambassadors..."
+                placeholder="Search Team members..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10 bg-white border-gray-200 shadow-sm"
@@ -102,7 +118,7 @@ export default function StudentAmbassadorSection() {
             </div>
           </div>
 
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-2 justify-center mx-auto">
+          <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 justify-center mx-auto">
             {filteredAmbassadors.map((ambassador, index) => (
               <StudentAmbassadorCard
                 key={ambassador.name}

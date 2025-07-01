@@ -4,7 +4,7 @@ import { MessageSquare, Globe, Scale, Award, BarChart, BookOpen, PieChart} from 
 
 export function LetsCollaborate() {
   return (
-    <section className="py-20 bg-gradient-to-r from-gray-50 to-gray-100">
+    <section className="py-20 bg-gradient-to-b from-indigo-100 to-gray-100">
       <div className="container mx-auto px-6">
         <div className="mb-16 text-center">
           <h2 className="mb-4 text-4xl font-extrabold tracking-tight text-[#0a1e42] sm:text-5xl md:text-6xl">
