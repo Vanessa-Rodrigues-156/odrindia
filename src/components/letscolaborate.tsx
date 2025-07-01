@@ -4,15 +4,15 @@ import { MessageSquare, Globe, Scale, Award, BarChart, BookOpen, PieChart} from 
 
 export function LetsCollaborate() {
   return (
-    <section className="py-20 bg-gradient-to-r from-gray-50 to-gray-100">
+    <section className="py-20 bg-gradient-to-b from-indigo-100 to-gray-100">
       <div className="container mx-auto px-6">
         <div className="mb-16 text-center">
-          <h2 className="mb-4 text-4xl font-extrabold tracking-tight text-[#0a1e42] md:text-5xl">
+          <h2 className="mb-4 text-4xl font-extrabold tracking-tight text-[#0a1e42] sm:text-5xl md:text-6xl">
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#0a1e42] to-[#3a86ff]">
               LET&apos;S COLLABORATE FOR
             </span>
           </h2>
-          <p className="mx-auto max-w-[700px] text-lg text-gray-600">
+          <p className="mx-auto max-w-[700px] text-lg text-gray-600 sm:text-xl md:text-2xl">
             Innovative solutions advancing the future of dispute resolution
           </p>
           <div className="mt-6 mx-auto w-24 h-1 bg-gradient-to-r from-[#3a86ff] to-indigo-600 rounded-full"></div>
@@ -83,11 +83,11 @@ export function LetsCollaborate() {
                     {item.icon}
                   </div>
                 </div>
-                <CardTitle className="text-xl text-[#0a1e42] font-bold group-hover:text-[#3a86ff] transition-colors duration-300">{item.title}</CardTitle>
-                <CardDescription className="text-[#3a86ff] font-medium">{item.subtitle}</CardDescription>
+                <CardTitle className="text-xl text-[#0a1e42] font-bold group-hover:text-[#3a86ff] transition-colors duration-300 sm:text-2xl">{item.title}</CardTitle>
+                <CardDescription className="text-[#3a86ff] font-medium text-base sm:text-lg">{item.subtitle}</CardDescription>
               </CardHeader>
               <CardContent className="pt-2 pb-6">
-                <p className="text-gray-600 group-hover:text-gray-800 transition-colors duration-300">
+                <p className="text-gray-600 group-hover:text-gray-800 transition-colors duration-300 text-sm sm:text-base">
                   {item.description}
                 </p>
               </CardContent>

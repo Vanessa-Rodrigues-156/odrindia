@@ -57,9 +57,9 @@ export default function ContactPage() {
       <main className="flex-1">
         {/* Hero Section */}
         <motion.section
-          className="relative bg-[#0a1e42] py-20 text-white overflow-hidden"
+          className="relative bg-[#0a1e42] py-8 text-white overflow-hidden"
           style={{
-            backgroundImage: "linear-gradient(rgba(10, 30, 66, 0.85), rgba(10, 30, 66, 0.9)), url('/contact-hero.jpg')",
+            backgroundImage: "linear-gradient(rgba(10, 30, 66, 0.85), rgba(10, 30, 66, 0.9))",
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
@@ -119,7 +119,7 @@ export default function ContactPage() {
                 Get in Touch
               </motion.h1>
               <motion.p 
-                className="text-lg opacity-90 mb-8"
+                className="text-xl opacity-90 mb-8"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 0.9 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
@@ -133,7 +133,7 @@ export default function ContactPage() {
                 transition={{ duration: 0.5, delay: 0.5 }}
               >
                 <Button 
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-4 h-auto rounded-md text-lg transition-all shadow-md hover:shadow-lg"
+                  className="bg-blue-600 hover:bg-blue-700 text-white p-3 h-auto rounded-md text-lg transition-all shadow-md hover:shadow-lg"
                   onClick={() => {
                     document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
                   }}

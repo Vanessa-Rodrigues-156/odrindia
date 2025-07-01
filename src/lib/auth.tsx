@@ -59,13 +59,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [isClient, setIsClient] = useState(false);
   const router = useRouter();
 
   const refreshPromiseRef = useRef<Promise<void> | null>(null);
   const refreshTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Set client flag to prevent hydration mismatches
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   // Debounced refreshUser function to prevent race conditions
   const refreshUser = useCallback(async () => {
+    // Only run on client side
+    if (!isClient) return;
+
     // If a refresh is already in progress, return that promise
     if (refreshPromiseRef.current) {
       return refreshPromiseRef.current;
@@ -116,22 +125,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     })();
 
     return refreshPromiseRef.current;
-  }, []);
+  }, [isClient]);
 
-  // Initialize auth state
+  // Initialize auth state only on client side
   useEffect(() => {
-    refreshUser();
-  }, [refreshUser]);
+    if (isClient) {
+      refreshUser();
+    }
+  }, [refreshUser, isClient]);
 
   const login = useCallback((userData: User, token: string) => {
-    localStorage.setItem("token", token);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem("token", token);
+    }
     setUser(userData);
     setAccessToken(token);
     setLoading(false);
   }, []);
 
   const logout = useCallback(() => {
-    localStorage.removeItem("token");
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem("token");
+    }
     setUser(null);
     setAccessToken(null);
 
@@ -191,7 +206,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         // If user doesn't need profile completion and we have a token, log them in
         if (!data.needsProfileCompletion && data.token) {
-          localStorage.setItem("token", data.token);
+          if (typeof window !== 'undefined') {
+            localStorage.setItem("token", data.token);
+          }
           setAccessToken(data.token);
         }
 
@@ -225,7 +242,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         // Update user data and set token
         if (data.user && data.token) {
-          localStorage.setItem("token", data.token);
+          if (typeof window !== 'undefined') {
+            localStorage.setItem("token", data.token);
+          }
           setUser(data.user);
           setAccessToken(data.token);
         }
