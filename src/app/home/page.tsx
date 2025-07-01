@@ -6,6 +6,7 @@ import { LetsCollaborate } from "@/components/letscolaborate"
 import { HeroSection } from "@/components/hero-section"
 import { InnovationSection } from "@/components/innovation-section"
 import { FAQ } from "@/components/Faq"
+import VisionariesGallery from "@/components/visionaries"
 
 // Animation variants
 const fadeInUp = {
@@ -39,6 +40,8 @@ export default function Home() {
 
         {/* Lets Collaborate Section */}
         <LetsCollaborate />
+        {/* Visionaries Gallery Section */}
+        <VisionariesGallery/>
 
         {/* Innovation Section */}
         <InnovationSection />
