@@ -191,7 +191,7 @@ export default function SubmitIdeaClientPage() {
       <main className="flex-1">
         {/* Hero Banner with Animation */}
         <motion.section
-          className="bg-[#0a1e42] py-8 md:py-16 text-white relative overflow-hidden"
+          className="bg-[#0a1e42] py-4 md:py-8 text-white relative overflow-hidden"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8 }}>
