@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 
 export default function Footer() {
   return (
-    <footer className="bg-[#0a1e42] text-white">
+    <footer className="bg-[#0a1e42] text-white pt-3.5">
       <div className="container mx-auto px-4 py-2">
         <div className="grid gap-10 items-stretch md:grid-cols-3 lg:grid-cols-3">
           <div className="space-y-4">
@@ -79,7 +79,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-8 border-t border-gray-700 pt-4 mb-4">
+        <div className="mt-2 border-t border-gray-700 pt-4 mb-2">
           <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
             <p className="text-center text-sm text-gray-300 md:text-left">
               © {new Date().getFullYear()} ODR. All rights reserved.
