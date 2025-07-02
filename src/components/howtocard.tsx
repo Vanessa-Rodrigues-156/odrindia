@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { User, Lightbulb,  Link2, Star} from 'lucide-react';
+import { User, Lightbulb, Link2, Star } from 'lucide-react';
 import Image from 'next/image';
 const HowToCard: React.FC = () => {
     const [scrollProgress, setScrollProgress] = useState(0);
@@ -70,8 +70,8 @@ const HowToCard: React.FC = () => {
                                     <div className="mb-[1.5vw] p-[1vw] bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl group-hover:from-blue-100 group-hover:to-indigo-100 transition-all duration-300">
                                         <User color="#3a86ff" strokeWidth={3} size={40} />
                                     </div>
-                                    <h3 className="text-[#0a1e42] font-bold mb-2 text-sm sm:text-base md:text-lg">Sign Up</h3>
-                                    <p className="text-gray-600 text-xs sm:text-sm md:text-base leading-relaxed">Register as an Innovator</p>
+                                    <h3 className="text-[#0a1e42] font-bold mb-2 text-sm sm:text-base md:text-[1.2vw]">Sign Up</h3>
+                                    <p className="text-gray-600 text-xs sm:text-sm md:text-[0.9vw] leading-relaxed">Register as an Innovator</p>
                                 </div>
                             </div>
                         </div>
@@ -89,8 +89,8 @@ const HowToCard: React.FC = () => {
                                     <div className="mb-[1.5vw] p-[1vw] bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl group-hover:from-blue-100 group-hover:to-indigo-100 transition-all duration-300">
                                         <Lightbulb color="#3a86ff" strokeWidth={3} size={40} />
                                     </div>
-                                    <h3 className="text-[#0a1e42] font-bold mb-2 text-sm sm:text-base md:text-lg">Join</h3>
-                                    <p className="text-gray-600 text-xs sm:text-sm md:text-base leading-relaxed">Start with an Idea Board to design ODR</p>
+                                    <h3 className="text-[#0a1e42] font-bold mb-2 text-sm sm:text-base md:text-[1.2vw]">Join</h3>
+                                    <p className="text-gray-600 text-xs sm:text-sm md:text-[0.9vw] leading-relaxed">Start with an Idea Board to design ODR</p>
                                 </div>
                             </div>
                         </div>
@@ -106,12 +106,12 @@ const HowToCard: React.FC = () => {
 
                                 <div className="flex flex-col items-center text-center py-[2vw] flex-1 justify-center">
                                     <div className="mb-[1.5vw] p-[1vw] bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl group-hover:from-blue-100 group-hover:to-indigo-100 transition-all duration-300">
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                            <Image src="/discuss.svg" alt="Discuss Icon" width={50} height={50} />
-                                        </div>
+
+                                        <Image src="/discuss.svg" alt="Discuss Icon" width={50} height={50} />
+
                                     </div>
-                                    <h3 className="text-[#0a1e42] font-bold mb-2 text-sm sm:text-base md:text-lg">Discuss</h3>
-                                    <p className="text-gray-600 text-xs sm:text-sm md:text-base leading-relaxed">Deliberate and exchange ideas in the ODR Lab</p>
+                                    <h3 className="text-[#0a1e42] font-bold mb-2 text-sm sm:text-base md:text-[1.2vw]">Discuss</h3>
+                                    <p className="text-gray-600 text-xs sm:text-sm md:text-[0.9vw] leading-relaxed">Deliberate and exchange ideas in the ODR Lab</p>
                                 </div>
                             </div>
                         </div>
@@ -129,8 +129,8 @@ const HowToCard: React.FC = () => {
                                     <div className="mb-[1.5vw] p-[1vw] bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl group-hover:from-blue-100 group-hover:to-indigo-100 transition-all duration-300">
                                         <Link2 color="#3a86ff" strokeWidth={3} size={40} />
                                     </div>
-                                    <h3 className="text-[#0a1e42] font-bold mb-2 text-sm sm:text-base md:text-lg">Connect</h3>
-                                    <p className="text-gray-600 text-xs sm:text-sm md:text-base leading-relaxed">Engage with mentors and the AI chatbot</p>
+                                    <h3 className="text-[#0a1e42] font-bold mb-2 text-sm sm:text-base md:text-[1.2vw]">Connect</h3>
+                                    <p className="text-gray-600 text-xs sm:text-sm md:text-[0.9vw] leading-relaxed">Engage with mentors and the AI chatbot</p>
                                 </div>
                             </div>
                         </div>
@@ -148,8 +148,8 @@ const HowToCard: React.FC = () => {
                                     <div className="mb-[1.5vw] p-[1vw] bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl group-hover:from-blue-100 group-hover:to-indigo-100 transition-all duration-300">
                                         <Star color="#3a86ff" strokeWidth={3} size={40} />
                                     </div>
-                                    <h3 className="text-[#0a1e42] font-bold mb-2 text-sm sm:text-base md:text-lg">Reflect</h3>
-                                    <p className="text-gray-600 text-xs sm:text-sm md:text-base leading-relaxed">Collaboratively develop Impactful ODR Systems</p>
+                                    <h3 className="text-[#0a1e42] font-bold mb-2 text-sm sm:text-base md:text-[1.2vw]">Reflect</h3>
+                                    <p className="text-gray-600 text-xs sm:text-sm md:text-[0.9vw] leading-relaxed">Collaboratively develop Impactful ODR Systems</p>
                                 </div>
                             </div>
                         </div>

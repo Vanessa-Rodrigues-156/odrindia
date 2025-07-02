@@ -54,11 +54,11 @@ const visionaries: Visionary[] = [
   },
   {
     name: 'Suman Kalani',
-    title: `Associate Professor<br/>SVKM&apos;s Pravin Gandhi College of Law, Mumbai, India`,
+    title: `Associate Professor<br/>SVKM&apos;s Pravin Gandhi College of Law`,
     imageUrl: '/visionaries/suman.jpg',
     fallbackUrl: 'https://placehold.co/150x150?text=Image+Unavailable',
     alt: `Portrait of Suman Kalani, Associate Professor at SVKM's Pravin Gandhi College of Law, Mumbai, India`,
-    ariaLabel: `Suman Kalani, Associate Professor at SVKM's Pravin Gandhi College of Law, Mumbai, India`,
+    ariaLabel: `Suman Kalani, Associate Professor at SVKM's Pravin Gandhi College of Law.`,
   },
 ];
 
