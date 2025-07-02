@@ -75,7 +75,7 @@ export default function StudentAmbassadorSection() {
             className="mb-12 text-center"
           >
             <div className="mb-10 text-center">
-                <h2 className="text-3xl font-bold text-[#0a1e42] md:text-4xl mb-2 animate-fade-in">Developement and Communication Team </h2>
+                <h2 className="text-3xl font-bold text-[#0a1e42] md:text-4xl mb-2 animate-fade-in">Development and Communication Team </h2>
                 <div className="w-20 h-1 bg-sky-400 mx-auto rounded-full"></div>
                 <p className="text-gray-600 mt-4 max-w-2xl mx-auto">
                   A dedicated team behind the development of  ODRLab.com to advance its mission
