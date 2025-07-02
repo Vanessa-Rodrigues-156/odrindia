@@ -30,7 +30,7 @@ const navItems = [
 		icon: BookOpenCheck,
 		children: [
 			{
-				title: "ODR",
+				title: "ODR Info",
 				href: "https://odr.info/",
 				description:
 					"Explore a curated list of resources, articles, and tools related to Online Dispute Resolution (ODR).",
