@@ -192,8 +192,12 @@ export default function ProfileEditor({ isOpen, onClose, onSave }: ProfileEditor
   const validateImageUrl = (url: string): boolean => {
     if (!url) return true; // Empty URL is valid
     try {
-      new URL(url);
-      return /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(url) || url.includes('googleusercontent.com') || url.includes('githubusercontent.com');
+      const parsedUrl = new URL(url);
+      const allowedHosts = ['googleusercontent.com', 'githubusercontent.com'];
+      return (
+        /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(url) ||
+        allowedHosts.includes(parsedUrl.host)
+      );
     } catch {
       return false;
     }
