@@ -82,7 +82,7 @@ export default function Footer() {
         <div className="mt-2 border-t border-gray-700 pt-4 mb-2">
           <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
             <p className="text-center text-sm text-gray-300 md:text-left">
-              © {new Date().getFullYear()} ODR. All rights reserved.
+              © 2025 ODR Lab. All rights reserved.
             </p>
             <div className="flex space-x-6">
               <Link href="/privacy-policy" className="text-sm text-gray-300 hover:text-white">
