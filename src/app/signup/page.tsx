@@ -157,8 +157,8 @@ const SignUpPage = () => {
           try {
             setLoading(true);
             setError(null);
-            const res = await fetch(
-              `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000/api"}/auth/google-signin`,
+            const res = await apiFetch(
+              "/auth/google-signin",
               {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },

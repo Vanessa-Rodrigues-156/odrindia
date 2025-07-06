@@ -121,7 +121,14 @@ const VisionariesGallery: React.FC = () => {
             }}
           />
           <h3 className="name font-bold text-xl text-slate-800 text-center select-none">{v.name}</h3>
-          <p className="title font-medium text-base text-slate-600 text-center leading-tight select-none" dangerouslySetInnerHTML={{ __html: v.title.replace(/\n/g, '<br/>') }} />
+          <p className="title font-medium text-base text-slate-600 text-center leading-tight select-none">
+            {v.title.split('\n').map((line, idx) => (
+              <React.Fragment key={idx}>
+                {line}
+                {idx < v.title.split('\n').length - 1 && <br />}
+              </React.Fragment>
+            ))}
+          </p>
         </div>
       </div>
     </article>
