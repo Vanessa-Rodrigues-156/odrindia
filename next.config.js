@@ -17,23 +17,7 @@
 /** @type {import('next').NextConfig} */
 const isProd = process.env.NODE_ENV === 'production';
 
-const csp = [
-  "default-src 'self'",
-  "script-src 'self' 'nonce-__REPLACE_WITH_NONCE__'" + (!isProd ? " 'unsafe-eval'" : ''),
-  "style-src 'self' 'unsafe-inline'",
-  "img-src * blob: data:",
-  "connect-src *",
-  "object-src 'none'",
-  "base-uri 'self'",
-  "form-action 'self'",
-  "frame-ancestors 'none'"
-].join('; ');
-
 const securityHeaders = [
-  {
-    key: 'Content-Security-Policy',
-    value: csp,
-  },
   {
     key: 'X-Frame-Options',
     value: 'DENY',

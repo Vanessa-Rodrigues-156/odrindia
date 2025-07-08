@@ -1,7 +1,9 @@
 // CSRF utility for Next.js frontend
 
+import { apiFetch } from "./api";
+
 export async function fetchAndStoreCsrfToken() {
-  const res = await fetch("/api/auth/csrf-token");
+  const res = await apiFetch("/csrf-token");
   if (!res.ok) throw new Error("Failed to fetch CSRF token");
   const { csrfToken } = await res.json();
   if (typeof window !== "undefined") {
