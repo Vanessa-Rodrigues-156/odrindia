@@ -51,8 +51,14 @@ export async function fetchComments(ideaId: string | null, accessToken?: string 
       }
       throw new Error('Failed to fetch comments');
     }
-    
-    return res.json();
+    // Map 'author' to 'user' recursively for all comments and replies
+    const mapComment = (comment: any): Comment => ({
+      ...comment,
+      user: comment.author,
+      replies: comment.replies ? comment.replies.map(mapComment) : [],
+    });
+    const comments = await res.json();
+    return comments.map(mapComment);
   } catch (error) {
     console.error('Error fetching comments:', error);
     throw error;
