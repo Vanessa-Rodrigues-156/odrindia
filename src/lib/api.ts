@@ -1,3 +1,5 @@
+import { getCsrfToken } from "@/lib/csrf";
+
 // export const API_BASE_URL = "https://13.233.201.37";
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 //export const API_BASE_URL = "http://localhost:4000/api";
@@ -23,6 +25,12 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
     console.log(`API Request to ${path}: No auth token available`);
   }
 
+  // Add CSRF token for mutating requests
+  const csrfToken = getCsrfToken();
+  if (csrfToken && options.method && ["POST", "PUT", "DELETE"].includes(options.method.toUpperCase())) {
+    headers.set("x-csrf-token", csrfToken);
+  }
+
   // Set CORS headers required by backend (for fetch, these are set by browser, but for clarity):
   headers.set("Accept", "application/json");
   // Optionally, you can set 'Origin' header, but browser usually sets it automatically
@@ -43,6 +51,11 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
         console.warn('Session expired or invalid token - clearing token');
         localStorage.removeItem('token');
       }
+    }
+
+    if (response.status === 403) {
+      // CSRF failure (generic error)
+      throw new Error("Your session has expired or the request was blocked for security reasons. Please refresh and try again.");
     }
     
     return response;

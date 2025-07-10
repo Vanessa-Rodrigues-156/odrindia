@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { useAuth } from "@/lib/auth";
 import { initializeGoogleAuth, renderGoogleButton, GoogleUser } from "@/lib/google-auth";
+import { apiFetch } from "@/lib/api";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -79,7 +80,7 @@ function SignInClient() {
 
             // Send user info to backend for sign-in/up
             try {
-              const res = await fetch(`${API_BASE_URL}/auth/google-signin`, {
+              const res = await apiFetch("/auth/google-signin", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -142,16 +143,14 @@ function SignInClient() {
 
     try {
       // Call the login API endpoint
-      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+      const response = await apiFetch("/auth/login", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email, password }),
       });
-
       const data = await response.json();
-
       if (!response.ok) {
         throw new Error(data.error || 'Login failed');
       }
