@@ -1,4 +1,4 @@
-import { getCsrfToken } from "@/lib/csrf";
+import { getCsrfToken, fetchAndStoreCsrfToken } from "@/lib/csrf";
 
 // export const API_BASE_URL = "https://13.233.201.37";
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -25,10 +25,13 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
     console.log(`API Request to ${path}: No auth token available`);
   }
 
-  // Add CSRF token for mutating requests
+  // Add CSRF token for mutating requests (but make it optional in development)
   const csrfToken = getCsrfToken();
   if (csrfToken && options.method && ["POST", "PUT", "DELETE"].includes(options.method.toUpperCase())) {
     headers.set("x-csrf-token", csrfToken);
+  } else if (options.method && ["POST", "PUT", "DELETE"].includes(options.method.toUpperCase())) {
+    // If no CSRF token available, log a warning but don't fail
+    console.warn(`No CSRF token available for ${options.method} request to ${path}`);
   }
 
   // Set CORS headers required by backend (for fetch, these are set by browser, but for clarity):
@@ -54,8 +57,14 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
     }
 
     if (response.status === 403) {
-      // CSRF failure (generic error)
-      throw new Error("Your session has expired or the request was blocked for security reasons. Please refresh and try again.");
+      // CSRF failure - try to fetch new token and suggest retry
+      console.warn("CSRF token validation failed, attempting to refresh token");
+      try {
+        await fetchAndStoreCsrfToken();
+        throw new Error("Security token expired. Please try your request again.");
+      } catch (csrfError) {
+        throw new Error("Your session has expired. Please refresh the page and try again.");
+      }
     }
     
     return response;

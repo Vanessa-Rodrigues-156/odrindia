@@ -114,15 +114,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setUser(data.user);
           setAccessToken(token);
         } else {
+          // Only remove token if it's actually invalid (401), not on network errors
+          if (response.status === 401) {
+            localStorage.removeItem("token");
+            setUser(null);
+            setAccessToken(null);
+          }
+        }
+      } catch (error) {
+        console.error("Session refresh failed:", error);
+        // Don't remove token on network errors, only on auth failures
+        if (error instanceof Error && error.message.includes('401')) {
           localStorage.removeItem("token");
           setUser(null);
           setAccessToken(null);
         }
-      } catch (error) {
-        console.error("Session refresh failed:", error);
-        localStorage.removeItem("token");
-        setUser(null);
-        setAccessToken(null);
       } finally {
         // Reset the promise reference after a short delay to prevent immediate subsequent calls
         refreshTimeoutRef.current = setTimeout(() => {
