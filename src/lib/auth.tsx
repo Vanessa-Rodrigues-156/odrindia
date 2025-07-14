@@ -12,6 +12,7 @@ import React, {
 import { useRouter } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
 import { apiFetch } from "@/lib/api";
+import { fetchAndStoreCsrfToken } from "@/lib/csrf";
 
 // Remove trailing slash to prevent double slashes in URLs
 const API_BASE_URL = (process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000/api").replace(/\/$/, "");
@@ -69,6 +70,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Set client flag to prevent hydration mismatches
   useEffect(() => {
     setIsClient(true);
+    // Fetch CSRF token on app load (client only)
+    if (typeof window !== "undefined") {
+      fetchAndStoreCsrfToken().catch((err) => {
+        console.error("Failed to fetch CSRF token on app load:", err);
+      });
+    }
   }, []);
 
   // Debounced refreshUser function to prevent race conditions
@@ -138,6 +145,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = useCallback((userData: User, token: string) => {
     if (typeof window !== 'undefined') {
       localStorage.setItem("token", token);
+      // Fetch new CSRF token after login
+      fetchAndStoreCsrfToken().catch((err) => {
+        console.error("Failed to fetch CSRF token after login:", err);
+      });
     }
     setUser(userData);
     setAccessToken(token);
@@ -147,6 +158,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = useCallback(() => {
     if (typeof window !== 'undefined') {
       localStorage.removeItem("token");
+      // Fetch new CSRF token after logout (to reset session)
+      fetchAndStoreCsrfToken().catch((err) => {
+        console.error("Failed to fetch CSRF token after logout:", err);
+      });
     }
     setUser(null);
     setAccessToken(null);
