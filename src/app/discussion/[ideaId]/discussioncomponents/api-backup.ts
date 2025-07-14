@@ -1,8 +1,8 @@
 import { apiFetch } from "@/lib/api";
 import { Idea, Comment } from "./types";
 
-// Fetch idea details with authentication
-export async function fetchIdeaDetails(ideaId: string | null, accessToken?: string | null): Promise<Idea> {
+// Helper to create Authorization headers if accessToken is provided
+export async function fetchIdeaDetails(ideaId: string | null): Promise<Idea> {
   if (!ideaId) {
     throw new Error("Idea ID is required");
   }
@@ -25,7 +25,7 @@ export async function fetchIdeaDetails(ideaId: string | null, accessToken?: stri
     throw error;
   }
 }
-
+    
 // Fetch comments with authentication
 export async function fetchComments(ideaId: string | null, accessToken?: string | null): Promise<Comment[]> {
   if (!ideaId) {
@@ -33,7 +33,7 @@ export async function fetchComments(ideaId: string | null, accessToken?: string 
   }
   
   try {
-    const res = await apiFetch(`/ideas/${ideaId}/comments`);
+    const res = await apiFetch(`/ideas/${ideaId}/comments`, { headers: createAuthHeaders(accessToken) });
     
     if (!res.ok) {
       if (res.status === 401) {
@@ -58,40 +58,40 @@ export async function fetchComments(ideaId: string | null, accessToken?: string 
 // Check if user has liked an idea
 export async function checkIdeaLikeStatus(ideaId: string, userId: string, accessToken?: string | null): Promise<boolean> {
   try {
-    const res = await apiFetch(`/ideas/${ideaId}/likes/check?userId=${userId}`);
+    const res = await apiFetch(`/ideas/${ideaId}/likes/check?userId=${userId}`, { headers: createAuthHeaders(accessToken) });
     
     if (!res.ok) {
       if (res.status === 401) {
-        throw new Error('Authentication failed. Please log in again.');
+        throw new Error('Authentication failed');
       }
       throw new Error('Failed to check like status');
     }
     
     const data = await res.json();
-    return data.hasLiked || false;
+    return data.liked;
   } catch (error) {
     console.error('Error checking like status:', error);
-    return false;
+    throw error;
   }
 }
 
-// Fetch liked comments for a user
+// Fetch comments liked by user
 export async function fetchLikedComments(ideaId: string, userId: string, accessToken?: string | null): Promise<string[]> {
   try {
-    const res = await apiFetch(`/ideas/${ideaId}/comments/liked?userId=${userId}`);
+    const res = await apiFetch(`/ideas/${ideaId}/comments/liked?userId=${userId}`, { headers: createAuthHeaders(accessToken) });
     
     if (!res.ok) {
       if (res.status === 401) {
-        throw new Error('Authentication failed. Please log in again.');
+        throw new Error('Authentication failed');
       }
       throw new Error('Failed to fetch liked comments');
     }
     
     const data = await res.json();
-    return data.likedCommentIds || [];
+    return data.likedComments || [];
   } catch (error) {
     console.error('Error fetching liked comments:', error);
-    return [];
+    throw error;
   }
 }
 
@@ -100,12 +100,13 @@ export async function likeIdea(ideaId: string, userId: string, action: 'like' | 
   try {
     const res = await apiFetch(`/ideas/${ideaId}/likes`, {
       method: 'POST',
-      body: JSON.stringify({ userId, action }),
+      headers: createAuthHeaders(accessToken),
+      body: JSON.stringify({ userId, action })
     });
     
     if (!res.ok) {
       if (res.status === 401) {
-        throw new Error('Authentication failed. Please log in again.');
+        throw new Error('Authentication failed');
       }
       throw new Error('Failed to update like');
     }
@@ -122,12 +123,13 @@ export async function likeComment(ideaId: string, commentId: string, userId: str
   try {
     const res = await apiFetch(`/ideas/${ideaId}/comments/${commentId}/likes`, {
       method: 'POST',
-      body: JSON.stringify({ userId, action }),
+      headers: createAuthHeaders(accessToken),
+      body: JSON.stringify({ userId, action })
     });
     
     if (!res.ok) {
       if (res.status === 401) {
-        throw new Error('Authentication failed. Please log in again.');
+        throw new Error('Authentication failed');
       }
       throw new Error('Failed to update comment like');
     }
@@ -144,29 +146,28 @@ export async function postComment(ideaId: string, userId: string, content: strin
   try {
     const res = await apiFetch(`/ideas/${ideaId}/comments`, {
       method: 'POST',
-      body: JSON.stringify({ 
-        content, 
-        parentId: parentId || null 
-      }),
+      headers: createAuthHeaders(accessToken),
+      body: JSON.stringify({ userId, content, parentId })
     });
     
     if (!res.ok) {
       if (res.status === 401) {
-        throw new Error('Authentication failed. Please log in again.');
+        throw new Error('Authentication failed');
       }
-      const errorData = await res.json().catch(() => ({}));
-      throw new Error(`Failed to post comment: ${errorData.message || 'Unknown error'}`);
+      throw new Error('Failed to post comment');
     }
     
-    const comment = await res.json();
-    // Map 'author' to 'user' for consistency
-    return {
-      ...comment,
-      user: comment.author,
-      replies: comment.replies || [],
-    };
+    return res.json();
   } catch (error) {
     console.error('Error posting comment:', error);
     throw error;
   }
 }
+function createAuthHeaders(accessToken: string | null | undefined): HeadersInit | undefined {
+  if (!accessToken) return undefined;
+  return {
+    'Authorization': `Bearer ${accessToken}`,
+    'Content-Type': 'application/json'
+  };
+}
+
