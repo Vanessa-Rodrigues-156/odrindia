@@ -85,68 +85,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Only run on client side
     if (!isClient) return;
 
-    // If a refresh is already in progress, return that promise
     if (refreshPromiseRef.current) {
       return refreshPromiseRef.current;
     }
 
-    // Clear any pending timeout
     if (refreshTimeoutRef.current) {
       clearTimeout(refreshTimeoutRef.current);
     }
 
-    // Create and store the refresh promise
     refreshPromiseRef.current = (async () => {
       try {
-        let token: string | null = null;
-        if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') {
-          token = localStorage.getItem("token");
-        }
-        // In production, do not use localStorage for token; rely on cookie
-        if (process.env.NODE_ENV === 'production') {
-          token = null;
-        }
-        if (!token && process.env.NODE_ENV !== 'production') {
-          setUser(null);
-          setLoading(false);
-          return;
-        }
-
-        const headers: Record<string, string> = {};
-        if (token) {
-          headers["Authorization"] = `Bearer ${token}`;
-        }
-        const response = await apiFetch(`/auth/session`, { headers });
-
+        const response = await apiFetch(`/auth/session`);
         if (response.ok) {
           const data = await response.json();
           setUser(data.user);
-          setAccessToken(token);
         } else {
-          // Only remove token if it's actually invalid (401), not on network errors
-          if (response.status === 401 && process.env.NODE_ENV !== 'production') {
-            localStorage.removeItem("token");
-            setUser(null);
-            setAccessToken(null);
-          }
+          setUser(null);
         }
       } catch (error) {
         console.error("Session refresh failed:", error);
-        // Don't remove token on network errors, only on auth failures
-        if (error instanceof Error && error.message.includes('401') && process.env.NODE_ENV !== 'production') {
-          localStorage.removeItem("token");
-          setUser(null);
-          setAccessToken(null);
-        }
+        setUser(null);
       } finally {
-        // Reset the promise reference after a short delay to prevent immediate subsequent calls
         refreshTimeoutRef.current = setTimeout(() => {
           refreshPromiseRef.current = null;
         }, 2000);
         setLoading(false);
       }
     })();
-
     return refreshPromiseRef.current;
   }, [isClient]);
 
@@ -158,39 +123,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [refreshUser, isClient]);
 
   const login = useCallback((userData: User, token?: string) => {
-    if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') {
-      if (token) {
-        localStorage.setItem("token", token);
-      } else {
-        localStorage.removeItem("token");
-      }
-      // Fetch new CSRF token after login
-      fetchAndStoreCsrfToken().catch((err) => {
-        console.error("Failed to fetch CSRF token after login:", err);
-      });
-    }
     setUser(userData);
-    setAccessToken(token || null);
+    setAccessToken(null);
     setLoading(false);
   }, []);
 
   const logout = useCallback(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem("token");
-      // Fetch new CSRF token after logout (to reset session)
-      fetchAndStoreCsrfToken().catch((err) => {
-        console.error("Failed to fetch CSRF token after logout:", err);
-      });
-    }
     setUser(null);
     setAccessToken(null);
-
-    // Clear any pending refresh
     if (refreshTimeoutRef.current) {
       clearTimeout(refreshTimeoutRef.current);
       refreshTimeoutRef.current = null;
     }
-
     router.push("/signin");
   }, [router]);
 
@@ -239,13 +183,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // Always set user in context
         setUser(data.user);
 
-        // If user doesn't need profile completion and we have a token, log them in
-        if (!data.needsProfileCompletion && data.token) {
-          if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') {
-            localStorage.setItem("token", data.token);
-          }
-          setAccessToken(data.token);
-        }
+        // No more token handling, just set user
 
         return data;
       } catch (error) {
@@ -275,13 +213,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         const data = await response.json();
 
-        // Update user data and set token
-        if (data.user && data.token) {
-          if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') {
-            localStorage.setItem("token", data.token);
-          }
+        // Update user data only
+        if (data.user) {
           setUser(data.user);
-          setAccessToken(data.token);
         }
 
         return data;
