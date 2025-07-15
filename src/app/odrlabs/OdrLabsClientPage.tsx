@@ -17,18 +17,8 @@ function OdrLabsClientComponent() {
   useEffect(() => {
     const fetchIdeas = async () => {
       try {
-        // Include the authorization header with the token
-        const headers: HeadersInit = {
-          "Content-Type": "application/json",
-        };
-
-        if (accessToken) {
-          headers["Authorization"] = `Bearer ${accessToken}`;
-        }
-
-        const response = await apiFetch("/odrlabs/ideas", {
-          headers,
-        });
+        // Let apiFetch handle credentials/cookies for authentication
+        const response = await apiFetch("/odrlabs/ideas");
 
         if (!response.ok) {
           if (response.status === 401) {
