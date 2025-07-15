@@ -27,15 +27,18 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
   // Set CORS headers required by backend (for fetch, these are set by browser, but for clarity):
   headers.set("Accept", "application/json");
 
+  // Always set credentials: 'include' unless explicitly overridden
+  const fetchOptions: RequestInit = {
+    ...options,
+    headers,
+    credentials: options.credentials || 'include',
+  };
+
   let triedRefresh = false;
   while (true) {
     try {
       console.log(`Making API request to: ${API_BASE_URL}${path}`);
-      const response = await fetch(`${API_BASE_URL}${path}`, {
-        ...options,
-        headers,
-        credentials: 'include'
-      });
+      const response = await fetch(`${API_BASE_URL}${path}`, fetchOptions);
       console.log(`API Response from ${path}: Status ${response.status}`);
 
       if (response.status === 401 && !triedRefresh && path !== '/auth/refresh-token' && path !== '/auth/login') {
