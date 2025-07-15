@@ -46,9 +46,10 @@ This document tracks the process of auditing all API routes, backend schemas, an
 ## 6. Audit Progress Tracker
 | Area | Issue | Status | Correction/Notes |
 |------|-------|--------|------------------|
-| Auth | JWT in localStorage in prod | Fixed | Only in dev, cookie in prod |
+| Auth | JWT in localStorage in prod | Fixed | Removed completely, cookie-only |
 | Auth | Duplicate login/logout | Fixed | Removed duplicates |
 | Auth | Type mismatch in login | Fixed | Corrected types |
+| Auth | Cross-origin cookies blocked | Fixed | Changed sameSite: "strict" to "none" for production |
 | User Profile | Field mapping (frontend/backend) | TODO | Check all role-specific fields |
 | Idea | Field mapping (frontend/backend) | TODO | Check all fields/types |
 | Collaborators/Mentors | Data structure match | TODO | Check types/schemas |
