@@ -4,7 +4,11 @@ import { getCsrfToken, fetchAndStoreCsrfToken } from "@/lib/csrf";
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 //export const API_BASE_URL = "http://localhost:4000/api";
 export async function apiFetch(path: string, options: RequestInit = {}) {
-  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  // Only use localStorage token in development, never in production
+  let token: string | null = null;
+  if (typeof window !== "undefined" && process.env.NODE_ENV !== "production") {
+    token = localStorage.getItem("token");
+  }
 
   // Create headers object with proper typing
   const headers = new Headers(options.headers || {});

@@ -93,8 +93,12 @@ function SignInClient() {
               if (!res.ok) throw new Error(data.error || "Google sign-in failed");
 
               // Use the auth context login function to store user data and token
-              if (data.token) {
+              // Only pass token to login in development
+              if (process.env.NODE_ENV !== "production" && data.token) {
                 login(data.user, data.token);
+                router.push("/home");
+              } else if (data.user) {
+                login(data.user);
                 router.push("/home");
               } else if (data.needsProfileCompletion) {
                 const params = new URLSearchParams({
