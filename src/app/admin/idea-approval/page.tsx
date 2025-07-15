@@ -504,7 +504,7 @@ function AdminIdeaApprovalContent() {
       <Dialog
         open={isDetailsOpen}
         onOpenChange={setIsDetailsOpen}>
-        <DialogContent className="sm:max-w-2xl p-0 overflow-hidden rounded-xl">
+        <DialogContent className="sm:max-w-2xl p-0 overflow-hidden rounded-xl" >
           {selectedSubmission && (
             <>
               <DialogHeader className="p-6 pb-2 bg-gradient-to-r from-[#0a1e42]/90 to-[#0a1e42] text-white">
