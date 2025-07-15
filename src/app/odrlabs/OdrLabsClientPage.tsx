@@ -52,7 +52,7 @@ function OdrLabsClientComponent() {
 
       return () => clearTimeout(timer);
     }
-  }, [accessToken]);
+  }, []);
 
   return loading ? (
     <div className="flex justify-center items-center h-96">
