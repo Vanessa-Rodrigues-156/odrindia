@@ -174,13 +174,11 @@ const SignUpPage = () => {
 
             // Use the auth context login function to store user data and token
             // Only pass token to login in development
-            if (process.env.NODE_ENV !== "production" && data.token) {
+            if (process.env.NODE_ENV !== "development" && data.token) {
               login(data.user, data.token);
               router.push("/home");
-            } else if (data.user) {
-              login(data.user);
-              router.push("/home");
-            } else if (data.needsProfileCompletion) {
+            }
+            else (data.needsProfileCompletion) {
               const params = new URLSearchParams({
                 email: payload.email,
                 name: payload.name,
