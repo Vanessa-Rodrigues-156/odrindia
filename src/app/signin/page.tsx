@@ -97,9 +97,7 @@ function SignInClient() {
               if (process.env.NODE_ENV !== "production" && data.token) {
                 login(data.user, data.token);
                 router.push("/home");
-              } else if (data.user) {
-                login(data.user);
-                router.push("/home");
+              
               } else if (data.needsProfileCompletion) {
                 const params = new URLSearchParams({
                   email: payload.email,

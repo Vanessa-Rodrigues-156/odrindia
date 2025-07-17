@@ -23,7 +23,9 @@ function OdrLabsClientComponent() {
         if (!response.ok) {
           if (response.status === 401) {
             setError("You need to be logged in to view ideas.");
+            window.location.href = "/signin"; // Redirect to sign-in page
             return;
+
           }
           throw new Error("Failed to fetch ideas");
         }
@@ -38,20 +40,8 @@ function OdrLabsClientComponent() {
       }
     };
 
-    // Only fetch if we have a token
-    if (accessToken) {
-      fetchIdeas();
-    } else {
-      // Short delay to allow auth to initialize
-      const timer = setTimeout(() => {
-        if (!accessToken) {
-          setLoading(false);
-          setError("Authentication required to view ideas.");
-        }
-      }, 1000);
-
-      return () => clearTimeout(timer);
-    }
+    // Always fetch ideas; authentication is handled via HTTP-only cookies
+    fetchIdeas();
   }, []);
 
   return loading ? (
