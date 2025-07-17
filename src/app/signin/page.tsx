@@ -379,6 +379,14 @@ function SignInClient() {
                 className="h-10 sm:h-11 lg:h-12 text-sm sm:text-base border-gray-300 focus:border-[#0a1e42] focus:ring-[#0a1e42]"
                 required
               />
+               <div className="text-right text-sm">
+                <Link
+                  href="/forgot-password"
+                  className="font-medium text-[#0a1e42] hover:underline"
+                >
+                  Forgot Password?
+                </Link>
+              </div>
             </motion.div>
             <motion.div variants={fadeInUp} className="mt-1 sm:mt-2">
               <Button
