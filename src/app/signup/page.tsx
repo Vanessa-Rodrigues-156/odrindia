@@ -177,8 +177,7 @@ const SignUpPage = () => {
             if (process.env.NODE_ENV !== "development" && data.token) {
               login(data.user, data.token);
               router.push("/home");
-            }
-            else (data.needsProfileCompletion) {
+            } else if (data.needsProfileCompletion) {
               const params = new URLSearchParams({
                 email: payload.email,
                 name: payload.name,
